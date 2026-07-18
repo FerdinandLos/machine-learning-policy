@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+from sklearn.base import clone
+from doubleml import DoubleMLData, DoubleMLPLR
 
 # Load the urban emissions panel dataset
 csv_path = Path(__file__).resolve().parents[1] / "Data" / "urban_emissions_panel.csv"
@@ -167,3 +170,82 @@ plt.tight_layout()
 save_dir = os.path.join('Writing', 'Figures')
 os.makedirs(save_dir, exist_ok=True)
 plt.savefig(os.path.join(save_dir, 'cluster_differences.pdf'), format='pdf', bbox_inches='tight')
+
+# -------------
+# MAIN ANALYSIS
+# -------------
+
+# ---------------------------------------------------------
+# 1. Data Preparation & Feature Engineering
+# ---------------------------------------------------------
+
+# Create the synergy interaction term for Model 1 (Question 3)
+df['cp_x_lez'] = df['cp_active'] * df['lez_active']
+
+# Create the heterogeneity interaction terms for Model 2 (Question 2)
+# Assuming 'cluster_id' is 0 for Sprawling Hubs and 1 for Dense Metropolises
+df['cp_x_type1'] = df['cp_active'] * df['cluster_id']
+df['lez_x_type1'] = df['lez_active'] * df['cluster_id']
+
+# Create year dummies to account for macro time trends in the panel
+year_dummies = pd.get_dummies(df['year'], prefix='year', drop_first=True, dtype=int)
+df = pd.concat([df, year_dummies], axis=1)
+
+# Define the confounder matrix (X)
+# We exclude the outcome, the treatments, the IDs, and the raw year/announcement columns
+exclude_from_X = ['city_id', 'year', 'transport_co2', 'total_co2', 
+                  'cp_active', 'lez_active', 'cp_impl_year', 'lez_impl_year', 
+                  'cp_announce_year', 'lez_announce_year', 'country_id',
+                  'cp_x_lez', 'cp_x_type1', 'lez_x_type1', 'cluster_id']
+
+X_cols = [col for col in df.columns if col not in exclude_from_X]
+
+# ---------------------------------------------------------
+# 2. Setup Machine Learning Learners
+# ---------------------------------------------------------
+
+# We use Random Forests for the nuisance functions E[Y|X] and E[D|X]
+# Setting a fixed random_state ensures reproducibility for your report
+ml_l = RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42)
+ml_m = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42) # classifier because it's a binary treatment dummy
+
+# ---------------------------------------------------------
+# 3. Model 1: Main Effects and Synergy
+# ---------------------------------------------------------
+print("Estimating Model 1: Main Effects and Synergy...")
+
+# Define the treatment variables (D)
+D_cols_m1 = ['cp_active', 'lez_active', 'cp_x_lez']
+
+# Initialize the DoubleMLData object
+dml_data_m1 = DoubleMLData(df, y_col='transport_co2', d_cols=D_cols_m1, x_cols=X_cols)
+
+# Initialize and fit the Partially Linear Regression (PLR) model
+# We use Neyman-orthogonal scores ('partialling out') natively 
+dml_plr_m1 = DoubleMLPLR(dml_data_m1, 
+                         ml_l=clone(ml_l), 
+                         ml_m=clone(ml_m), 
+                         n_folds=5)
+dml_plr_m1.fit()
+
+print(dml_plr_m1.summary)
+
+# ---------------------------------------------------------
+# 4. Model 2: Heterogeneity by City Type
+# ---------------------------------------------------------
+print("\nEstimating Model 2: Heterogeneity by City Type...")
+
+# Define the treatment variables (D) including the cluster interactions
+D_cols_m2 = ['cp_active', 'lez_active', 'cp_x_type1', 'lez_x_type1']
+
+# Initialize the DoubleMLData object
+dml_data_m2 = DoubleMLData(df, y_col='transport_co2', d_cols=D_cols_m2, x_cols=X_cols)
+
+# Initialize and fit the model
+dml_plr_m2 = DoubleMLPLR(dml_data_m2, 
+                         ml_l=clone(ml_l), 
+                         ml_m=clone(ml_m), 
+                         n_folds=5)
+dml_plr_m2.fit()
+
+print(dml_plr_m2.summary)
