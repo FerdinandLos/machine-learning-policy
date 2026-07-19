@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber Loser_Ferdinand_12400460"] 0 "Loser_Ferdinand_12400460.bcf" "Loser_Ferdinand_12400460.bbl" "Loser_Ferdinand_12400460" 1784473836.82452 0
+["biber Loser_Ferdinand_12400460"] 0 "Loser_Ferdinand_12400460.bcf" "Loser_Ferdinand_12400460.bbl" "Loser_Ferdinand_12400460" 1784476062.43961 0
   "Loser_Ferdinand_12400460.bcf" 0 -1 0 "pdflatex"
   "Monte Carlo Simulations.bib" 0 -1 0 ""
   (generated)
   "Loser_Ferdinand_12400460.bbl"
   "Loser_Ferdinand_12400460.blg"
   (rewritten before read)
-["pdflatex"] 1784473835.38892 "d:/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" "Loser_Ferdinand_12400460.pdf" "Loser_Ferdinand_12400460" 1784473836.82586 0
+["pdflatex"] 1784476060.7808 "d:/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" "Loser_Ferdinand_12400460.pdf" "Loser_Ferdinand_12400460" 1784476062.44041 0
   "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1781799252 81107 70b8516c68c2e617189c5e44bfd16b96 ""
   "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1095.pk" 1781799262 28976 274be568fe0857e15d165013763b971f ""
   "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1728.pk" 1781799256 49100 5f1f3ee0e4bf8936b914d23c13d27df7 ""
@@ -128,13 +128,13 @@
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "Figures/cluster_differences.pdf" 1784466231 20315 04bb88f0d414f9a6315141ea4b1ad1b9 ""
   "Figures/kmeans_evaluation.pdf" 1784471811 16701 a4c5085c636f092a71d2ee6b3fde1a5a ""
-  "Loser_Ferdinand_12400460.aux" 1784473836 1442 68a70f07e4b8858056622f32e5ab5999 "pdflatex"
+  "Loser_Ferdinand_12400460.aux" 1784476061 1442 68a70f07e4b8858056622f32e5ab5999 "pdflatex"
   "Loser_Ferdinand_12400460.bbl" 0 -1 0 "biber Loser_Ferdinand_12400460"
-  "Loser_Ferdinand_12400460.out" 1784473836 430 555ead84e6f09e9aa8f1d293320e76fe "pdflatex"
-  "Loser_Ferdinand_12400460.run.xml" 1784473836 2498 6b6b05ecd6b03fde6cc80ad6e380c8fe "pdflatex"
-  "Loser_Ferdinand_12400460.tex" 1784473834 3071 fae1900987285f2b1946411ea072ee79 ""
+  "Loser_Ferdinand_12400460.out" 1784476061 430 555ead84e6f09e9aa8f1d293320e76fe "pdflatex"
+  "Loser_Ferdinand_12400460.run.xml" 1784476061 2498 6b6b05ecd6b03fde6cc80ad6e380c8fe "pdflatex"
+  "Loser_Ferdinand_12400460.tex" 1784476060 3015 58cf4e1551ca94ea098ea2b774ff3264 ""
   "Tables/cluster_summary.tex" 1784466231 680 d5bf6ad31e6cef04ee40e9c9726b8e8d ""
-  "d:/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" 1784473834 3071 fae1900987285f2b1946411ea072ee79 ""
+  "d:/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" 1784476060 3015 58cf4e1551ca94ea098ea2b774ff3264 ""
   (generated)
   "Loser_Ferdinand_12400460.aux"
   "Loser_Ferdinand_12400460.bcf"
