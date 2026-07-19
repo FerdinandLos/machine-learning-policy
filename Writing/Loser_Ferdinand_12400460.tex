@@ -1,0 +1,90 @@
+\documentclass[12pt, a4paper]{article}
+
+% Standard packages for economics papers
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{setspace}
+\onehalfspacing % Common for readability; use \doublespacing if submitting for review
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}  % Creates beautiful top/mid/bottom rules instead of ugly grids
+\usepackage{multirow}  % Allows the p0 values to span across the T rows seamlessly
+\usepackage{rotating}  % Allows for sideways tables (sidewaystable)
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
+
+% BibLaTeX setup for Zotero Better BibLaTeX
+\usepackage[style=authoryear, backend=biber, natbib=true, maxcitenames=2]{biblatex}
+\addbibresource{Monte Carlo Simulations.bib}
+
+% Change formatting to fit policy report style:
+\renewcommand{\abstractname}{Executive Summary}
+
+% Title and Author Information
+\title{Urban Policies to Combat Climate Change: \\ Assessing the Impact of Congestion Pricing and Low-Emission Zones using Machine Learning Techniques}
+\author{
+    Ferdinand Loser\thanks{Ludwig-Maximilian University of Munich, \href{mailto:ferdinand.loser@campus.lmu.de}{ferdinand.loser@campus.lmu.de} \\ Replication files are available in the \href{https://github.com/FerdinandLos/machine-learning-policy}{GitHub repository} for this project.}
+}
+\date{\today \\ \vspace{0.5cm} Course: \textit{Machine Learning in Econometrics} \\ Supervisor: Prof. Daniel Wilhelm \\ \vspace{0.5cm} Ludwig-Maximilian University of Munich, M. Sc. Economics Program}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent
+Abstract content goes here. This section should provide a concise summary of the research question, methodology, key findings, and implications of the study. It should be clear and informative, allowing readers to quickly understand the purpose and results of the paper.
+\end{abstract}
+
+\newpage
+
+\section{Introduction}
+\label{sec:introduction}
+
+\section{Theoretical Background}
+\label{sec:theory}
+
+\section{Results}
+\label{sec:results}
+
+\input{Tables/cluster_summary.tex}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/cluster_differences.pdf}
+    \caption{Cluster Differences.}
+    \label{fig:cluster_differences}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/kmeans_evaluation.pdf}
+    \caption{K-Means Evaluation.}
+    \label{fig:kmeans_evaluation}
+\end{figure}
+
+\clearpage
+\section{Conclusion}
+\label{sec:conclusion}
+
+\newpage
+
+% Print the bibliography
+\printbibliography
+
+
+\appendix
+\section*{Appendix}
+
+\section*{Declaration of Autorship}
+
+I confirm that this report is based on my own work. In preparing
+this report, I have not received any help from another human nor have I
+discussed any aspects of the empirical project with others.\\
+\vspace{1.5cm}
+Ferdinand Loser
+
+\end{document}

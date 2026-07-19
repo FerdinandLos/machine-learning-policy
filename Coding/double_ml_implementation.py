@@ -8,7 +8,10 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.base import clone
+from sklearn.linear_model import LassoCV, LogisticRegressionCV
+from sklearn.pipeline import make_pipeline
 from doubleml import DoubleMLData, DoubleMLPLR
+
 
 # Load the urban emissions panel dataset
 csv_path = Path(__file__).resolve().parents[1] / "Data" / "urban_emissions_panel.csv"
@@ -249,3 +252,48 @@ dml_plr_m2 = DoubleMLPLR(dml_data_m2,
 dml_plr_m2.fit()
 
 print(dml_plr_m2.summary)
+
+# ---------------------------------------------------------
+# 1. Setup the Linear Nuisance Learners with Pipelines
+# ---------------------------------------------------------
+
+# Pipeline for ml_l: Standardize features -> Lasso Cross-Validation
+# LassoCV automatically searches for the optimal penalty parameter (alpha)
+lasso_learner = make_pipeline(
+    StandardScaler(),
+    LassoCV(cv=5, random_state=42, max_iter=10000)
+)
+
+# Pipeline for ml_m: Standardize features -> Penalized Logistic Regression
+# We use penalty='l1' and solver='liblinear' to apply the exact Lasso equivalent for classification
+logistic_learner = make_pipeline(
+    StandardScaler(),
+    LogisticRegressionCV(cv=5, penalty='l1', solver='liblinear', 
+                         random_state=42, max_iter=10000)
+)
+
+# ---------------------------------------------------------
+# 2. Run the Sensitivity Analysis on Model 1
+# ---------------------------------------------------------
+print("Running Sensitivity Analysis: Model 1 with Penalized Linear Models...")
+
+# Use the exact same D_cols_m1 and X_cols from your previous script
+# D_cols_m1 = ['cp_active', 'lez_active', 'cp_x_lez']
+
+dml_data_m1_sens = DoubleMLData(df, y_col='transport_co2', d_cols=D_cols_m1, x_cols=X_cols)
+
+# Initialize and fit the Partially Linear Regression (PLR) with the linear learners
+dml_plr_m1_sens = DoubleMLPLR(dml_data_m1_sens, 
+                              ml_l=lasso_learner, 
+                              ml_m=logistic_learner, 
+                              n_folds=5)
+dml_plr_m1_sens.fit()
+
+# ---------------------------------------------------------
+# 3. Output Comparison
+# ---------------------------------------------------------
+print("\n--- BASELINE RESULTS (RANDOM FOREST) ---")
+print(dml_plr_m1.summary) # Assuming dml_plr_m1 from previous run is still in memory
+
+print("\n--- SENSITIVITY RESULTS (LASSO / LOGISTIC) ---")
+print(dml_plr_m1_sens.summary)
