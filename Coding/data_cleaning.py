@@ -74,9 +74,25 @@ plt.savefig(os.path.join(save_dir, 'co2_distribution.pdf'), format='pdf', bbox_i
 # 1. Define variables that should NEVER be log-transformed
 # This includes IDs, years, binary dummies, and categorical/ordinal variables
 exclude_cols = [
+    # Base structural, identifier, and policy variables
     'city_id', 'year', 'country_id', 'cluster_id', 'latitude_zone',
     'cp_active', 'lez_active', 'cp_impl_year', 'lez_impl_year',
-    'cp_announce_year', 'lez_announce_year', 'national_climate_pact', 'political_green'
+    'cp_announce_year', 'lez_announce_year', 'national_climate_pact', 
+    'coastal', 'political_green',
+    
+    # Category A: Shares, Rates, and Percentages
+    'unemployment', 'education_share', 'renewable_electricity_share', 
+    'fleet_diesel_share', 'fleet_petrol_share', 'fleet_electric_share', 
+    'industry_manufacturing', 'industry_services', 'industry_logistics', 
+    'industry_public',
+    
+    # Category B: Count Data and Variables with Natural Zeros
+    'museum_visitors_pc', 'library_count', 'streetlight_density', 
+    'fountain_count', 'bench_count_pc', 'flagpole_count', 'sister_city_count',
+    
+    # Category C: Arbitrary Indices and Scores
+    'public_transit_score', 'logistics_activity', 'fiscal_capacity', 
+    'electoral_competitiveness', 'ngo_environment_index'
 ]
 
 # Select only numeric columns that are not in the exclude list
@@ -136,3 +152,34 @@ if not highly_skewed_cols.empty:
     plt.savefig(os.path.join(save_dir, 'skewness_diagnostics.pdf'), format='pdf', bbox_inches='tight')
     
     plt.show()
+
+# 4. Define covariates that mathematically and economically require log transformation
+# (Based on extreme skewness, exponential distribution tails, and price elasticities)
+covariates_to_log = [
+    'total_co2', 
+    'population', 
+    'pop_density',
+    'gdp_pc', 
+    'area_km2', 
+    'electricity_price', 
+    'fuel_price'
+]
+
+# 5. Apply transformations to the main outcome and the selected covariates
+# We apply the natural logarithm to allow for elasticity / percentage-change interpretation
+df['log_transport_co2'] = np.log(df['transport_co2'])
+
+for col in covariates_to_log:
+    df[f'log_{col}'] = np.log(df[col])
+
+# 6. Drop the raw unlogged columns to prevent data leakage in the ML nuisance functions
+columns_to_drop = ['transport_co2'] + covariates_to_log
+df = df.drop(columns=columns_to_drop)
+
+# 7. Export the finalized, clean panel dataset
+save_dir = 'Data'
+os.makedirs(save_dir, exist_ok=True)
+file_path = os.path.join(save_dir, 'urban_emissions_panel_cleaned.csv')
+
+df.to_csv(file_path, index=False)
+print(f"Success: Final transformed dataset securely saved to {file_path}")

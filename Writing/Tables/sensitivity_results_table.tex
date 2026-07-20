@@ -1,0 +1,27 @@
+\begin{table}[htbp]
+\centering
+\caption{Sensitivity Analysis: Penalized Linear Models}
+\label{tab:sens_results}
+\begin{tabular}{lcc}
+\hline\hline
+ & \textbf{Model 1: Average Effects} & \textbf{Model 2: Heterogeneity} \\
+\textbf{Variable} & \textit{(Main \& Synergy)} & \textit{(by City Type)} \\
+\hline
+Congestion Pricing (CP) & -0.33*** & -0.37*** \\
+ & (0.08) & (0.08) \\[0.4em]
+Low-Emission Zone (LEZ) & 0.06 & 0.01 \\
+ & (0.07) & (0.08) \\[0.4em]
+CP $\times$ LEZ (Synergy) & -1.05*** &  \\
+ & (0.29) &  \\[0.4em]
+CP $\times$ Dense Metropolis &  & 0.02 \\
+ &  & (0.16) \\[0.4em]
+LEZ $\times$ Dense Metropolis &  & -0.37 \\
+ &  & (0.28) \\[0.4em]
+\hline
+ML Learner & Lasso / Logistic CV & Lasso / Logistic CV \\
+Cross-Fitting Folds & 5 & 5 \\
+Observations & 3,111 & 3,111 \\
+\hline\hline
+\multicolumn{3}{p{12.5cm}}{\footnotesize \textit{Notes:} Standard errors clustered at the city level in parentheses. * $p<0.10$, ** $p<0.05$, *** $p<0.01$. The dependent variable is log transport $CO_2$.}
+\end{tabular}
+\end{table}

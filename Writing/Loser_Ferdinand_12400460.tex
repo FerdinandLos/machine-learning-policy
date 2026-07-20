@@ -47,6 +47,67 @@ Abstract content goes here. This section should provide a concise summary of the
 \section{Theoretical Background}
 \label{sec:theory}
 
+We define our Partially Linear Model for a given city $i$ at time $t$ as follows:
+
+$$Y_{it} = \theta_0 D_{it} + g_0(X_{it}) + U_{it}, \quad E[U_{it}\vert{}D_{it}, X_{it}] = 0$$
+
+$$D_{it} = m_0(X_{it}) + V_{it}, \quad E[V_{it}\vert{}X_{it}] = 0$$
+
+Where:
+\begin{itemize}
+    \item $Y_{it}$ is the natural logarithm of transport $CO_2$ emissions.
+    \item $D_{it}$ is the policy treatment indicator (e.g., Congestion Pricing).
+    \item $X_{it}$ is the high-dimensional matrix of city-level covariates.
+    \item $\theta_0$ is the true causal parameter of interest.
+    \item $g_0(X_{it})$ is the true expected baseline emissions given city characteristics.
+    \item $m_0(X_{it})$ is the true propensity score (the probability of policy adoption).
+    \item $U_{it}$ and $V_{it}$ are the respective error terms.
+\end{itemize}
+
+Our nuisance parameters are defined as $\eta = (g, m)$, with their true values being $\eta_0 = (g_0, m_0)$.
+
+\subsection{The Orthogonal Score Function}
+
+To estimate $\theta_0$ without regularization bias from the machine learning algorithms, we rely on the Robinson (1988) partialling-out approach. We define the moment condition (score function) $\psi$ for a single observation $W = (Y, D, X)$ as:
+
+$$\psi(W; \theta, \eta) = (Y - \theta D - g(X))(D - m(X))$$
+
+The true parameter $\theta_0$ uniquely solves the population moment condition $E[\psi(W; \theta_0, \eta_0)] = 0$.
+
+\subsection{Proof of Neyman Orthogonality}
+
+Neyman orthogonality requires that the moment condition is locally insensitive to small estimation errors in the machine learning nuisance functions $\hat{\eta} = (\hat{g}, \hat{m})$.
+
+Mathematically, the Gateaux derivative of the expected score with respect to the nuisance parameter $\eta$, evaluated at the true parameter $\eta_0$, must equal zero in all directions.
+
+Let us perturb the true nuisance parameters by a scalar $r$ in an arbitrary direction $\tilde{\eta} = (\tilde{g}, \tilde{m})$, such that $\eta = \eta_0 + r\tilde{\eta}$. We evaluate the expectation of the score function under this perturbed state:
+
+$$E[\psi(W; \theta_0, \eta_0 + r\tilde{\eta})] = E[(Y - \theta_0 D - (g_0(X) + r\tilde{g}(X)))(D - (m_0(X) + r\tilde{m}(X)))]$$
+
+Substitute $U = Y - \theta_0 D - g_0(X)$ and $V = D - m_0(X)$ into the equation:
+
+$$E[\psi(W; \theta_0, \eta_0 + r\tilde{\eta})] = E[(U - r\tilde{g}(X))(V - r\tilde{m}(X))]$$
+
+Expanding the product yields:
+
+$$E[\psi(W; \theta_0, \eta_0 + r\tilde{\eta})] = E[UV] - r E[U\tilde{m}(X)] - r E[V\tilde{g}(X)] + r^2 E[\tilde{g}(X)\tilde{m}(X)]$$
+
+By the definitions of our DGP, $E[U\vert{}X, D] = 0$ implies that $E[U\vert{}X] = 0$ and $E[UV] = 0$. Similarly, $E[V\vert{}X] = 0$. Applying the Law of Iterated Expectations, the linear perturbation terms vanish:
+
+$$E[U\tilde{m}(X)] = E[E[U\vert{}X]\tilde{m}(X)] = 0$$
+
+$$E[V\tilde{g}(X)] = E[E[V\vert{}X]\tilde{g}(X)] = 0$$
+
+This leaves only the second-order term:
+
+$$E[\psi(W; \theta_0, \eta_0 + r\tilde{\eta})] = r^2 E[\tilde{g}(X)\tilde{m}(X)]$$
+
+Taking the Gateaux derivative with respect to $r$ and evaluating at $r=0$:
+
+$$\frac{\partial}{\partial r} E[\psi(W; \theta_0, \eta_0 + r\tilde{\eta})] \bigg\vert{}_{r=0} = \frac{\partial}{\partial r} \left( r^2 E[\tilde{g}(X)\tilde{m}(X)] \right) \bigg\vert{}_{r=0} = 2r E[\tilde{g}(X)\tilde{m}(X)] \bigg\vert{}_{r=0} = 0$$
+
+$\blacksquare$
+
 \section{Results}
 \label{sec:results}
 
@@ -64,6 +125,24 @@ Abstract content goes here. This section should provide a concise summary of the
     \includegraphics[width=1\textwidth]{Figures/kmeans_evaluation.pdf}
     \caption{K-Means Evaluation.}
     \label{fig:kmeans_evaluation}
+\end{figure}
+
+\input{Tables/baseline_results_table.tex}
+
+\input{Tables/sensitivity_results_table.tex}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/forest_plot_baseline.pdf}
+    \caption{Baseline: Treatment Effects.}
+    \label{fig:forest_baseline}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/forest_plot_sensitivity.pdf}
+    \caption{Sensitivity: Treatment Effects.}
+    \label{fig:forest_sensitivity}
 \end{figure}
 
 \clearpage

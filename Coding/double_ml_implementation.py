@@ -12,9 +12,8 @@ from sklearn.linear_model import LassoCV, LogisticRegressionCV
 from sklearn.pipeline import make_pipeline
 from doubleml import DoubleMLData, DoubleMLPLR
 
-
 # Load the urban emissions panel dataset
-csv_path = Path(__file__).resolve().parents[1] / "Data" / "urban_emissions_panel.csv"
+csv_path = Path(__file__).resolve().parents[1] / "Data" / "urban_emissions_panel_cleaned.csv"
 df = pd.read_csv(csv_path)
 
 print(df.head())
@@ -25,7 +24,8 @@ print(df.head())
 
 # 1. Isolate exogenous variables and account for panel structure
 # Define columns that must NOT be used for clustering
-exclude_cols = ['year', 'transport_co2', 'total_co2', 'cp_active', 'lez_active', 
+# UPDATED: Swapped raw co2 columns for their log counterparts
+exclude_cols = ['year', 'log_transport_co2', 'log_total_co2', 'cp_active', 'lez_active', 
                 'cp_impl_year', 'lez_impl_year', 'cp_announce_year', 'lez_announce_year', 'country_id']
 
 # Drop excluded columns and aggregate to one row per city (mean over time)
@@ -111,6 +111,7 @@ custom_short_names = {
     "Green party vote share or equivalent index (0-1)": "Green Party Vote Share",
     "Latitude zone (1=northern, 2=central, 3=southern)": "Latitude Zone",
     "Environmental NGO activity index (0-100)": "Environmental NGO Activity Index",
+    "log_pop_density": "Log Population per $km^2$",
     # Add any others that need shortening here
 }
 
@@ -134,7 +135,7 @@ print("Top 10 Distinguishing Features:")
 print(summary_table)
 
 # Optional exports
-summary_table.to_latex('Writing/Tables/cluster_summary.tex')
+summary_table.to_latex('Writing/Tables/cluster_summary.tex', float_format="%.2f")
 # summary_table.to_csv('Writing/Tables/cluster_summary.csv')
 
 
@@ -178,25 +179,32 @@ plt.savefig(os.path.join(save_dir, 'cluster_differences.pdf'), format='pdf', bbo
 # MAIN ANALYSIS
 # -------------
 
+# Set up robust dynamic paths for saving outputs
+base_dir = Path(__file__).resolve().parents[1]
+tables_dir = base_dir / "Writing" / "Tables"
+figures_dir = base_dir / "Writing" / "Figures"
+
+# Create directories safely
+tables_dir.mkdir(parents=True, exist_ok=True)
+figures_dir.mkdir(parents=True, exist_ok=True)
+
 # ---------------------------------------------------------
 # 1. Data Preparation & Feature Engineering
 # ---------------------------------------------------------
 
-# Create the synergy interaction term for Model 1 (Question 3)
+# Create the synergy interaction term for Model 1
 df['cp_x_lez'] = df['cp_active'] * df['lez_active']
 
-# Create the heterogeneity interaction terms for Model 2 (Question 2)
-# Assuming 'cluster_id' is 0 for Sprawling Hubs and 1 for Dense Metropolises
+# Create the heterogeneity interaction terms for Model 2
 df['cp_x_type1'] = df['cp_active'] * df['cluster_id']
 df['lez_x_type1'] = df['lez_active'] * df['cluster_id']
 
-# Create year dummies to account for macro time trends in the panel
+# Create year dummies to account for macro time trends
 year_dummies = pd.get_dummies(df['year'], prefix='year', drop_first=True, dtype=int)
 df = pd.concat([df, year_dummies], axis=1)
 
 # Define the confounder matrix (X)
-# We exclude the outcome, the treatments, the IDs, and the raw year/announcement columns
-exclude_from_X = ['city_id', 'year', 'transport_co2', 'total_co2', 
+exclude_from_X = ['city_id', 'year', 'log_transport_co2', 'log_total_co2', 
                   'cp_active', 'lez_active', 'cp_impl_year', 'lez_impl_year', 
                   'cp_announce_year', 'lez_announce_year', 'country_id',
                   'cp_x_lez', 'cp_x_type1', 'lez_x_type1', 'cluster_id']
@@ -204,96 +212,141 @@ exclude_from_X = ['city_id', 'year', 'transport_co2', 'total_co2',
 X_cols = [col for col in df.columns if col not in exclude_from_X]
 
 # ---------------------------------------------------------
-# 2. Setup Machine Learning Learners
+# 2. Setup Baseline Machine Learning Learners (Random Forests)
 # ---------------------------------------------------------
-
-# We use Random Forests for the nuisance functions E[Y|X] and E[D|X]
-# Setting a fixed random_state ensures reproducibility for your report
-ml_l = RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42)
-ml_m = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42) # classifier because it's a binary treatment dummy
+ml_l = RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42, n_jobs=-1)
+ml_m = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42, n_jobs=-1)
 
 # ---------------------------------------------------------
-# 3. Model 1: Main Effects and Synergy
+# 3. BASELINE ESTIMATION
 # ---------------------------------------------------------
-print("Estimating Model 1: Main Effects and Synergy...")
-
-# Define the treatment variables (D)
+print("Estimating Baseline Model 1: Main Effects and Synergy...")
 D_cols_m1 = ['cp_active', 'lez_active', 'cp_x_lez']
-
-# Initialize the DoubleMLData object
-dml_data_m1 = DoubleMLData(df, y_col='transport_co2', d_cols=D_cols_m1, x_cols=X_cols)
-
-# Initialize and fit the Partially Linear Regression (PLR) model
-# We use Neyman-orthogonal scores ('partialling out') natively 
-dml_plr_m1 = DoubleMLPLR(dml_data_m1, 
-                         ml_l=clone(ml_l), 
-                         ml_m=clone(ml_m), 
-                         n_folds=5)
+dml_data_m1 = DoubleMLData(df, y_col='log_transport_co2', d_cols=D_cols_m1, x_cols=X_cols, cluster_cols='city_id')
+dml_plr_m1 = DoubleMLPLR(dml_data_m1, ml_l=clone(ml_l), ml_m=clone(ml_m), n_folds=5)
 dml_plr_m1.fit()
 
-print(dml_plr_m1.summary)
-
-# ---------------------------------------------------------
-# 4. Model 2: Heterogeneity by City Type
-# ---------------------------------------------------------
-print("\nEstimating Model 2: Heterogeneity by City Type...")
-
-# Define the treatment variables (D) including the cluster interactions
+print("\nEstimating Baseline Model 2: Heterogeneity by City Type...")
 D_cols_m2 = ['cp_active', 'lez_active', 'cp_x_type1', 'lez_x_type1']
-
-# Initialize the DoubleMLData object
-dml_data_m2 = DoubleMLData(df, y_col='transport_co2', d_cols=D_cols_m2, x_cols=X_cols)
-
-# Initialize and fit the model
-dml_plr_m2 = DoubleMLPLR(dml_data_m2, 
-                         ml_l=clone(ml_l), 
-                         ml_m=clone(ml_m), 
-                         n_folds=5)
+dml_data_m2 = DoubleMLData(df, y_col='log_transport_co2', d_cols=D_cols_m2, x_cols=X_cols, cluster_cols='city_id')
+dml_plr_m2 = DoubleMLPLR(dml_data_m2, ml_l=clone(ml_l), ml_m=clone(ml_m), n_folds=5)
 dml_plr_m2.fit()
 
-print(dml_plr_m2.summary)
+# ---------------------------------------------------------
+# 4. BASELINE OUTPUTS (Table and Plot)
+# ---------------------------------------------------------
+def generate_latex_table(model1, model2, original_df, filename, table_title, is_sensitivity=False):
+    """Reusable function to generate standard and sensitivity LaTeX tables."""
+    df_m1, df_m2 = model1.summary, model2.summary
+    var_order = ['cp_active', 'lez_active', 'cp_x_lez', 'cp_x_type1', 'lez_x_type1']
+    var_mapping = {
+        'cp_active': 'Congestion Pricing (CP)',
+        'lez_active': 'Low-Emission Zone (LEZ)',
+        'cp_x_lez': 'CP $\\times$ LEZ (Synergy)',
+        'cp_x_type1': 'CP $\\times$ Dense Metropolis',
+        'lez_x_type1': 'LEZ $\\times$ Dense Metropolis'
+    }
+    
+    def format_cell(model_summary, variable):
+        if variable not in model_summary.index: return "", ""
+        # FIXED: Changed 'se' to 'std err' to match DoubleML's exact output
+        coef, se, pval = model_summary.loc[variable, ['coef', 'std err', 'P>|t|']]
+        stars = "***" if pval < 0.01 else "**" if pval < 0.05 else "*" if pval < 0.10 else ""
+        return f"{coef:.2f}{stars}", f"({se:.2f})"
+
+    table_body = ""
+    for var in var_order:
+        c1, s1 = format_cell(df_m1, var)
+        c2, s2 = format_cell(df_m2, var)
+        table_body += f"{var_mapping[var]} & {c1} & {c2} \\\\\n & {s1} & {s2} \\\\[0.4em]\n"
+
+    learner = "Lasso / Logistic CV" if is_sensitivity else "Random Forest"
+    n_obs = f"{original_df.shape[0]:,}"
+    
+    latex_code = f"""\\begin{{table}}[htbp]
+\\centering
+\\caption{{{table_title}}}
+\\label{{tab:{'sens' if is_sensitivity else 'main'}_results}}
+\\begin{{tabular}}{{lcc}}
+\\hline\\hline
+ & \\textbf{{Model 1: Average Effects}} & \\textbf{{Model 2: Heterogeneity}} \\\\
+\\textbf{{Variable}} & \\textit{{(Main \\& Synergy)}} & \\textit{{(by City Type)}} \\\\
+\\hline
+{table_body}\\hline
+ML Learner & {learner} & {learner} \\\\
+Cross-Fitting Folds & {model1.n_folds} & {model1.n_folds} \\\\
+Observations & {n_obs} & {n_obs} \\\\
+\\hline\\hline
+\\multicolumn{{3}}{{p{{12.5cm}}}}{{\\footnotesize \\textit{{Notes:}} Standard errors clustered at the city level in parentheses. * $p<0.10$, ** $p<0.05$, *** $p<0.01$. The dependent variable is log transport $CO_2$.}}
+\\end{{tabular}}
+\\end{{table}}
+"""
+    file_path = tables_dir / filename
+    with open(file_path, 'w') as f: f.write(latex_code)
+    print(f"Success: Saved {filename}")
+
+# Generate Baseline Table
+generate_latex_table(dml_plr_m1, dml_plr_m2, df, 'baseline_results_table.tex', 
+                     'Double ML Causal Estimates on Log Transport $CO_2$ Emissions')
+
+# Generate Baseline Forest Plot
+def plot_forest(m1_res, m2_res, filename, title, marker_style='o'):
+    labels = ['CP (Average)', 'LEZ (Average)', 'CP x LEZ (Synergy)', 
+              'CP (Sprawling Hub Baseline)', 'CP x Type 1 (Dense Metropolis Difference)']
+    coefs = [m1_res.loc['cp_active', 'coef'], m1_res.loc['lez_active', 'coef'], m1_res.loc['cp_x_lez', 'coef'],
+             m2_res.loc['cp_active', 'coef'], m2_res.loc['cp_x_type1', 'coef']]
+    errs = [coefs[0] - m1_res.loc['cp_active', '2.5 %'], coefs[1] - m1_res.loc['lez_active', '2.5 %'], 
+            coefs[2] - m1_res.loc['cp_x_lez', '2.5 %'], coefs[3] - m2_res.loc['cp_active', '2.5 %'], 
+            coefs[4] - m2_res.loc['cp_x_type1', '2.5 %']]
+
+    plt.rcParams.update({'font.family': 'serif', 'font.size': 11})
+    fig, ax = plt.subplots(figsize=(8, 4))
+    ax.errorbar(coefs, range(len(labels))[::-1], xerr=errs, fmt=marker_style, color='black', capsize=5, capthick=1.5, elinewidth=1.5)
+    ax.set_yticks(range(len(labels))[::-1])
+    ax.set_yticklabels(labels)
+    ax.axvline(0, color='gray', linestyle='--', linewidth=1)
+    ax.set_xlabel('Estimated Effect on Log Transport $CO_2$ Emissions')
+    ax.set_title(title)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    plt.tight_layout()
+    plt.savefig(figures_dir / filename, format='pdf', bbox_inches='tight')
+    plt.close() # Close plot to prevent overlap
+
+plot_forest(dml_plr_m1.summary, dml_plr_m2.summary, 'forest_plot_baseline.pdf', 'Baseline Treatment Effects (Random Forest)')
+
 
 # ---------------------------------------------------------
-# 1. Setup the Linear Nuisance Learners with Pipelines
+# 5. SENSITIVITY ESTIMATION (Penalized Linear Models)
 # ---------------------------------------------------------
-
-# Pipeline for ml_l: Standardize features -> Lasso Cross-Validation
-# LassoCV automatically searches for the optimal penalty parameter (alpha)
+# 1. Set the inner learners to sequential (n_jobs=1)
 lasso_learner = make_pipeline(
     StandardScaler(),
-    LassoCV(cv=5, random_state=42, max_iter=10000)
+    LassoCV(cv=5, random_state=42, max_iter=10000, n_jobs=1) 
 )
 
-# Pipeline for ml_m: Standardize features -> Penalized Logistic Regression
-# We use penalty='l1' and solver='liblinear' to apply the exact Lasso equivalent for classification
 logistic_learner = make_pipeline(
     StandardScaler(),
     LogisticRegressionCV(cv=5, penalty='l1', solver='liblinear', 
-                         random_state=42, max_iter=10000)
+                         random_state=42, max_iter=10000, n_jobs=1)
 )
 
-# ---------------------------------------------------------
-# 2. Run the Sensitivity Analysis on Model 1
-# ---------------------------------------------------------
-print("Running Sensitivity Analysis: Model 1 with Penalized Linear Models...")
+# 2. Parallelize the outer DoubleML folds across your CPU cores
+print("\nEstimating Sensitivity Model 1: Main Effects and Synergy...")
+dml_plr_m1_sens = DoubleMLPLR(dml_data_m1, ml_l=lasso_learner, ml_m=logistic_learner, n_folds=5)
+dml_plr_m1_sens.fit(n_jobs_cv=5)
 
-# Use the exact same D_cols_m1 and X_cols from your previous script
-# D_cols_m1 = ['cp_active', 'lez_active', 'cp_x_lez']
-
-dml_data_m1_sens = DoubleMLData(df, y_col='transport_co2', d_cols=D_cols_m1, x_cols=X_cols)
-
-# Initialize and fit the Partially Linear Regression (PLR) with the linear learners
-dml_plr_m1_sens = DoubleMLPLR(dml_data_m1_sens, 
-                              ml_l=lasso_learner, 
-                              ml_m=logistic_learner, 
-                              n_folds=5)
-dml_plr_m1_sens.fit()
+print("Estimating Sensitivity Model 2: Heterogeneity by City Type...")
+dml_plr_m2_sens = DoubleMLPLR(dml_data_m2, ml_l=lasso_learner, ml_m=logistic_learner, n_folds=5)
+dml_plr_m2_sens.fit(n_jobs_cv=5)
 
 # ---------------------------------------------------------
-# 3. Output Comparison
+# 6. SENSITIVITY OUTPUTS (Table and Plot)
 # ---------------------------------------------------------
-print("\n--- BASELINE RESULTS (RANDOM FOREST) ---")
-print(dml_plr_m1.summary) # Assuming dml_plr_m1 from previous run is still in memory
+generate_latex_table(dml_plr_m1_sens, dml_plr_m2_sens, df, 'sensitivity_results_table.tex', 
+                     'Sensitivity Analysis: Penalized Linear Models', is_sensitivity=True)
 
-print("\n--- SENSITIVITY RESULTS (LASSO / LOGISTIC) ---")
-print(dml_plr_m1_sens.summary)
+plot_forest(dml_plr_m1_sens.summary, dml_plr_m2_sens.summary, 'forest_plot_sensitivity.pdf', 
+            'Sensitivity Estimates (Lasso/Logistic)', marker_style='s')
+
+print("\nAll estimations complete. Tables and figures successfully saved to your Writing folder.")
