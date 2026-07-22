@@ -3,14 +3,12 @@ import numpy as np
 import os
 from pathlib import Path
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier, HistGradientBoostingRegressor, HistGradientBoostingClassifier
-from sklearn.linear_model import LinearRegression, LassoCV, LogisticRegressionCV
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier, HistGradientBoostingRegressor, HistGradientBoostingClassifier, StackingRegressor, StackingClassifier
+from sklearn.linear_model import LinearRegression, LassoCV, RidgeCV, ElasticNetCV, LogisticRegressionCV
+from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import mean_squared_error
-from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
-from sklearn.ensemble import StackingRegressor, StackingClassifier
-from sklearn.linear_model import ElasticNetCV
 
 # ---------------------------------------------------------
 # 1. System Setup & Data Loading
@@ -55,20 +53,29 @@ base_regressors = [
 ]
 
 base_classifiers = [
-    ('elnet', make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, penalty='elasticnet', solver='saga', l1_ratios=[0.1, 0.5, 0.9], random_state=42, n_jobs=1, max_iter=10000))),
+    ('elnet', make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, penalty='elasticnet', solver='saga', l1_ratios=[0.1, 0.5, 0.9], random_state=42, max_iter=10000, n_jobs=1))),
     ('rf', RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42, n_jobs=1)),
     ('boost', HistGradientBoostingClassifier(random_state=42, max_iter=100, max_depth=5))
 ]
 
+# The complete grid of models to evaluate
 models = {
     'OLS - Basic': {
         'regressor': make_pipeline(StandardScaler(), LinearRegression()),
         'classifier': make_pipeline(StandardScaler(), LinearRegression()) 
     },
-    'Elastic Net / Logistic EN': {
-        # Elastic Net is strictly superior to pure Lasso here, as it tests l1_ratios of 10%, 50%, and 90%
+    'L1 (Lasso / Logistic L1)': {
+        'regressor': make_pipeline(StandardScaler(), LassoCV(cv=5, random_state=42, max_iter=10000, n_jobs=1)),
+        'classifier': make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, penalty='l1', solver='liblinear', random_state=42, max_iter=10000, n_jobs=1))
+    },
+    'L2 (Ridge / Logistic L2)': {
+        'regressor': make_pipeline(StandardScaler(), RidgeCV(cv=5)),
+        # lbfgs is the standard, fast solver for L2 penalties
+        'classifier': make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, penalty='l2', solver='lbfgs', random_state=42, max_iter=10000, n_jobs=1))
+    },
+    'Elastic Net': {
         'regressor': make_pipeline(StandardScaler(), ElasticNetCV(cv=5, l1_ratio=[0.1, 0.5, 0.9], random_state=42, max_iter=10000, n_jobs=1)),
-        # 'saga' solver is required by scikit-learn for elasticnet penalties
+        # saga solver is required to handle elasticnet penalties in scikit-learn
         'classifier': make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, penalty='elasticnet', solver='saga', l1_ratios=[0.1, 0.5, 0.9], random_state=42, max_iter=10000, n_jobs=1))
     },
     'Single Tree (Depth 5)': {
@@ -84,8 +91,8 @@ models = {
         'classifier': HistGradientBoostingClassifier(random_state=42, max_iter=100, max_depth=5)
     },
     'Ensemble (Stacking)': {
-        # Combines Linear, Bagging, and Boosting outputs using Ridge (l2) as the meta-learner to prevent overfitting the predictions
-        'regressor': StackingRegressor(estimators=base_regressors, final_estimator=make_pipeline(StandardScaler(), ElasticNetCV(cv=5))),
+        # Combines the predictions of Elastic Net, Random Forest, and Boosted Trees using a Ridge (L2) meta-learner to prevent overfitting
+        'regressor': StackingRegressor(estimators=base_regressors, final_estimator=make_pipeline(StandardScaler(), RidgeCV(cv=5))),
         'classifier': StackingClassifier(estimators=base_classifiers, final_estimator=make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, penalty='l2', solver='lbfgs')))
     }
 }
