@@ -1,0 +1,23 @@
+\begin{table}
+\caption{Model 2: Cross-fitted RMSE for predicting ATE and ATET Nuisance Parameters}
+\label{tab:rmse_m2}
+\begin{tabular}{lccccc}
+\toprule
+Model & OLS - Basic & Lasso / Logistic CV & Random Forest & Boosted Trees (Depth 5) & Best \\
+\midrule
+RMSE Y (PLM) & 0.4312 & 0.4240 & 0.5089 & 0.4149 & 0.4149 \\
+RMSE D (cp_active) & 0.3261 & 0.3097 & 0.3169 & 0.3318 & 0.3097 \\
+RMSE Y IRM ATE (cp_active) & 0.4152 & 0.4089 & 0.4982 & 0.3969 & 0.3969 \\
+RMSE Y IRM ATET (cp_active) & 0.1154 & 0.1097 & 0.1506 & 0.1531 & 0.1097 \\
+RMSE D (lez_active) & 0.3541 & 0.3190 & 0.3275 & 0.3261 & 0.3190 \\
+RMSE Y IRM ATE (lez_active) & 0.4190 & 0.4147 & 0.5096 & 0.4041 & 0.4041 \\
+RMSE Y IRM ATET (lez_active) & 0.2617 & 0.2370 & 0.2418 & 0.2181 & 0.2181 \\
+RMSE D (cp_x_type1) & 0.2809 & 0.2420 & 0.2505 & 0.2451 & 0.2420 \\
+RMSE Y IRM ATE (cp_x_type1) & 0.4092 & 0.4015 & 0.4985 & 0.3920 & 0.3920 \\
+RMSE Y IRM ATET (cp_x_type1) & 0.1877 & 0.1764 & 0.2132 & 0.2070 & 0.1764 \\
+RMSE D (lez_x_type1) & 0.3091 & 0.2863 & 0.2809 & 0.2955 & 0.2809 \\
+RMSE Y IRM ATE (lez_x_type1) & 0.4090 & 0.4038 & 0.5056 & 0.4118 & 0.4038 \\
+RMSE Y IRM ATET (lez_x_type1) & 0.2615 & 0.2456 & 0.2577 & 0.2294 & 0.2294 \\
+\bottomrule
+\end{tabular}
+\end{table}
