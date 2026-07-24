@@ -138,24 +138,28 @@ for name, model_dict in models.items():
     results.append(row_data)
 
 # ---------------------------------------------------------
-# 4. Generate Output Matrices and LaTeX Tables
+# 4. Export Raw Results to CSV
 # ---------------------------------------------------------
+# Create the master dataframe with raw floats
 master_df = pd.DataFrame(results).set_index('Model')
-best_models = master_df.idxmin()
-master_df = master_df.round(4)
-master_df.loc['Best Model'] = best_models
+
+# 1. Create a temporary version for the console printout 
+# This preserves your immediate matrix view without polluting the raw CSV
+preview_df = master_df.copy()
+best_models = preview_df.idxmin()
+preview_df = preview_df.round(4)
+preview_df.loc['Best Model'] = best_models
 
 print("\n--- FINAL CROSS-FITTED RMSE EVALUATION ---")
-print(master_df.T.to_string())
+print(preview_df.T.to_string())
 
-latex_table = master_df.T.to_latex(
-    float_format="%.4f",
-    caption="Cross-fitted RMSE for predicting ATE and ATET Nuisance Parameters",
-    label="tab:rmse_evaluation",
-    column_format="l" + "c" * len(master_df.index)
-)
+# 2. Export the RAW data to CSV
+# We use reset_index() so the 'Model' names become a standard column in the CSV
+results_dir = Path('Data/Results')
+results_dir.mkdir(parents=True, exist_ok=True)
 
-with open(tables_dir / 'rmse_evaluation_final.tex', 'w') as f: 
-    f.write(latex_table)
+csv_export_path = results_dir / 'rmse_evaluation_raw.csv'
+master_df.reset_index().to_csv(csv_export_path, index=False)
 
-print("\nSuccess: Final RMSE evaluation matrix saved to Writing/Tables/rmse_evaluation_final.tex")
+print(f"\nSuccess: Raw RMSE estimations safely exported to {csv_export_path}")
+print("Computation complete. You may now run the formatting script.")

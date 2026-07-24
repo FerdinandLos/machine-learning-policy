@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 import os
 from pathlib import Path
 import math
@@ -8,6 +9,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
+# ---------------------------------------------------------
+# 0. Global Academic Visual Styling
+# ---------------------------------------------------------
+# Apply the exact same style used in the causal estimation plots
+sns.set_theme(style="whitegrid", palette="muted")
+plt.rcParams.update({'font.size': 12, 'font.family': 'serif'})
 
 # Load the urban emissions panel dataset
 csv_path = Path(__file__).resolve().parents[1] / "Data" / "urban_emissions_panel.csv"
@@ -45,24 +52,22 @@ print("\n* Tip: Compare the 'min' and 'max' against the 'mean'. Look for negativ
 # ---------------------------------------------------------
 # 3. Assess the Distribution for Log Transformation
 # ---------------------------------------------------------
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
-ax1.hist(df['transport_co2'].dropna(), bins=40, color='gray', edgecolor='black')
-ax1.set_title('Raw Distribution of Transport $CO_2$')
+# Use the light blue for raw, dark blue for log-transformed
+ax1.hist(df['transport_co2'].dropna(), bins=40, color='#a6cee3', edgecolor='black', alpha=0.8)
+ax1.set_title('Raw Distribution of Transport $CO_2$', pad=15, fontweight='bold')
 ax1.set_xlabel('Transport $CO_2$ (kt)')
 ax1.set_ylabel('Frequency')
-ax1.spines['top'].set_visible(False)
-ax1.spines['right'].set_visible(False)
 
-ax2.hist(np.log1p(df['transport_co2'].dropna()), bins=40, color='black', edgecolor='white')
-ax2.set_title('Log-Transformed Distribution')
+ax2.hist(np.log(df['transport_co2'].dropna()), bins=40, color='#1f78b4', edgecolor='black', alpha=0.8)
+ax2.set_title('Log-Transformed Distribution', pad=15, fontweight='bold')
 ax2.set_xlabel('Log(Transport $CO_2$)')
 ax2.set_ylabel('Frequency')
-ax2.spines['top'].set_visible(False)
-ax2.spines['right'].set_visible(False)
 
 plt.tight_layout()
 plt.savefig(os.path.join(save_dir, 'co2_distribution.pdf'), format='pdf', bbox_inches='tight')
+plt.close()
 
 #---------------------------------------------------------
 # 4. Check all variables for skewed distributions
@@ -98,7 +103,8 @@ if not highly_skewed_cols.empty:
     n_cols = 3
     n_rows = math.ceil(len(cols_to_plot) / n_cols)
     
-    plt.rcParams.update({'font.family': 'serif', 'font.size': 10})
+    # Temporarily reduce font size for this multi-grid
+    plt.rcParams.update({'font.size': 10})
     fig, axes = plt.subplots(n_rows, n_cols, figsize=(12, 3 * n_rows))
     
     if n_rows > 1:
@@ -109,10 +115,9 @@ if not highly_skewed_cols.empty:
         axes = [axes] 
         
     for i, col in enumerate(cols_to_plot):
-        axes[i].hist(df[col].dropna(), bins=30, color='gray', edgecolor='black')
-        axes[i].set_title(f'{col}\n(Skew: {highly_skewed_cols[col]:.2f})')
-        axes[i].spines['top'].set_visible(False)
-        axes[i].spines['right'].set_visible(False)
+        # Use a neutral purple/gray from the palette for diagnostics
+        axes[i].hist(df[col].dropna(), bins=30, color='#7570b3', edgecolor='black', alpha=0.7)
+        axes[i].set_title(f'{col}\n(Skew: {highly_skewed_cols[col]:.2f})', pad=10, fontweight='bold')
         axes[i].set_yticks([])
         
     for j in range(i + 1, len(axes)):
@@ -121,6 +126,9 @@ if not highly_skewed_cols.empty:
     plt.tight_layout()
     plt.savefig(os.path.join(save_dir, 'skewness_diagnostics.pdf'), format='pdf', bbox_inches='tight')
     plt.close()
+    
+    # Restore the main font size
+    plt.rcParams.update({'font.size': 12})
 
 # ---------------------------------------------------------
 # 5. Apply Log Transformations
@@ -166,34 +174,31 @@ for k in k_range:
     silhouettes.append(silhouette_score(X_scaled, kmeans.labels_))
 
 # 4. Academic Figure Formatting
-
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
 
-# Plot 1: Elbow Method
-ax1.plot(k_range, inertias, marker='s', color='black', linestyle='-', linewidth=1.5, markersize=5)
-ax1.set(title='Elbow Method (Inertia)', xlabel='Number of Clusters (K)', ylabel='Inertia')
-ax1.grid(True, linestyle='--', alpha=0.3) # Faint grid for readability
-ax1.spines['top'].set_visible(False)
-ax1.spines['right'].set_visible(False)
+# Plot 1: Elbow Method (Orange)
+ax1.plot(k_range, inertias, marker='s', color='#d95f02', linestyle='-', linewidth=2, markersize=7)
+ax1.set_title('Elbow Method (Inertia)', pad=15, fontweight='bold')
+ax1.set_xlabel('Number of Clusters (K)')
+ax1.set_ylabel('Inertia')
 
-# Plot 2: Silhouette Analysis
-ax2.plot(k_range, silhouettes, marker='o', color='black', linestyle='-', linewidth=1.5, markersize=5)
-ax2.set(title='Silhouette Analysis', xlabel='Number of Clusters (K)', ylabel='Silhouette Score')
-ax2.grid(True, linestyle='--', alpha=0.3)
-ax2.spines['top'].set_visible(False)
-ax2.spines['right'].set_visible(False)
+# Plot 2: Silhouette Analysis (Green)
+ax2.plot(k_range, silhouettes, marker='o', color='#1b9e77', linestyle='-', linewidth=2, markersize=7)
+ax2.set_title('Silhouette Analysis', pad=15, fontweight='bold')
+ax2.set_xlabel('Number of Clusters (K)')
+ax2.set_ylabel('Silhouette Score')
 
 plt.tight_layout()
 
-# 4. Save to Specific Directory
+# Save to Specific Directory
 # os.makedirs ensures the code doesn't crash if the folders don't exist yet
 save_dir = os.path.join('Writing', 'Figures')
 os.makedirs(save_dir, exist_ok=True)
 
 # Save as both PNG (for quick viewing) and PDF (ideal for LaTeX/Word documents)
 pdf_path = os.path.join(save_dir, 'kmeans_evaluation.pdf')
-
 plt.savefig(pdf_path, format='pdf', bbox_inches='tight')
+plt.close()
 
 # 5. Apply the optimal K = 2 following Silhouette Analysis
 optimal_k = 2
@@ -216,7 +221,6 @@ descriptions_df = pd.read_csv(desc_path)
 # Create a dictionary mapping 'variable_name' to 'description'
 name_mapping = dict(zip(descriptions_df['variable_name'], descriptions_df['description']))
 
-
 # 2. Calculate raw means for interpretability
 cluster_means = city_features.groupby('cluster_id').mean()
 
@@ -235,7 +239,6 @@ custom_short_names = {
     "log_pop_density": "Log Population per $km^2$",
     # Add any others that need shortening here
 }
-
 
 # 3. Create a Summary Table for the Main Text
 summary_table = cluster_means[top_features].T
@@ -257,8 +260,6 @@ print(summary_table)
 
 # Optional exports
 summary_table.to_latex('Writing/Tables/cluster_summary.tex', float_format="%.2f")
-# summary_table.to_csv('Writing/Tables/cluster_summary.csv')
-
 
 # 4. Create an Academic Visualization (Standardized Differences)
 X_scaled_df = pd.DataFrame(X_scaled, columns=city_features.drop(columns='cluster_id').columns)
@@ -274,18 +275,15 @@ scaled_diff = scaled_diff.rename(index=name_mapping)
 # Apply custom short names for the plot
 scaled_diff = scaled_diff.rename(index=custom_short_names)
 
-fig, ax = plt.subplots(figsize=(8, 5))
+fig, ax = plt.subplots(figsize=(8, 6))
 
-# Create a horizontal bar chart
+# Apply the exact GATET cluster colors: dark blue for Dense, light blue for Sprawling
 # Positive values mean Type 1 is higher; negative means Type 0 is higher
-colors = ['black' if val > 0 else 'gray' for val in scaled_diff]
-scaled_diff.plot(kind='barh', color=colors, ax=ax)
+colors = ['#1f78b4' if val > 0 else '#a6cee3' for val in scaled_diff]
+scaled_diff.plot(kind='barh', color=colors, edgecolor='black', ax=ax)
 
-ax.set_title('Top 10 Distinguishing City Characteristics')
+ax.set_title('Top 10 Distinguishing City Characteristics', pad=15, fontweight='bold')
 ax.set_xlabel('Difference in Standard Deviations\n(Dense Metropolises - Sprawling Hubs)')
-ax.spines['top'].set_visible(False)
-ax.spines['right'].set_visible(False)
-ax.grid(axis='x', linestyle='--', alpha=0.3)
 
 # Invert y-axis so the biggest difference is at the top
 plt.gca().invert_yaxis() 
@@ -295,7 +293,7 @@ plt.tight_layout()
 save_dir = os.path.join('Writing', 'Figures')
 os.makedirs(save_dir, exist_ok=True)
 plt.savefig(os.path.join(save_dir, 'cluster_differences.pdf'), format='pdf', bbox_inches='tight')
-
+plt.close()
 
 # ---------------------------------------------------------
 # 7. Construct Panel Heterogeneity Proxies (Textbook Method)
