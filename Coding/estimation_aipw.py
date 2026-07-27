@@ -83,6 +83,7 @@ models = {
         # (preventing local overlap failures for the sparse cp_x_lez policy)
         'min_samples_leaf': 30  
     }
+}
 
 # ---------------------------------------------------------
 # 4. Main Causal Estimations Loop (AIPW + Causal Forest)
