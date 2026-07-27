@@ -296,7 +296,7 @@ plt.savefig(os.path.join(save_dir, 'cluster_differences.pdf'), format='pdf', bbo
 plt.close()
 
 # ---------------------------------------------------------
-# 7. Construct Panel Heterogeneity Proxies (Textbook Method)
+# 7. Construct Panel Heterogeneity Proxies (Initial Conditions Only)
 # ---------------------------------------------------------
 print("\n--- CONSTRUCTING PANEL HETEROGENEITY PROXIES ---")
 
@@ -306,19 +306,7 @@ exclude_from_proxies = exclude_cols + ['log_transport_co2']
 numeric_df = df.select_dtypes(include=[np.number])
 X_covariates = [col for col in numeric_df.columns if col not in exclude_from_proxies]
 
-# 1. Deterministic Time Trend (t)
-# Standardized so the first year in the panel equals 1
-df['time_trend'] = df['year'] - df['year'].min() + 1
-
-# 2. Cross-sectional averages (within-city over time) -> \bar{X}_i
-city_averages = df.groupby('city_id')[X_covariates].transform('mean')
-df = df.join(city_averages.add_suffix('_city_avg'))
-
-# 3. Time series averages (within-time across cities) -> \bar{X}_t
-time_averages = df.groupby('year')[X_covariates].transform('mean')
-df = df.join(time_averages.add_suffix('_time_avg'))
-
-# 4. Initial conditions (X_{i,0} and Y_{i,0})
+# Initial conditions (X_{i,0} and Y_{i,0})
 # We must sort the dataframe chronologically to ensure 'first' captures the true baseline year
 df = df.sort_values(by=['city_id', 'year']).reset_index(drop=True)
 
@@ -329,7 +317,7 @@ df = df.join(initial_X.add_suffix('_initial'))
 # Outcome initial conditions
 df['log_transport_co2_initial'] = df.groupby('city_id')['log_transport_co2'].transform('first')
 
-print("Success: Generated time trends, cross-sectional averages, time series averages, and initial conditions.")
+print("Success: Generated strictly pre-determined initial conditions (safely avoiding post-treatment contamination).")
 
 # ---------------------------------------------------------
 # 8. Export Final Cleaned Data
