@@ -1,0 +1,30 @@
+\begin{table}
+\caption{Double Machine Learning Estimates of Urban Climate Policies}
+\label{tab:dml_master_results}
+\begin{tabular}{lccc}
+\toprule
+Policy & (1) OLS Baseline & (2) Boosted Trees & (3) Elastic Net \\
+\midrule
+\textbf{Panel A: PLM (Global Average Effect)} &  &  &  \\
+\hspace{4mm} Congestion Pricing (CP) & -0.1876^{***} (p=0.000) & -0.0664^{***} (p=0.002) & -0.1871^{***} (p=0.000) \\
+\hspace{4mm} Low Emission Zone (LEZ) & 0.0059 (p=0.756) & -0.0443^{***} (p=0.006) & 0.0053 (p=0.775) \\
+\hspace{4mm} Synergy (CP $\times$ LEZ) & -0.7441^{***} (p=0.000) & -0.2242^{***} (p=0.000) & -0.7124^{***} (p=0.000) \\
+ &  &  &  \\
+\textbf{Panel B: IRM ATET (Efficacy for Adopters)} &  &  &  \\
+\hspace{4mm} Congestion Pricing (CP) & -0.1166^{***} (p=0.003) & -0.0596^{**} (p=0.040) & -0.1523^{***} (p=0.000) \\
+\hspace{4mm} Low Emission Zone (LEZ) & -0.0218 (p=0.485) & -0.0452 (p=0.177) & -0.0303 (p=0.328) \\
+\hspace{4mm} Synergy (CP $\times$ LEZ) & -0.2158^{***} (p=0.000) & -0.0254 (p=0.572) & -0.3759^{***} (p=0.000) \\
+ &  &  &  \\
+\textbf{Panel C: IRM GATET (Heterogeneity by City Type)} &  &  &  \\
+\textit{Cluster 1: Dense Metropolis} &  &  &  \\
+\hspace{4mm} Congestion Pricing (CP) & -0.1143^{**} (p=0.043) & -0.0708^{*} (p=0.091) & -0.1665^{***} (p=0.003) \\
+\hspace{4mm} Low Emission Zone (LEZ) & -0.0497 (p=0.293) & -0.0720 (p=0.151) & -0.0579 (p=0.218) \\
+\hspace{4mm} Synergy (CP $\times$ LEZ) & -0.2808^{***} (p=0.000) & -0.0456 (p=0.446) & -0.4759^{***} (p=0.000) \\
+\textit{Cluster 0: Sprawling Cities} &  &  &  \\
+\hspace{4mm} Congestion Pricing (CP) & -0.1210^{***} (p=0.000) & -0.0381 (p=0.154) & -0.1254^{***} (p=0.000) \\
+\hspace{4mm} Low Emission Zone (LEZ) & 0.0255 (p=0.311) & 0.0000 (p=0.999) & 0.0165 (p=0.507) \\
+\hspace{4mm} Synergy (CP $\times$ LEZ) & -0.0435 (p=0.359) & 0.0282 (p=0.505) & -0.1110 (p=0.134) \\
+\bottomrule
+\end{tabular}
+\end{table}
+\raggedright \footnotesize \textit{Notes:} $p$-values in parentheses. $^{*}$ $p < 0.10$, $^{**}$ $p < 0.05$, $^{***}$ $p < 0.01$. 'Failed' estimation bounds denote overlap violations.

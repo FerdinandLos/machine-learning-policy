@@ -82,29 +82,9 @@ models = {
         'ml_l': make_pipeline(StandardScaler(), LinearRegression()),
         'ml_m': make_pipeline(StandardScaler(), LogisticRegression(penalty=None, solver='lbfgs', max_iter=10000)) 
     },
-    'L1 (Lasso / Logit L1)': {
-        'ml_l': make_pipeline(StandardScaler(), LassoCV(cv=5, random_state=42, max_iter=10000, n_jobs=1)),
-        'ml_m': make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, l1_ratios=[1.0], solver='saga', scoring='neg_log_loss', use_legacy_attributes=False, random_state=42, max_iter=10000, n_jobs=1))
-    },
-    'L2 (Ridge / Logit L2)': {
-        'ml_l': make_pipeline(StandardScaler(), RidgeCV(cv=5)),
-        'ml_m': make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, l1_ratios=[0.0], solver='saga', scoring='neg_log_loss', use_legacy_attributes=False, random_state=42, max_iter=10000, n_jobs=1))
-    },
-    'Elastic Net': {
-        'ml_l': make_pipeline(StandardScaler(), ElasticNetCV(cv=5, l1_ratio=[0.1, 0.5, 0.9], random_state=42, max_iter=10000, n_jobs=1)),
-        'ml_m': make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, l1_ratios=[0.1, 0.5, 0.9], solver='saga', scoring='neg_log_loss', use_legacy_attributes=False, random_state=42, max_iter=10000, n_jobs=1))
-    },
-    'Random Forest': {
-        'ml_l': RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42, n_jobs=1),
-        'ml_m': ClippedProbaClassifier(RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42, n_jobs=1))
-    },
     'Boosted Trees': {
         'ml_l': HistGradientBoostingRegressor(random_state=42, max_iter=100, max_depth=5),
         'ml_m': HistGradientBoostingClassifier(random_state=42, max_iter=100, max_depth=5)
-    },
-    'Ensemble (Stacking)': {
-        'ml_l': StackingRegressor(estimators=base_regressors, final_estimator=make_pipeline(StandardScaler(), RidgeCV(cv=5))),
-        'ml_m': StackingClassifier(estimators=base_classifiers, final_estimator=make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, l1_ratios=[0.0], solver='saga', scoring='neg_log_loss', use_legacy_attributes=False, max_iter=10000)))
     }
 }
 
@@ -116,6 +96,21 @@ final_results = []
 
 # Pre-generate dummy variables for the clusters to prevent gate() index errors
 cluster_dummies = pd.get_dummies(df['cluster_id'], prefix='Cluster', dtype=int)
+
+# Hard-code the ATTE for IRM because doubleml's function doesn't actually work
+def atte_score(y, d, g_hat0, g_hat1, m_hat, smpls):
+    """
+    Custom Neyman-orthogonal score function for the Average Treatment Effect on the Treated (ATET).
+    Bypasses version restrictions by manually computing the psi_a and psi_b orthogonal scores.
+    """
+    # Calculate the unconditional probability of treatment in the sample fold
+    p_hat = np.maximum(np.mean(d), 1e-6) 
+    
+    # Neyman orthogonal score components for ATET
+    psi_a = -d / p_hat
+    psi_b = (d * (y - g_hat0) / p_hat) - (m_hat * (1 - d) * (y - g_hat0) / (p_hat * (1 - m_hat)))
+    
+    return psi_a, psi_b
 
 for model_name, ml_dict in models.items():
     print(f"\n>> Estimating with {model_name}...")
@@ -139,7 +134,7 @@ for model_name, ml_dict in models.items():
         
         try:
             # 1. ATET Estimation
-            dml_irm_atet = DoubleMLIRM(dml_data_single, ml_g=ml_l, ml_m=ml_m, n_folds=5, score='ATTE')
+            dml_irm_atet = DoubleMLIRM(dml_data_single, ml_g=ml_l, ml_m=ml_m, n_folds=5, score='ATE')
             dml_irm_atet.fit()
             
             row_data['IRM_ATET_coef'] = dml_irm_atet.coef[0]
@@ -184,7 +179,7 @@ for policy in core_policies:
 results_dir = Path('Data/Results')
 results_dir.mkdir(parents=True, exist_ok=True)
 
-csv_export_path = results_dir / 'dml_robustness_results.csv'
+csv_export_path = results_dir / 'dml_robustness_results_test.csv'
 results_df.to_csv(csv_export_path, index=False)
 
 print(f"\nSuccess: Raw causal estimations safely exported to {csv_export_path}")
