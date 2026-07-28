@@ -57,10 +57,13 @@ models = {
     },
     'Causal Forest': {
         'type': 'causal_forest',
+        # FIX: Explicitly supply the locked, penalized models to the Causal Forest
+        'ml_l': make_pipeline(StandardScaler(), Lasso(alpha=OPTIMAL_ALPHA, random_state=42, max_iter=10000)),
+        'ml_m': make_pipeline(StandardScaler(), LogisticRegression(penalty='l1', C=OPTIMAL_C, solver='saga', random_state=42, max_iter=10000, n_jobs=1)),
         'n_estimators': 200,
         'max_depth': 5,
         'min_samples_leaf': 50,
-        'n_jobs': 1  # <-- CRITICAL FIX: Set to 1 to allow outer joblib loop to handle parallelization safely
+        'n_jobs': 1 
     }
 }
 
@@ -105,9 +108,14 @@ def fit_and_extract(model_name, ml_dict, current_df, W_cols):
             cv=cv_panel, random_state=42
         )
     else:
+        # FIX: Replaced 'auto' defaults with model_y and model_t mapped to your penalized pipelines
         est = CausalForestDML(
-            n_estimators=ml_dict['n_estimators'], max_depth=ml_dict['max_depth'],
-            min_samples_leaf=ml_dict['min_samples_leaf'], discrete_treatment=True,
+            model_y=clone(ml_dict['ml_l']),
+            model_t=clone(ml_dict['ml_m']),
+            n_estimators=ml_dict['n_estimators'], 
+            max_depth=ml_dict['max_depth'],
+            min_samples_leaf=ml_dict['min_samples_leaf'], 
+            discrete_treatment=True,
             cv=cv_panel, random_state=42
         )
 
