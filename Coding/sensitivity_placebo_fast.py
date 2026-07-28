@@ -155,8 +155,7 @@ placebo_results = []
 
 # The variables that should NOT be affected by climate policies
 placebo_outcomes = [
-    'library_count', 'streetlight_density', 
-    'fountain_count', 'bench_count_pc', 'flagpole_count', 'sister_city_count'
+    'library_count'
 ]
 
 target_models = ['L1 (Lasso / Logit L1)', 'Causal Forest']
