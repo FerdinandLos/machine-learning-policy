@@ -63,26 +63,6 @@ cluster_dummies_array = cluster_dummies.to_numpy()
 # ---------------------------------------------------------
 # Linear AIPW Models + Causal Forest
 models = {
-    'OLS - Basic': {
-        'type': 'dr',
-        'ml_l': make_pipeline(StandardScaler(), LinearRegression(n_jobs=-1)),
-        'ml_m': make_pipeline(StandardScaler(), LogisticRegression(penalty=None, solver='lbfgs', max_iter=10000, n_jobs=-1)) 
-    },
-    'L1 (Lasso / Logit L1)': {
-        'type': 'dr',
-        'ml_l': make_pipeline(StandardScaler(), LassoCV(cv=5, random_state=42, max_iter=10000, n_jobs=-1)),
-        'ml_m': make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, penalty='l1', solver='saga', scoring='neg_log_loss', random_state=42, max_iter=10000, n_jobs=-1))
-    },
-    'L2 (Ridge / Logit L2)': {
-        'type': 'dr',
-        'ml_l': make_pipeline(StandardScaler(), RidgeCV(cv=5)),
-        'ml_m': make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, penalty='l2', solver='saga', scoring='neg_log_loss', random_state=42, max_iter=10000, n_jobs=-1))
-    },
-    'Elastic Net': {
-        'type': 'dr',
-        'ml_l': make_pipeline(StandardScaler(), ElasticNetCV(cv=5, l1_ratio=[0.1, 0.5, 0.9, 0.99], random_state=42, max_iter=10000, n_jobs=-1)),
-        'ml_m': make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, penalty='elasticnet', l1_ratios=[0.1, 0.5, 0.9, 0.99], solver='saga', scoring='neg_log_loss', random_state=42, max_iter=10000, n_jobs=-1))
-    },
     'Causal Forest': {
         'type': 'causal_forest',
         'n_estimators': 200,
