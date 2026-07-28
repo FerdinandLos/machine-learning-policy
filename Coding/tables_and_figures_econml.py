@@ -50,17 +50,39 @@ if has_rmse:
     # Filter the dataframe to only include the target models
     filtered_rmse_df = rmse_df[rmse_df['Model'].isin(models_to_keep)].copy()
     
-    rmse_indexed = filtered_rmse_df.set_index('Model')
-    best_models = rmse_indexed.idxmin()
-    rmse_formatted = rmse_indexed.round(4)
-    rmse_formatted.loc['Best Model'] = best_models
-    rmse_transposed = rmse_formatted.T
+    # Explicitly map the column names
+    rename_dict = {
+        "RMSE D (cp_active)": "RMSE D (CP)", 
+        "RMSE D (lez_active)": "RMSE D (LEZ)", 
+        "RMSE D (cp_x_lez)": "RMSE D (CP $\\times$ LEZ)"
+    }
+    filtered_rmse_df.rename(columns=rename_dict, inplace=True)
 
+    # Set index and isolate numeric operations
+    rmse_indexed = filtered_rmse_df.set_index('Model')
+    
+    # Calculate best models BEFORE altering the dataframe structure
+    best_models = rmse_indexed.idxmin()
+    
+    # Round the numeric values safely
+    rmse_formatted = rmse_indexed.round(4)
+    
+    # Transpose FIRST so the model names become columns and metrics become rows
+    rmse_transposed = rmse_formatted.T
+    
+    # Add the 'Best Model' row directly to the transposed dataframe
+    rmse_transposed['Best Model'] = best_models
+
+    # CRITICAL FIX: Ensure the transposed index (the row labels) matches the clean LaTeX names
+    rmse_transposed.index = rmse_transposed.index.map(lambda x: rename_dict.get(x, x))
+
+    # Generate LaTeX code
     latex_table_rmse = rmse_transposed.to_latex(
         float_format="%.4f",
         caption="Cross-fitted RMSE for predicting Nuisance Parameters",
         label="tab:rmse_evaluation",
-        column_format="l" + "c" * len(rmse_formatted.index)
+        column_format="l" + "c" * len(rmse_transposed.columns),
+        escape=False
     )
 
     with open(tables_dir / 'rmse_evaluation_final.tex', 'w') as f: 
@@ -68,12 +90,12 @@ if has_rmse:
         
     print("Success: rmse_evaluation_final.tex saved.")
 
+
 # ---------------------------------------------------------
 # 3. Process and Export DML Master Table (Panels A, B, C)
 # ---------------------------------------------------------
 print("Formatting DML Master Causal Table...")
 
-# UPDATED: Target models mapped to the new grid (Lasso replaces Elastic Net)
 target_models = {
     'OLS - Basic': '(1) OLS Baseline',
     'L1 (Lasso / Logit L1)': '(2) AIPW (Lasso)',
@@ -100,69 +122,64 @@ def format_estimate(coef, pval):
     elif pval < 0.10:
         stars = "^{*}"
         
-    return f"{coef:.4f}{stars} (p={pval:.3f})"
+    return f"${coef:.4f}{stars}$ ($p={pval:.3f}$)"
 
-# UPDATED: Replaced old prefixes with the exact econometric estimands
 for prefix in ['Global_ATE', 'Global_ATT', 'GATT_Cluster_1', 'GATT_Cluster_0']:
     dml_core[f'{prefix}_fmt'] = dml_core.apply(
         lambda row: format_estimate(row[f'{prefix}_coef'], row[f'{prefix}_pval']), axis=1
     )
 
-master_table_rows = []
+def get_row_vals(pol, prefix):
+    row_vals = []
+    for mod in target_models.keys():
+        val = dml_core[(dml_core['Model'] == mod) & (dml_core['Policy'] == pol)][f'{prefix}_fmt'].values
+        row_vals.append(val[0] if len(val) > 0 else "--")
+    return row_vals
 
-# --- PANEL A: Global ATE ---
-master_table_rows.append({'Policy': '\\textbf{Panel A: Global Average Treatment Effect (ATE)}', **{v: '' for v in target_models.values()}})
+# Build clean manual LaTeX table lines to avoid pandas column-span conflicts
+latex_lines = []
+latex_lines.append(r"\begin{table}[htbp]")
+latex_lines.append(r"\centering")
+latex_lines.append(r"\caption{Double Machine Learning Estimates of Urban Climate Policies (Categorical Regime)}")
+latex_lines.append(r"\label{tab:dml_master_results}")
+latex_lines.append(r"\begin{tabular}{lccc}")
+latex_lines.append(r"\toprule")
+latex_lines.append(r"Policy & (1) OLS Baseline & (2) AIPW (Lasso) & (3) Causal Forest \\")
+latex_lines.append(r"\midrule")
+
+# Panel A
+latex_lines.append(r"\multicolumn{4}{l}{\textbf{Panel A: Global Average Treatment Effect (ATE)}} \\")
 for pol, clean_name in policy_map.items():
-    row = {'Policy': f"\\hspace{{4mm}} {clean_name}"}
-    for mod, col in target_models.items():
-        val = dml_core[(dml_core['Model'] == mod) & (dml_core['Policy'] == pol)]['Global_ATE_fmt'].values
-        row[col] = val[0] if len(val) > 0 else "--"
-    master_table_rows.append(row)
+    v = get_row_vals(pol, 'Global_ATE')
+    latex_lines.append(f"\\hspace{{4mm}} {clean_name} & {v[0]} & {v[1]} & {v[2]} \\\\")
 
-master_table_rows.append({'Policy': '', **{v: '' for v in target_models.values()}})
-
-# --- PANEL B: Global ATT ---
-master_table_rows.append({'Policy': '\\textbf{Panel B: Average Treatment Effect on the Treated (ATT)}', **{v: '' for v in target_models.values()}})
+# Panel B
+latex_lines.append(r"\addlinespace")
+latex_lines.append(r"\multicolumn{4}{l}{\textbf{Panel B: Average Treatment Effect on the Treated (ATT)}} \\")
 for pol, clean_name in policy_map.items():
-    row = {'Policy': f"\\hspace{{4mm}} {clean_name}"}
-    for mod, col in target_models.items():
-        val = dml_core[(dml_core['Model'] == mod) & (dml_core['Policy'] == pol)]['Global_ATT_fmt'].values
-        row[col] = val[0] if len(val) > 0 else "--"
-    master_table_rows.append(row)
+    v = get_row_vals(pol, 'Global_ATT')
+    latex_lines.append(f"\\hspace{{4mm}} {clean_name} & {v[0]} & {v[1]} & {v[2]} \\\\")
 
-master_table_rows.append({'Policy': '', **{v: '' for v in target_models.values()}})
-
-# --- PANEL C: Intra-Cluster GATT ---
-master_table_rows.append({'Policy': '\\textbf{Panel C: Group ATT (Heterogeneity by City Type)}', **{v: '' for v in target_models.values()}})
-master_table_rows.append({'Policy': '\\textit{Cluster 1: Dense Metropolis}', **{v: '' for v in target_models.values()}})
+# Panel C
+latex_lines.append(r"\addlinespace")
+latex_lines.append(r"\multicolumn{4}{l}{\textbf{Panel C: Group ATT (Heterogeneity by City Type)}} \\")
+latex_lines.append(r"\multicolumn{4}{l}{\textit{Cluster 1: Dense Metropolis}} \\")
 for pol, clean_name in policy_map.items():
-    row = {'Policy': f"\\hspace{{4mm}} {clean_name}"}
-    for mod, col in target_models.items():
-        val = dml_core[(dml_core['Model'] == mod) & (dml_core['Policy'] == pol)]['GATT_Cluster_1_fmt'].values
-        row[col] = val[0] if len(val) > 0 else "--"
-    master_table_rows.append(row)
+    v = get_row_vals(pol, 'GATT_Cluster_1')
+    latex_lines.append(f"\\hspace{{4mm}} {clean_name} & {v[0]} & {v[1]} & {v[2]} \\\\")
 
-master_table_rows.append({'Policy': '\\textit{Cluster 0: Sprawling Cities}', **{v: '' for v in target_models.values()}})
+latex_lines.append(r"\multicolumn{4}{l}{\textit{Cluster 0: Sprawling Cities}} \\")
 for pol, clean_name in policy_map.items():
-    row = {'Policy': f"\\hspace{{4mm}} {clean_name}"}
-    for mod, col in target_models.items():
-        val = dml_core[(dml_core['Model'] == mod) & (dml_core['Policy'] == pol)]['GATT_Cluster_0_fmt'].values
-        row[col] = val[0] if len(val) > 0 else "--"
-    master_table_rows.append(row)
+    v = get_row_vals(pol, 'GATT_Cluster_0')
+    latex_lines.append(f"\\hspace{{4mm}} {clean_name} & {v[0]} & {v[1]} & {v[2]} \\\\")
 
-final_dml_df = pd.DataFrame(master_table_rows)
-
-latex_table_dml = final_dml_df.to_latex(
-    index=False,
-    escape=False,
-    column_format="l" + "c" * len(target_models),
-    caption="Double Machine Learning Estimates of Urban Climate Policies (Categorical Regime)",
-    label="tab:dml_master_results"
-)
+latex_lines.append(r"\bottomrule")
+latex_lines.append(r"\end{tabular}")
+latex_lines.append(r"\end{table}")
+latex_lines.append(r"\raggedright \footnotesize \textit{Notes:} $p$-values in parentheses. $^{*} p < 0.10$, $^{**} p < 0.05$, $^{***} p < 0.01$. 'Failed' estimation bounds denote overlap violations.")
 
 with open(tables_dir / 'dml_master_results.tex', 'w') as f:
-    f.write(latex_table_dml)
-    f.write("\\raggedright \\footnotesize \\textit{Notes:} $p$-values in parentheses. $^{*}$ $p < 0.10$, $^{**}$ $p < 0.05$, $^{***}$ $p < 0.01$. 'Failed' estimation bounds denote overlap violations.\n")
+    f.write("\n".join(latex_lines) + "\n")
 
 print("Success: dml_master_results.tex saved.")
 

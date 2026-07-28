@@ -59,41 +59,84 @@ def format_estimate(coef, pval):
 # ---------------------------------------------------------
 print("Formatting Placebo Falsification Table...")
 
-# Format the Global ATT coefficients and p-values
+# Ensure your translation mappings are explicitly declared
+policy_map = {
+    'cp_active': 'Congestion Pricing (CP)',
+    'lez_active': 'Low Emission Zone (LEZ)',
+    'cp_x_lez': 'Synergy (CP $\\times$ LEZ)'
+}
+
+# Ensure the format function adds LaTeX math mode markers ($) around stars
+def format_estimate(coef, pval):
+    if pd.isna(coef) or pd.isna(pval):
+        return "--" 
+    stars = ""
+    if pval < 0.01: stars = "^{***}"
+    elif pval < 0.05: stars = "^{**}"
+    elif pval < 0.10: stars = "^{*}"
+    return f"${coef:.4f}{stars}$ ($p={pval:.3f}$)"
+
+# Apply formatting directly
 placebo_df['Global_ATT_fmt'] = placebo_df.apply(
     lambda row: format_estimate(row['Global_ATT_coef'], row['Global_ATT_pval']), axis=1
 )
 
-# Unstack the data to create a MultiIndex table: Models on top, Policies underneath
-target_models = ['L1 (Lasso / Logit L1)', 'Causal Forest']
-core_policies = ['cp_active', 'lez_active', 'cp_x_lez']
+# Extract your unique outcomes present in the dataframe
+outcome_list = placebo_df['Outcome'].unique()
 
-pivot_placebo = placebo_df.set_index(['Outcome', 'Model', 'Policy'])['Global_ATT_fmt'].unstack(['Model', 'Policy'])
+# Safer value extraction function that matches substrings to protect against typos
+def get_placebo_val(outcome, model_substring, policy):
+    # Filter by outcome and policy first
+    sub_df = placebo_df[(placebo_df['Outcome'] == outcome) & (placebo_df['Policy'] == policy)]
+    # Look for model string safely (e.g. contains 'L1' or 'Lasso' or 'Causal Forest')
+    match = sub_df[sub_df['Model'].str.contains(model_substring, case=False, na=False)]['Global_ATT_fmt'].values
+    return match[0] if len(match) > 0 else "--"
 
-# Enforce the correct column ordering
-idx = pd.MultiIndex.from_product([target_models, core_policies], names=['Model', 'Policy'])
-pivot_placebo = pivot_placebo.reindex(columns=idx)
+# Build clean manual LaTeX table lines to avoid pandas MultiIndex engine crashes
+latex_lines = []
+latex_lines.append(r"\begin{table}[htbp]")
+latex_lines.append(r"\centering")
+latex_lines.append(r"\caption{Falsification Tests: Estimated Effects on Placebo Outcomes (Global ATT)}")
+latex_lines.append(r"\label{tab:placebo_tests}")
+latex_lines.append(r"\begin{tabular}{lcccccc}")
+latex_lines.append(r"\toprule")
 
-# Rename the headers for publication
-pivot_placebo.rename(columns={'L1 (Lasso / Logit L1)': 'AIPW (Lasso)', 'Causal Forest': 'Causal Forest'}, level=0, inplace=True)
-pivot_placebo.rename(columns=policy_map, level=1, inplace=True)
+# Header Row 1: Explicit 3-column span logic for the 7-track grid
+latex_lines.append(r"Model & \multicolumn{3}{c}{AIPW (Lasso)} & \multicolumn{3}{c}{Causal Forest} \\")
+latex_lines.append(r"\cmidrule(lr){2-4} \cmidrule(lr){5-7}")
 
-# Rename the row indices
-pivot_placebo.index = [outcome_map.get(idx, idx) for idx in pivot_placebo.index]
-pivot_placebo.index.name = 'Decoy Outcome'
+# Header Row 2: Policy Titles with proper LaTeX formatting
+p1 = policy_map['cp_active']
+p2 = policy_map['lez_active']
+p3 = policy_map['cp_x_lez']
+latex_lines.append(f"Policy & {p1} & {p2} & {p3} & {p1} & {p2} & {p3} \\\\")
+latex_lines.append(r"Decoy Outcome &  &  &  &  &  &  \\")
+latex_lines.append(r"\midrule")
 
-latex_table_placebo = pivot_placebo.to_latex(
-    escape=False,
-    column_format="l" + "c" * len(pivot_placebo.columns),
-    caption="Falsification Tests: Estimated Effects on Placebo Outcomes (Global ATT)",
-    label="tab:placebo_tests",
-    multicolumn=True,
-    multirow=True
-)
+# Populate data rows
+for out in outcome_list:
+    # Use outcome_map conversion if it exists, otherwise fall back to raw string name
+    clean_outcome_name = outcome_map.get(out, out) if 'outcome_map' in locals() or 'outcome_map' in globals() else out
+    
+    # Extract row values using loose substring matching for models to ensure data hits
+    v1 = get_placebo_val(out, 'L1', 'cp_active')
+    v2 = get_placebo_val(out, 'L1', 'lez_active')
+    v3 = get_placebo_val(out, 'L1', 'cp_x_lez')
+    
+    v4 = get_placebo_val(out, 'Causal', 'cp_active')
+    v5 = get_placebo_val(out, 'Causal', 'lez_active')
+    v6 = get_placebo_val(out, 'Causal', 'cp_x_lez')
+    
+    latex_lines.append(f"{clean_outcome_name} & {v1} & {v2} & {v3} & {v4} & {v5} & {v6} \\\\")
 
+latex_lines.append(r"\bottomrule")
+latex_lines.append(r"\end{tabular}")
+latex_lines.append(r"\end{table}")
+latex_lines.append(r"\raggedright \footnotesize \textit{Notes:} $p$-values in parentheses. $^{*}$ $p < 0.10$, $^{**}$ $p < 0.05$, $^{***}$ $p < 0.01$.")
+
+# Save file to disk
 with open(tables_dir / 'appendix_placebo_tests.tex', 'w') as f:
-    f.write(latex_table_placebo)
-    f.write("\\raggedright \\footnotesize \\textit{Notes:} $p$-values in parentheses. $^{*}$ $p < 0.10$, $^{**}$ $p < 0.05$, $^{***}$ $p < 0.01$.\n")
+    f.write("\n".join(latex_lines) + "\n")
 
 print("Success: appendix_placebo_tests.tex saved.")
 

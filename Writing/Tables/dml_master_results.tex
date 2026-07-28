@@ -1,30 +1,31 @@
-\begin{table}
+\begin{table}[htbp]
+\centering
 \caption{Double Machine Learning Estimates of Urban Climate Policies (Categorical Regime)}
 \label{tab:dml_master_results}
 \begin{tabular}{lccc}
 \toprule
-Policy & (1) OLS Baseline & (2) AIPW (Elastic Net) & (3) Causal Forest \\
+Policy & (1) OLS Baseline & (2) AIPW (Lasso) & (3) Causal Forest \\
 \midrule
-\textbf{Panel A: Global Average Treatment Effect (ATE)} &  &  &  \\
-\hspace{4mm} Congestion Pricing (CP) & -0.9505^{***} (p=0.000) & -0.2570^{***} (p=0.000) & -0.3530^{***} (p=0.000) \\
-\hspace{4mm} Low Emission Zone (LEZ) & -0.4404^{***} (p=0.001) & -0.0851^{***} (p=0.000) & -0.0780^{***} (p=0.004) \\
-\hspace{4mm} Synergy (CP $\times$ LEZ) & 0.2023 (p=0.458) & -1.0332^{***} (p=0.000) & -0.7282^{***} (p=0.000) \\
- &  &  &  \\
-\textbf{Panel B: Average Treatment Effect on the Treated (ATT)} &  &  &  \\
-\hspace{4mm} Congestion Pricing (CP) & -1.0486^{***} (p=0.000) & -0.3008^{***} (p=0.000) & -0.3658^{***} (p=0.000) \\
-\hspace{4mm} Low Emission Zone (LEZ) & -0.4016^{***} (p=0.001) & -0.0958^{***} (p=0.000) & -0.0999^{***} (p=0.001) \\
-\hspace{4mm} Synergy (CP $\times$ LEZ) & -0.0660 (p=0.847) & -1.1909^{***} (p=0.000) & -1.0307^{***} (p=0.000) \\
- &  &  &  \\
-\textbf{Panel C: Group ATT (Heterogeneity by City Type)} &  &  &  \\
-\textit{Cluster 1: Dense Metropolis} &  &  &  \\
-\hspace{4mm} Congestion Pricing (CP) & -1.2302^{***} (p=0.000) & -0.3819^{***} (p=0.000) & -0.3896^{***} (p=0.000) \\
-\hspace{4mm} Low Emission Zone (LEZ) & -0.2842^{*} (p=0.082) & -0.1280^{***} (p=0.000) & -0.1661^{***} (p=0.000) \\
-\hspace{4mm} Synergy (CP $\times$ LEZ) & -0.2836 (p=0.533) & -1.3187^{***} (p=0.000) & -1.2759^{***} (p=0.000) \\
-\textit{Cluster 0: Sprawling Cities} &  &  &  \\
-\hspace{4mm} Congestion Pricing (CP) & -0.7732^{***} (p=0.000) & -0.1778^{***} (p=0.000) & -0.3298^{***} (p=0.000) \\
-\hspace{4mm} Low Emission Zone (LEZ) & -0.5394^{***} (p=0.003) & -0.0580^{***} (p=0.008) & -0.0222 (p=0.273) \\
-\hspace{4mm} Synergy (CP $\times$ LEZ) & 0.5103 (p=0.133) & -0.8523^{***} (p=0.000) & -0.3809^{***} (p=0.000) \\
+\multicolumn{4}{l}{\textbf{Panel A: Global Average Treatment Effect (ATE)}} \\
+\hspace{4mm} Congestion Pricing (CP) & $-0.9505^{***}$ ($p=0.000$) & $-0.2569^{***}$ ($p=0.000$) & $-0.3530^{***}$ ($p=0.000$) \\
+\hspace{4mm} Low Emission Zone (LEZ) & $-0.4404^{***}$ ($p=0.001$) & $-0.0850^{***}$ ($p=0.000$) & $-0.0780^{***}$ ($p=0.004$) \\
+\hspace{4mm} Synergy (CP $\times$ LEZ) & $0.2023$ ($p=0.458$) & $-1.0337^{***}$ ($p=0.000$) & $-0.7282^{***}$ ($p=0.000$) \\
+\addlinespace
+\multicolumn{4}{l}{\textbf{Panel B: Average Treatment Effect on the Treated (ATT)}} \\
+\hspace{4mm} Congestion Pricing (CP) & $-1.0486^{***}$ ($p=0.000$) & $-0.3006^{***}$ ($p=0.000$) & $-0.3658^{***}$ ($p=0.000$) \\
+\hspace{4mm} Low Emission Zone (LEZ) & $-0.4016^{***}$ ($p=0.001$) & $-0.0957^{***}$ ($p=0.000$) & $-0.0999^{***}$ ($p=0.001$) \\
+\hspace{4mm} Synergy (CP $\times$ LEZ) & $-0.0660$ ($p=0.847$) & $-1.1911^{***}$ ($p=0.000$) & $-1.0307^{***}$ ($p=0.000$) \\
+\addlinespace
+\multicolumn{4}{l}{\textbf{Panel C: Group ATT (Heterogeneity by City Type)}} \\
+\multicolumn{4}{l}{\textit{Cluster 1: Dense Metropolis}} \\
+\hspace{4mm} Congestion Pricing (CP) & $-1.2302^{***}$ ($p=0.000$) & $-0.3815^{***}$ ($p=0.000$) & $-0.3896^{***}$ ($p=0.000$) \\
+\hspace{4mm} Low Emission Zone (LEZ) & $-0.2842^{*}$ ($p=0.082$) & $-0.1279^{***}$ ($p=0.000$) & $-0.1661^{***}$ ($p=0.000$) \\
+\hspace{4mm} Synergy (CP $\times$ LEZ) & $-0.2836$ ($p=0.533$) & $-1.3187^{***}$ ($p=0.000$) & $-1.2759^{***}$ ($p=0.000$) \\
+\multicolumn{4}{l}{\textit{Cluster 0: Sprawling Cities}} \\
+\hspace{4mm} Congestion Pricing (CP) & $-0.7732^{***}$ ($p=0.000$) & $-0.1779^{***}$ ($p=0.000$) & $-0.3298^{***}$ ($p=0.000$) \\
+\hspace{4mm} Low Emission Zone (LEZ) & $-0.5394^{***}$ ($p=0.003$) & $-0.0578^{***}$ ($p=0.008$) & $-0.0222$ ($p=0.273$) \\
+\hspace{4mm} Synergy (CP $\times$ LEZ) & $0.5103$ ($p=0.133$) & $-0.8529^{***}$ ($p=0.000$) & $-0.3809^{***}$ ($p=0.000$) \\
 \bottomrule
 \end{tabular}
 \end{table}
-\raggedright \footnotesize \textit{Notes:} $p$-values in parentheses. $^{*}$ $p < 0.10$, $^{**}$ $p < 0.05$, $^{***}$ $p < 0.01$. 'Failed' estimation bounds denote overlap violations.
+\raggedright \footnotesize \textit{Notes:} $p$-values in parentheses. $^{*} p < 0.10$, $^{**} p < 0.05$, $^{***} p < 0.01$. 'Failed' estimation bounds denote overlap violations.

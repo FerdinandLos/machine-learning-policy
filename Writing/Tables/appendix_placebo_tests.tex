@@ -1,0 +1,21 @@
+\begin{table}[htbp]
+\centering
+\caption{Falsification Tests: Estimated Effects on Placebo Outcomes (Global ATT)}
+\label{tab:placebo_tests}
+\begin{tabular}{lcccccc}
+\toprule
+Model & \multicolumn{3}{c}{AIPW (Lasso)} & \multicolumn{3}{c}{Causal Forest} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-7}
+Policy & Congestion Pricing (CP) & Low Emission Zone (LEZ) & Synergy (CP $\times$ LEZ) & Congestion Pricing (CP) & Low Emission Zone (LEZ) & Synergy (CP $\times$ LEZ) \\
+Decoy Outcome &  &  &  &  &  &  \\
+\midrule
+Library Count & $-0.2060^{***}$ ($p=0.000$) & $0.0348$ ($p=0.360$) & $-0.0142$ ($p=0.705$) & $-0.2655^{***}$ ($p=0.000$) & $-0.0142$ ($p=0.756$) & $0.0440$ ($p=0.493$) \\
+Streetlight Density & $4.3843^{***}$ ($p=0.001$) & $-3.2133^{***}$ ($p=0.000$) & $-1.5590^{*}$ ($p=0.080$) & $4.2933^{***}$ ($p=0.000$) & $-2.5289$ ($p=0.101$) & $-2.2930^{**}$ ($p=0.039$) \\
+Fountain Count & $-0.2088$ ($p=0.176$) & $0.6461^{***}$ ($p=0.000$) & $0.3165^{**}$ ($p=0.014$) & $0.1339$ ($p=0.383$) & $1.1366^{***}$ ($p=0.000$) & $0.9467^{***}$ ($p=0.000$) \\
+Bench Count (per cap) & $0.1338$ ($p=0.299$) & $-0.5187^{***}$ ($p=0.000$) & $-0.5976^{***}$ ($p=0.000$) & $0.0602$ ($p=0.799$) & $-0.5773^{**}$ ($p=0.029$) & $-0.7294^{***}$ ($p=0.001$) \\
+Flagpole Count & $-0.2321^{*}$ ($p=0.075$) & $-0.3132^{***}$ ($p=0.006$) & $-0.1669$ ($p=0.176$) & $0.2503$ ($p=0.214$) & $-0.1874$ ($p=0.358$) & $0.2758$ ($p=0.143$) \\
+Sister City Count & $0.4016^{***}$ ($p=0.002$) & $0.4540^{***}$ ($p=0.000$) & $0.6058^{***}$ ($p=0.000$) & $0.3549$ ($p=0.131$) & $0.3500^{**}$ ($p=0.027$) & $1.3505^{***}$ ($p=0.000$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+\raggedright \footnotesize \textit{Notes:} $p$-values in parentheses. $^{*}$ $p < 0.10$, $^{**}$ $p < 0.05$, $^{***}$ $p < 0.01$.
