@@ -7,7 +7,7 @@ from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier, Hist
 from sklearn.linear_model import LinearRegression, LassoCV, RidgeCV, ElasticNetCV, LogisticRegressionCV, LogisticRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.base import BaseEstimator, ClassifierMixin, clone
-from sklearn.model_selection import cross_val_predict
+from sklearn.model_selection import cross_val_predict, GroupKFold
 from sklearn.metrics import mean_squared_error
 
 # Suppress warnings for clean console output
@@ -22,7 +22,7 @@ tables_dir.mkdir(parents=True, exist_ok=True)
 class ClippedProbaClassifier(BaseEstimator, ClassifierMixin):
     """
     Custom wrapper to prevent tree-based models from outputting exact 0.0 or 1.0 probabilities.
-    Ensures safe propensity score clipping for rare events (like cp_x_lez).
+    Ensures safe propensity score clipping for rare events.
     """
     def __init__(self, estimator):
         self.estimator = estimator
@@ -46,7 +46,9 @@ class ClippedProbaClassifier(BaseEstimator, ClassifierMixin):
 csv_path = Path('Data/urban_emissions_panel_cleaned.csv')
 df = pd.read_csv(csv_path)
 
-df['cp_x_lez'] = df['cp_active'] * df['lez_active']
+# Ensure the exact same categorical architecture as the estimation pipeline
+df['policy_regime'] = (df['cp_active'] * 1) + (df['lez_active'] * 2)
+
 year_dummies = pd.get_dummies(df['year'], prefix='year', drop_first=True, dtype=int)
 df = pd.concat([df, year_dummies], axis=1)
 
@@ -54,14 +56,18 @@ exclude_from_X = [
     'city_id', 'year', 'log_transport_co2', 'log_total_co2', 
     'cp_active', 'lez_active', 'cp_impl_year', 'lez_impl_year', 
     'cp_announce_year', 'lez_announce_year', 'country_id',
-    'cp_x_lez'
+    'cp_x_lez', 'policy_regime',
+    # --- COMPOSITIONAL DUMMY TRAP FIX ---
+    'industry_public', 'fleet_petrol_share'
 ]
+
 numeric_df = df.select_dtypes(include=[np.number])
 X_cols = [col for col in numeric_df.columns if col not in exclude_from_X]
 
-X = df[X_cols]
-Y = df['log_transport_co2']
-core_policies = ['cp_active', 'lez_active', 'cp_x_lez']
+X_arr = df[X_cols].to_numpy()
+Y_arr = df['log_transport_co2'].to_numpy()
+T_arr = df['policy_regime'].to_numpy()
+city_groups = df['city_id'].to_numpy()
 
 # ---------------------------------------------------------
 # 2. Define the Machine Learning Learners (EconML Scope)
@@ -79,6 +85,10 @@ models = {
         'ml_l': make_pipeline(StandardScaler(), RidgeCV(cv=5)),
         'ml_m': make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, penalty='l2', solver='saga', scoring='neg_log_loss', random_state=42, max_iter=10000, n_jobs=-1))
     },
+    'Elastic Net': {
+        'ml_l': make_pipeline(StandardScaler(), ElasticNetCV(cv=5, l1_ratio=[0.1, 0.5, 0.9, 0.99], random_state=42, max_iter=10000, n_jobs=-1)),
+        'ml_m': make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, penalty='elasticnet', l1_ratios=[0.1, 0.5, 0.9, 0.99], solver='saga', scoring='neg_log_loss', random_state=42, max_iter=10000, n_jobs=-1))
+    },
     'Random Forest': {
         'ml_l': RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42, n_jobs=-1),
         'ml_m': ClippedProbaClassifier(RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42, n_jobs=-1))
@@ -95,27 +105,35 @@ models = {
 print("--- CALCULATING CROSS-FITTED RMSE FOR NUISANCE PARAMETERS ---")
 results = []
 
+# Enforce strictly grouped out-of-fold predictions to prevent panel data leakage
+cv_panel = GroupKFold(n_splits=5)
+
 for name, model_dict in models.items():
     print(f"Evaluating {name}...")
     reg = model_dict['ml_l']
     clf = model_dict['ml_m']
     
     # 1. Predict Y (Outcome Nuisance)
-    # n_jobs removed from cross_val_predict because inner models already use n_jobs=-1
-    preds_Y = cross_val_predict(reg, X, Y, cv=5)
-    rmse_Y = np.sqrt(mean_squared_error(Y, preds_Y))
+    preds_Y = cross_val_predict(reg, X_arr, Y_arr, cv=cv_panel, groups=city_groups)
+    rmse_Y = np.sqrt(mean_squared_error(Y_arr, preds_Y))
     
     row_data = {
         'Model': name,
         'RMSE Y (Outcome)': rmse_Y,
     }
     
-    # 2. Predict T (Treatment Propensity Nuisance)
-    for d_col in core_policies:
-        target_D = df[d_col]
-        # Predict probability of treatment
-        preds_D = cross_val_predict(clf, X, target_D, cv=5, method='predict_proba')[:, 1]
-        row_data[f'RMSE D ({d_col})'] = np.sqrt(mean_squared_error(target_D, preds_D))
+    # 2. Predict T (Multi-class Categorical Treatment Nuisance)
+    # Scikit-learn outputs a probability matrix with columns for [Class 0, Class 1, Class 2, Class 3]
+    preds_T_proba = cross_val_predict(clf, X_arr, T_arr, cv=cv_panel, groups=city_groups, method='predict_proba')
+    
+    # Extract binary truth arrays for calculating distinct regime RMSEs
+    true_cp = (T_arr == 1).astype(int)
+    true_lez = (T_arr == 2).astype(int)
+    true_syn = (T_arr == 3).astype(int)
+
+    row_data['RMSE D (cp_active)'] = np.sqrt(mean_squared_error(true_cp, preds_T_proba[:, 1]))
+    row_data['RMSE D (lez_active)'] = np.sqrt(mean_squared_error(true_lez, preds_T_proba[:, 2]))
+    row_data['RMSE D (cp_x_lez)'] = np.sqrt(mean_squared_error(true_syn, preds_T_proba[:, 3]))
         
     results.append(row_data)
 

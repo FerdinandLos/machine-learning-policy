@@ -111,7 +111,7 @@ regime_mapping = {
 for model_name, ml_dict in models.items():
     print(f"\n>> Estimating with {model_name}...")
     
-    # 1. Prepare the static matrices (No dynamic co-treatment swapping needed)
+    # 1. Prepare the static matrices
     W_matrix = df[base_W_cols].to_numpy()
     T_arr = df['policy_regime'].to_numpy() # The 0, 1, 2, 3 categorical array
     Y_arr = df['log_transport_co2'].to_numpy()
@@ -119,7 +119,6 @@ for model_name, ml_dict in models.items():
     
     try:
         # Instantiate Estimator
-        # discrete_treatment=True is enforced so EconML knows T is categorical, not continuous
         if ml_dict['type'] == 'dr':
                 estimator = LinearDRLearner(
                     model_regression=clone(ml_dict['ml_l']),
@@ -132,7 +131,7 @@ for model_name, ml_dict in models.items():
                 estimator = CausalForestDML(
                     n_estimators=ml_dict['n_estimators'],
                     max_depth=ml_dict['max_depth'],
-                    min_samples_leaf=ml_dict['min_samples_leaf'], # Overlap protection remains
+                    min_samples_leaf=ml_dict['min_samples_leaf'],
                     discrete_treatment=True,
                     cv=cv_panel,
                     random_state=42
@@ -147,40 +146,55 @@ for model_name, ml_dict in models.items():
             groups=city_groups
         )
 
-        # 2. Extract the ATE/CATE for each specific policy contrast
+        # 2. Extract the ATE, Global ATT, GATE, and GATT for each policy contrast
         for policy_name, t_val in regime_mapping.items():
             row_data = {'Model': model_name, 'Policy': policy_name}
             
-            # Global ATE (T1 = Specific Policy, T0 = 0 [No Policies])
+            # --- 2A. Global ATE ---
             row_data['Global_ATE_coef'] = np.atleast_1d(estimator.ate(X=cluster_dummies_array, T0=0, T1=t_val))[0]
             row_data['Global_ATE_pval'] = np.atleast_1d(estimator.ate_inference(X=cluster_dummies_array, T0=0, T1=t_val).pvalue())[0]
 
-            # ATET across adopters
+            # --- 2B. Global ATT (across all true adopters) ---
             treated_mask = (df['policy_regime'].to_numpy() == t_val)
             X_treated = cluster_dummies_array[treated_mask]
             
-            row_data['CATE_ATET_coef'] = np.atleast_1d(estimator.ate(X=X_treated, T0=0, T1=t_val))[0]
-            row_data['CATE_ATET_pval'] = np.atleast_1d(estimator.ate_inference(X=X_treated, T0=0, T1=t_val).pvalue())[0]
+            row_data['Global_ATT_coef'] = np.atleast_1d(estimator.ate(X=X_treated, T0=0, T1=t_val))[0]
+            row_data['Global_ATT_pval'] = np.atleast_1d(estimator.ate_inference(X=X_treated, T0=0, T1=t_val).pvalue())[0]
 
-            # Intra-Cluster CATEs
-            X_cluster_0 = cluster_dummies_array[cluster_dummies['Cluster_0'].to_numpy() == 1]
-            X_cluster_1 = cluster_dummies_array[cluster_dummies['Cluster_1'].to_numpy() == 1]
+            # Prepare Cluster Masks
+            cluster_0_mask = (df['cluster_id'].to_numpy() == 0)
+            cluster_1_mask = (df['cluster_id'].to_numpy() == 1)
 
-            row_data['CATE_Cluster_0_coef'] = np.atleast_1d(estimator.ate(X=X_cluster_0, T0=0, T1=t_val))[0]
-            row_data['CATE_Cluster_0_pval'] = np.atleast_1d(estimator.ate_inference(X=X_cluster_0, T0=0, T1=t_val).pvalue())[0]
+            # --- 2C. Intra-Cluster GATEs (Average across ALL cities in the cluster) ---
+            X_cluster_0 = cluster_dummies_array[cluster_0_mask]
+            X_cluster_1 = cluster_dummies_array[cluster_1_mask]
+
+            row_data['GATE_Cluster_0_coef'] = np.atleast_1d(estimator.ate(X=X_cluster_0, T0=0, T1=t_val))[0]
+            row_data['GATE_Cluster_0_pval'] = np.atleast_1d(estimator.ate_inference(X=X_cluster_0, T0=0, T1=t_val).pvalue())[0]
             
-            row_data['CATE_Cluster_1_coef'] = np.atleast_1d(estimator.ate(X=X_cluster_1, T0=0, T1=t_val))[0]
-            row_data['CATE_Cluster_1_pval'] = np.atleast_1d(estimator.ate_inference(X=X_cluster_1, T0=0, T1=t_val).pvalue())[0]
+            row_data['GATE_Cluster_1_coef'] = np.atleast_1d(estimator.ate(X=X_cluster_1, T0=0, T1=t_val))[0]
+            row_data['GATE_Cluster_1_pval'] = np.atleast_1d(estimator.ate_inference(X=X_cluster_1, T0=0, T1=t_val).pvalue())[0]
+
+            # --- 2D. Intra-Cluster GATTs (Average strictly across TREATED cities in the cluster) ---
+            X_treated_cluster_0 = cluster_dummies_array[treated_mask & cluster_0_mask]
+            X_treated_cluster_1 = cluster_dummies_array[treated_mask & cluster_1_mask]
+
+            row_data['GATT_Cluster_0_coef'] = np.atleast_1d(estimator.ate(X=X_treated_cluster_0, T0=0, T1=t_val))[0]
+            row_data['GATT_Cluster_0_pval'] = np.atleast_1d(estimator.ate_inference(X=X_treated_cluster_0, T0=0, T1=t_val).pvalue())[0]
+            
+            row_data['GATT_Cluster_1_coef'] = np.atleast_1d(estimator.ate(X=X_treated_cluster_1, T0=0, T1=t_val))[0]
+            row_data['GATT_Cluster_1_pval'] = np.atleast_1d(estimator.ate_inference(X=X_treated_cluster_1, T0=0, T1=t_val).pvalue())[0]
             
             final_results.append(row_data)
 
     except Exception as e:
         print(f"   [!] Estimation failed for {model_name}: {e}")
-        # Append empty rows for all 3 policies if the model fails
+        # Append empty rows containing the new column names if the model fails
         for policy_name in regime_mapping.keys():
             row_data = {'Model': model_name, 'Policy': policy_name}
-            for col in ['Global_ATE_coef', 'Global_ATE_pval', 'CATE_ATET_coef', 'CATE_ATET_pval', 
-                        'CATE_Cluster_0_coef', 'CATE_Cluster_0_pval', 'CATE_Cluster_1_coef', 'CATE_Cluster_1_pval']:
+            for col in ['Global_ATE_coef', 'Global_ATE_pval', 'Global_ATT_coef', 'Global_ATT_pval', 
+                        'GATE_Cluster_0_coef', 'GATE_Cluster_0_pval', 'GATE_Cluster_1_coef', 'GATE_Cluster_1_pval',
+                        'GATT_Cluster_0_coef', 'GATT_Cluster_0_pval', 'GATT_Cluster_1_coef', 'GATT_Cluster_1_pval']:
                 row_data[col] = np.nan
             final_results.append(row_data)
 
