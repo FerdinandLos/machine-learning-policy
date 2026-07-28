@@ -3,7 +3,7 @@ import numpy as np
 import warnings
 from pathlib import Path
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LinearRegression, LassoCV, RidgeCV, ElasticNetCV, LogisticRegressionCV, LogisticRegression
+from sklearn.linear_model import LinearRegression, LassoCV, RidgeCV, LogisticRegressionCV, LogisticRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.base import clone
 from sklearn.model_selection import cross_val_predict, GroupKFold
@@ -77,11 +77,6 @@ models = {
         'type': 'dr',
         'ml_l': make_pipeline(StandardScaler(), RidgeCV(cv=5)),
         'ml_m': make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, penalty='l2', solver='saga', scoring='neg_log_loss', random_state=42, max_iter=10000, n_jobs=-1))
-    },
-    'Elastic Net': {
-        'type': 'dr',
-        'ml_l': make_pipeline(StandardScaler(), ElasticNetCV(cv=5, l1_ratio=[0.1, 0.5, 0.9, 0.99], random_state=42, max_iter=10000, n_jobs=-1)),
-        'ml_m': make_pipeline(StandardScaler(), LogisticRegressionCV(cv=5, penalty='elasticnet', l1_ratios=[0.1, 0.5, 0.9, 0.99], solver='saga', scoring='neg_log_loss', random_state=42, max_iter=10000, n_jobs=-1))
     },
     'Causal Forest': {
         'type': 'causal_forest',
@@ -206,8 +201,9 @@ results_df = pd.DataFrame(final_results)
 print("\n--- FINAL CAUSAL ESTIMATES (AIPW & CAUSAL FOREST) ---")
 for policy in core_policies:
     print(f"\n--- POLICY: {policy.upper()} ---")
-    policy_df = results_df[results_df['Policy'] == policy].drop(columns=['Policy']).set_index('Model')
-    print(policy_df.to_string())
+    if policy in results_df['Policy'].values:
+        policy_df = results_df[results_df['Policy'] == policy].drop(columns=['Policy']).set_index('Model')
+        print(policy_df.to_string())
 
 csv_export_path = results_dir / 'dml_robustness_results_aipw.csv'
 results_df.to_csv(csv_export_path, index=False)
@@ -240,27 +236,3 @@ ps_df = pd.DataFrame({
 ps_export_path = results_dir / 'propensity_scores_exact_aipw.csv'
 ps_df.to_csv(ps_export_path, index=False)
 print(f"Success: Exact propensity scores saved to {ps_export_path}")
-
-# ---------------------------------------------------------
-# 7. Extracting Optimal Hyperparameters for Thesis Text
-# ---------------------------------------------------------
-print("\n--- EXTRACTING OPTIMAL HYPERPARAMETERS ---")
-hyperparam_path = results_dir / 'optimal_hyperparameters_aipw.txt'
-
-with open(hyperparam_path, 'w') as f:
-    f.write("--- ELASTIC NET OPTIMAL HYPERPARAMETERS (FULL SAMPLE) ---\n")
-    f.write("Grid Search Options: [0.1, 0.5, 0.9, 0.99]\n\n")
-        
-    # Outcome Model Hyperparameters
-    elnet_y_pipe = clone(models['Elastic Net']['ml_l'])
-    elnet_y_pipe.fit(df[base_W_cols].to_numpy(), df['log_transport_co2'].to_numpy())
-    best_l1_y = elnet_y_pipe.steps[1][1].l1_ratio_
-    f.write(f"Outcome Model (Log Transport CO2) Selected l1_ratio: {best_l1_y}\n")
-    
-    # Treatment Model Hyperparameters (Multinomial)
-    elnet_t_pipe = clone(models['Elastic Net']['ml_m'])
-    elnet_t_pipe.fit(df[base_W_cols].to_numpy(), df['policy_regime'].to_numpy())
-    best_l1_t = elnet_t_pipe.steps[1][1].l1_ratio_[0] 
-    f.write(f"Treatment Model (Categorical Policy Regime) Selected l1_ratio: {best_l1_t}\n")
-
-print(f"Success: Optimal hyperparameters saved to {hyperparam_path}")
