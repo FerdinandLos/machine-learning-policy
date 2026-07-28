@@ -44,7 +44,9 @@ exclude_from_W = [
     'industry_public', 'fleet_petrol_share'
 ]
 base_W_cols = [col for col in df.select_dtypes(include=[np.number]).columns if col not in exclude_from_W]
-core_policies = ['cp_active', 'lez_active', 'policy_regime']
+
+# --- BUG 3 FIX: Corrected list string ---
+core_policies = ['cp_active', 'lez_active', 'cp_x_lez']
 
 # Pre-generate dummy variables for the clusters for CATE estimation
 cluster_dummies = pd.get_dummies(df['cluster_id'], prefix='Cluster', dtype=int)
@@ -110,6 +112,7 @@ for model_name in target_models:
                     model_regression=clone(ml_dict['ml_l']),
                     model_propensity=clone(ml_dict['ml_m']),
                     min_propensity=0.01, 
+                    fit_cate_intercept=False, # --- BUG 1 FIX: Prevent rank-deficiency ---
                     cv=cv_panel,
                     random_state=42
                 )

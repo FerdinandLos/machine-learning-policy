@@ -52,7 +52,9 @@ exclude_from_W = [
     'industry_public', 'fleet_petrol_share'
 ]
 base_W_cols = [col for col in df.select_dtypes(include=[np.number]).columns if col not in exclude_from_W]
-core_policies = ['cp_active', 'lez_active', 'policy_regime']
+
+# --- BUG 3 FIX: Corrected list string ---
+core_policies = ['cp_active', 'lez_active', 'cp_x_lez']
 
 # Pre-generate dummy variables for the clusters for CATE estimation
 cluster_dummies = pd.get_dummies(df['cluster_id'], prefix='Cluster', dtype=int)
@@ -82,13 +84,12 @@ models = {
         'type': 'causal_forest',
         'n_estimators': 200,
         'max_depth': 5,
-        # --- SINGULAR MATRIX FIX ---
         'min_samples_leaf': 50  
     }
 }
 
 # ---------------------------------------------------------
-# 4. Main Causal Estimations Loop (Categorical AIPW + Causal Forest)
+# 4. Main Causal Estimations Loop
 # ---------------------------------------------------------
 print("--- INITIATING AIPW & CAUSAL FOREST ESTIMATION ---")
 final_results = []
@@ -108,7 +109,7 @@ for model_name, ml_dict in models.items():
     
     # 1. Prepare the static matrices
     W_matrix = df[base_W_cols].to_numpy()
-    T_arr = df['policy_regime'].to_numpy() # The 0, 1, 2, 3 categorical array
+    T_arr = df['policy_regime'].to_numpy() 
     Y_arr = df['log_transport_co2'].to_numpy()
     city_groups = df['city_id'].to_numpy()
     
@@ -119,6 +120,7 @@ for model_name, ml_dict in models.items():
                     model_regression=clone(ml_dict['ml_l']),
                     model_propensity=clone(ml_dict['ml_m']),
                     min_propensity=0.01, 
+                    fit_cate_intercept=False, # --- BUG 1 FIX: Prevent rank-deficiency ---
                     cv=cv_panel,
                     random_state=42
                 )
@@ -160,7 +162,7 @@ for model_name, ml_dict in models.items():
             cluster_0_mask = (df['cluster_id'].to_numpy() == 0)
             cluster_1_mask = (df['cluster_id'].to_numpy() == 1)
 
-            # --- 2C. Intra-Cluster GATEs (Average across ALL cities in the cluster) ---
+            # --- 2C. Intra-Cluster GATEs ---
             X_cluster_0 = cluster_dummies_array[cluster_0_mask]
             X_cluster_1 = cluster_dummies_array[cluster_1_mask]
 
@@ -170,7 +172,7 @@ for model_name, ml_dict in models.items():
             row_data['GATE_Cluster_1_coef'] = np.atleast_1d(estimator.ate(X=X_cluster_1, T0=0, T1=t_val))[0]
             row_data['GATE_Cluster_1_pval'] = np.atleast_1d(estimator.ate_inference(X=X_cluster_1, T0=0, T1=t_val).pvalue())[0]
 
-            # --- 2D. Intra-Cluster GATTs (Average strictly across TREATED cities in the cluster) ---
+            # --- 2D. Intra-Cluster GATTs ---
             X_treated_cluster_0 = cluster_dummies_array[treated_mask & cluster_0_mask]
             X_treated_cluster_1 = cluster_dummies_array[treated_mask & cluster_1_mask]
 
@@ -227,12 +229,37 @@ exact_p_scores_matrix = cross_val_predict(
     n_jobs=-1
 )
 
-# Extract the probability of Class 1 (cp_active) 
+# --- BUG 2 FIX: Marginal Probability of CP Adoption P(Regime=1) + P(Regime=3) ---
+marginal_cp_prob = exact_p_scores_matrix[:, 1] + exact_p_scores_matrix[:, 3]
+
 ps_df = pd.DataFrame({
     'cp_active': df['cp_active'],
-    'propensity_score': exact_p_scores_matrix[:, 1]
+    'propensity_score': marginal_cp_prob
 })
 
 ps_export_path = results_dir / 'propensity_scores_exact_aipw.csv'
 ps_df.to_csv(ps_export_path, index=False)
 print(f"Success: Exact propensity scores saved to {ps_export_path}")
+
+# ---------------------------------------------------------
+# 7. Extracting Optimal Hyperparameters for Thesis Text
+# ---------------------------------------------------------
+print("\n--- EXTRACTING OPTIMAL HYPERPARAMETERS ---")
+hyperparam_path = results_dir / 'optimal_hyperparameters_aipw.txt'
+
+with open(hyperparam_path, 'w') as f:
+    f.write("--- LASSO (L1) OPTIMAL HYPERPARAMETERS (FULL SAMPLE) ---\n\n")
+        
+    # Outcome Model Hyperparameters
+    lasso_y_pipe = clone(models['L1 (Lasso / Logit L1)']['ml_l'])
+    lasso_y_pipe.fit(df[base_W_cols].to_numpy(), df['log_transport_co2'].to_numpy())
+    best_alpha_y = lasso_y_pipe.steps[1][1].alpha_
+    f.write(f"Outcome Model (LassoCV) Selected alpha (regularization penalty): {best_alpha_y}\n")
+    
+    # Treatment Model Hyperparameters (Multinomial)
+    lasso_t_pipe = clone(models['L1 (Lasso / Logit L1)']['ml_m'])
+    lasso_t_pipe.fit(df[base_W_cols].to_numpy(), df['policy_regime'].to_numpy())
+    best_C_t = lasso_t_pipe.steps[1][1].C_[0] 
+    f.write(f"Treatment Model (LogisticRegressionCV L1) Selected C (inverse penalty): {best_C_t}\n")
+
+print(f"Success: Optimal hyperparameters saved to {hyperparam_path}")

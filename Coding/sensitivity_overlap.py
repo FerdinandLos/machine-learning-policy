@@ -68,7 +68,8 @@ for trim in trim_thresholds:
         estimator = LinearDRLearner(
             model_regression=clone(ml_l),
             model_propensity=clone(ml_m),
-            min_propensity=trim,  # Injecting the dynamic threshold here
+            min_propensity=trim,  
+            fit_cate_intercept=False, # --- BUG 1 FIX: Prevent rank-deficiency ---
             cv=cv_panel,
             random_state=42
         )

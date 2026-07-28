@@ -320,8 +320,74 @@ df['log_transport_co2_initial'] = df.groupby('city_id')['log_transport_co2'].tra
 print("Success: Generated strictly pre-determined initial conditions (safely avoiding post-treatment contamination).")
 
 # ---------------------------------------------------------
-# 8. Export Final Cleaned Data
+# 8. PROPERLY-TIMED MUNDLAK DEVICE IMPLEMENTATION
 # ---------------------------------------------------------
+print("Constructing properly-timed Mundlak device for time-invariant unobserved heterogeneity...")
+
+# 1. Identify the first implementation year for ANY policy per city
+# min(axis=1) finds the earliest adoption year between CP and LEZ. Never-takers get NaN.
+df['first_policy_year'] = df[['cp_impl_year', 'lez_impl_year']].min(axis=1)
+
+# 2. Define your time-varying confounders
+# UPDATED: Utilizing the exact column names present in the dataframe post-transformation
+time_varying_cols = [
+    'log_gdp_pc', 
+    'log_population',
+    'log_pop_density',
+    'log_electricity_price',
+    'log_fuel_price',
+    'unemployment',
+    'education_share',
+    'renewable_electricity_share',
+    'fleet_diesel_share',
+    'fleet_petrol_share',
+    'fleet_electric_share',
+    'public_transit_score',
+    'logistics_activity',
+    'fiscal_capacity',
+    'electoral_competitiveness',
+    'ngo_environment_index'
+]
+
+# Ensure we only try to process columns that actually exist in your dataframe
+time_varying_cols = [col for col in time_varying_cols if col in df.columns]
+
+# 3. Filter data to strictly pre-treatment years (or all years for never-takers)
+pre_treatment_mask = (df['year'] < df['first_policy_year']) | df['first_policy_year'].isna()
+pre_df = df[pre_treatment_mask]
+
+# 4. Calculate the pre-treatment means per city
+mundlak_means = pre_df.groupby('city_id')[time_varying_cols].mean()
+
+# 5. Rename columns to indicate they are baseline proxies
+mundlak_means = mundlak_means.add_suffix('_pre_mean')
+
+# 6. Merge back into the main dataframe
+df = df.merge(mundlak_means, on='city_id', how='left')
+
+# 7. Safety Fallback: "Always-Takers" or Year-1 Adopters
+# If a city implemented a policy in the very first year of your panel, it has no strict 
+# "pre-treatment" mean. To prevent NaN crashes, we backfill these specific cases 
+# using their Year 1 observation, which is the closest proxy available.
+for col in mundlak_means.columns:
+    if df[col].isna().any():
+        base_col = col.replace('_pre_mean', '')
+        # Grab the first available chronological observation for the missing cities
+        first_obs = df.sort_values(['city_id', 'year']).groupby('city_id')[base_col].transform('first')
+        df[col] = df[col].fillna(first_obs)
+
+# 8. Cleanup temporary column
+df = df.drop(columns=['first_policy_year'])
+
+print(f"Success: Added {len(time_varying_cols)} Mundlak proxy variables to the dataset.")
+
+# ---------------------------------------------------------
+# 9. Export Final Cleaned Data
+# ---------------------------------------------------------
+variable_names = df.columns.tolist()
+
+print(variable_names)
+
 save_dir_data = 'Data'
 os.makedirs(save_dir_data, exist_ok=True)
 file_path = os.path.join(save_dir_data, 'urban_emissions_panel_cleaned.csv')
