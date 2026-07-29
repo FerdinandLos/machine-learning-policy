@@ -65,11 +65,17 @@ plt.tight_layout()
 plt.savefig(os.path.join(save_dir, 'co2_distribution.pdf'), format='pdf', bbox_inches='tight')
 plt.close()
 
+# ---------------------------------------------------------
+# 3b. Convert Categorical Variables to Dummies
+# ---------------------------------------------------------
+# Convert latitude_zone (1, 2, 3) into binary indicators to prevent continuous treatment
+df = pd.get_dummies(df, columns=['latitude_zone'], prefix='lat_zone', drop_first=True, dtype=int)
+
 #---------------------------------------------------------
 # 4. Check all variables for skewed distributions
 #---------------------------------------------------------
 exclude_cols = [
-    'city_id', 'year', 'country_id', 'cluster_id', 'latitude_zone',
+    'city_id', 'year', 'country_id', 'cluster_id', 'lat_zone_2', 'lat_zone_3',
     'cp_active', 'lez_active', 'cp_impl_year', 'lez_impl_year',
     'cp_announce_year', 'lez_announce_year', 'national_climate_pact', 
     'coastal', 'political_green',
@@ -144,7 +150,7 @@ df = df.drop(columns=columns_to_drop)
 print("\n--- CONSTRUCTING PANEL HETEROGENEITY PROXIES ---")
 
 # 1. Explicitly define your strict time-invariant variables
-time_invariant_cols = ['log_area_km2', 'elevation', 'coastal', 'latitude_zone']
+time_invariant_cols = ['log_area_km2', 'elevation', 'coastal', 'lat_zone_2', 'lat_zone_3']
 time_invariant_cols = [c for c in time_invariant_cols if c in df.columns]
 
 # 2. Define base exclusions (Identifiers, Policy Timings, and Outcomes)
@@ -232,7 +238,8 @@ city_features = df.drop_duplicates('city_id').set_index('city_id')
 # We exclude the CO2 outcomes to prevent clustering on the dependent variables
 cluster_cols = [col for col in city_features.columns 
                 if (col.endswith('_pre_mean') or col.endswith('_initial')) 
-                and 'co2' not in col]
+                and 'co2' not in col 
+                and 'lat_zone' not in col]
 
 city_features_cluster = city_features[cluster_cols].copy()
 
@@ -293,17 +300,39 @@ combined_features = top_10_features + bottom_4_features
 # Build the Visualization using the combined features
 scaled_diff = (scaled_means.loc[1] - scaled_means.loc[0])[combined_features]
 
-#plot_names = custom_short_names.copy()
-#plot_names['log_pop_density_pre_mean'] = "Log Population per $km^2$"
-#plot_names['log_population_pre_mean'] = "Log Population"
+# 1. Initialize an empty dictionary
+plot_names = {}
 
-#scaled_diff = scaled_diff.rename(index=name_mapping)
-#scaled_diff = scaled_diff.rename(index=plot_names)
+# 2. Assign the clean names
+plot_names['log_pop_density_pre_mean'] = "Log Population per $km^2$"
+plot_names['public_transit_score_pre_mean'] = "Public Transit Score"
+plot_names['log_population_pre_mean'] = "Log Population"
+plot_names['library_count_pre_mean'] = "No. of Libraries"
+plot_names['fleet_petrol_share_pre_mean'] = "Petrol Vehicle Share"
+plot_names['fleet_diesel_share_pre_mean'] = "Diesel Vehicle Share"
+plot_names['log_area_km2_initial'] = "Log Area ($km^2$)"
+plot_names['fleet_electric_share_pre_mean'] = "Electric Vehicle Share"
+plot_names['industry_logistics_pre_mean'] = "Logistics Employment Share"
+plot_names['political_green_pre_mean'] = "Green Party Vote Share"
+plot_names['ngo_environment_index_pre_mean'] = "Environmental NGO Index"
+plot_names['sister_city_count_pre_mean'] = "No. of Sister-Cities"
+plot_names['log_electricity_price_pre_mean'] = "Log Electricity Price"
+plot_names['renewable_electricity_share_pre_mean'] = "Renewable Electricity Share"
+plot_names['streetlight_density_pre_mean'] = "Streetlights per km of Road"
+plot_names['flagpole_count_pre_mean'] = "No. of Flagpoles on Public Buildings"
+plot_names['unemployment_pre_mean'] = "Unemployment rate"
+plot_names['industry_public_pre_mean'] = "Public Sector Employment Share"
+plot_names['log_fuel_price_pre_mean'] = "Log Average Fuel Price"
+plot_names['tourism_intensity_pre_mean'] = "Tourism Intensity"
+plot_names['education_share_pre_mean'] = "Tertiary Education Share"
+
+# 3. CRITICAL: Actually apply the renaming map to the Series
+scaled_diff = scaled_diff.rename(index=plot_names)
 
 # This mathematically guarantees the bars taper down nicely, with the 0s at the very bottom
 scaled_diff = scaled_diff.reindex(scaled_diff.abs().sort_values(ascending=False).index)
 
-# Slightly increased figure height from 6 to 7 to comfortably fit 12 bars
+# Create figure
 fig, ax = plt.subplots(figsize=(8, 7))
 colors = ['#1f78b4' if val > 0 else '#a6cee3' for val in scaled_diff]
 scaled_diff.plot(kind='barh', color=colors, edgecolor='black', ax=ax)
