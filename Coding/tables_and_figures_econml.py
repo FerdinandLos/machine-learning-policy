@@ -40,7 +40,6 @@ if has_rmse:
     
     # Define the exact models to keep for the thesis table
     models_to_keep = [
-        'OLS - Basic', 
         'L1 (Lasso / Logit L1)', 
         'L2 (Ridge / Logit L2)', 
         'Elastic Net', 
@@ -175,8 +174,9 @@ for pol, clean_name in policy_map.items():
 
 latex_lines.append(r"\bottomrule")
 latex_lines.append(r"\end{tabular}")
-latex_lines.append(r"\end{table}")
 latex_lines.append(r"\raggedright \footnotesize \textit{Notes:} $p$-values in parentheses. $^{*} p < 0.10$, $^{**} p < 0.05$, $^{***} p < 0.01$. 'Failed' estimation bounds denote overlap violations.")
+latex_lines.append(r"\end{table}")
+
 
 with open(tables_dir / 'dml_master_results.tex', 'w') as f:
     f.write("\n".join(latex_lines) + "\n")
@@ -279,5 +279,96 @@ ax.legend()
 plt.tight_layout()
 fig.savefig(figures_dir / 'overlap_density.pdf', format='pdf')
 plt.close()
+
+# ---------------------------------------------------------
+# Console Summary: Common Support Numerical Distribution
+# ---------------------------------------------------------
+ps_treated = ps_df.loc[ps_df['cp_active'] == 1, 'propensity_score']
+ps_control = ps_df.loc[ps_df['cp_active'] == 0, 'propensity_score']
+
+# 1. Summary Statistics Table
+ps_summary = pd.DataFrame({
+    'Treated (CP Active)': ps_treated.describe(percentiles=[0.05, 0.25, 0.50, 0.75, 0.95]),
+    'Untreated (No CP)': ps_control.describe(percentiles=[0.05, 0.25, 0.50, 0.75, 0.95])
+}).round(4)
+
+# 2. Compute Common Support Boundaries
+overlap_min = max(ps_treated.min(), ps_control.min())
+overlap_max = min(ps_treated.max(), ps_control.max())
+n_treated_in_range = (ps_treated >= overlap_min) & (ps_treated <= overlap_max)
+n_control_in_range = (ps_control >= overlap_min) & (ps_control <= overlap_max)
+
+print("\n" + "="*70)
+print("NUMERICAL PROPENSITY SCORE DISTRIBUTION (COMMON SUPPORT)")
+print("="*70)
+print(ps_summary.to_string())
+print("-" * 70)
+print(f"Common Support Range: [{overlap_min:.4f}, {overlap_max:.4f}]")
+print(f"Treated Units in Support:   {n_treated_in_range.sum()} / {len(ps_treated)} ({n_treated_in_range.mean():.1%})")
+print(f"Untreated Units in Support: {n_control_in_range.sum()} / {len(ps_control)} ({n_control_in_range.mean():.1%})")
+print("="*70 + "\n")
+
+# ---------------------------------------------------------
+# Export Compact LaTeX Table: Propensity Score Distribution
+# ---------------------------------------------------------
+print("Exporting Compact Propensity Score Summary Table to LaTeX...")
+
+# 1. Filter to only the essential rows and map clean names
+rows_to_keep = ['count', 'mean', 'std', 'min', '50%', 'max']
+ps_summary_compact = ps_summary.loc[rows_to_keep].copy()
+
+index_mapping = {
+    'count': 'Observations (N)',
+    'mean': 'Mean',
+    'std': 'Std. Dev.',
+    'min': 'Minimum',
+    '50%': 'Median',
+    'max': 'Maximum'
+}
+ps_summary_compact = ps_summary_compact.rename(index=index_mapping)
+
+# 2. Calculate percentages for the footnote
+treated_pct = n_treated_in_range.mean() * 100
+control_pct = n_control_in_range.mean() * 100
+
+# 3. Build manual LaTeX lines
+latex_lines = []
+latex_lines.append(r"\begin{table}[htbp]")
+latex_lines.append(r"\centering")
+latex_lines.append(r"\caption{Propensity Score Distribution and Common Support}")
+latex_lines.append(r"\label{tab:propensity_scores}")
+latex_lines.append(r"\begin{tabular}{lcc}")
+latex_lines.append(r"\toprule")
+latex_lines.append(r"Statistic & Treated (CP Active) & Untreated (No CP) \\")
+latex_lines.append(r"\midrule")
+
+# Populate data rows
+for index, row in ps_summary_compact.iterrows():
+    if 'Observations' in index:
+        val1 = f"{int(row['Treated (CP Active)'])}"
+        val2 = f"{int(row['Untreated (No CP)'])}"
+    else:
+        val1 = f"{row['Treated (CP Active)']:.3f}"
+        val2 = f"{row['Untreated (No CP)']:.3f}"
+    
+    latex_lines.append(f"{index} & {val1} & {val2} \\\\")
+
+latex_lines.append(r"\bottomrule")
+latex_lines.append(r"\end{tabular}")
+
+# 4. Add the overlap metrics as a formatted footnote
+latex_lines.append(r"") 
+latex_lines.append(r"\vspace{1ex}")
+latex_lines.append(r"{\raggedright \footnotesize \textit{Notes:} The common support region is strictly defined as $[%.4f, %.4f]$. " % (overlap_min, overlap_max))
+latex_lines.append(r"Within this bounded interval, the analysis retains %d treated units (%.1f\%%) and %d untreated units (%.1f\%%).\par}" % (
+    n_treated_in_range.sum(), treated_pct, n_control_in_range.sum(), control_pct
+))
+latex_lines.append(r"\end{table}")
+
+# 5. Save file to disk
+with open(tables_dir / 'propensity_score_summary.tex', 'w') as f:
+    f.write("\n".join(latex_lines) + "\n")
+
+print("Success: compact propensity_score_summary.tex saved.")
 
 print(f"Success: All figures generated and saved as PDFs in {figures_dir}")

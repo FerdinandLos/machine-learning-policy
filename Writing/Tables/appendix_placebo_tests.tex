@@ -2,15 +2,24 @@
 \centering
 \caption{Falsification Tests: Estimated Effects on Placebo Outcomes (Global ATT)}
 \label{tab:placebo_tests}
-\begin{tabular}{lcccccc}
+\begin{tabular}{lccc}
 \toprule
-Model & \multicolumn{3}{c}{AIPW (Lasso)} & \multicolumn{3}{c}{Causal Forest} \\
-\cmidrule(lr){2-4} \cmidrule(lr){5-7}
-Policy & Congestion Pricing (CP) & Low Emission Zone (LEZ) & Synergy (CP $\times$ LEZ) & Congestion Pricing (CP) & Low Emission Zone (LEZ) & Synergy (CP $\times$ LEZ) \\
-Decoy Outcome &  &  &  &  &  &  \\
+Decoy Outcome & Congestion Pricing (CP) & Low Emission Zone (LEZ) & Synergy (CP $\times$ LEZ) \\
 \midrule
-Library Count & $-0.1783$ ($p=0.380$) & $-0.0095$ ($p=0.916$) & $0.3475$ ($p=0.334$) & $-0.2332$ ($p=0.227$) & $-0.0026$ ($p=0.989$) & $0.0232$ ($p=0.946$) \\
+\multicolumn{4}{l}{\textbf{Panel A: AIPW (Lasso)}} \\
+\midrule
+No. of Libraries & $-0.0424$ ($p=0.201$) & $0.0601$ ($p=0.264$) & $0.1164$ ($p=0.599$) \\
+Streetlight Density & $0.8594$ ($p=0.356$) & $-0.5827$ ($p=0.537$) & $-0.6432$ ($p=0.704$) \\
+No. of Fountains & $-0.2954$ ($p=0.414$) & $-0.0395$ ($p=0.874$) & $-0.2673$ ($p=0.519$) \\
+No. of benches pc & $0.0053$ ($p=0.964$) & $-0.4626^{***}$ ($p=0.001$) & $-0.2084$ ($p=0.135$) \\
+\midrule
+\multicolumn{4}{l}{\textbf{Panel B: Causal Forest}} \\
+\midrule
+No. of Libraries & $-0.0701$ ($p=0.126$) & $0.1036^{**}$ ($p=0.050$) & $0.0092$ ($p=0.910$) \\
+Streetlight Density & $1.6208^{*}$ ($p=0.078$) & $0.0816$ ($p=0.907$) & $0.6502$ ($p=0.528$) \\
+No. of Fountains & $-0.4659$ ($p=0.173$) & $-0.2444$ ($p=0.365$) & $-0.3245$ ($p=0.462$) \\
+No. of benches pc & $-0.0436$ ($p=0.675$) & $-0.5258^{***}$ ($p=0.000$) & $-0.3807^{**}$ ($p=0.010$) \\
 \bottomrule
 \end{tabular}
-\end{table}
 \raggedright \footnotesize \textit{Notes:} $p$-values in parentheses. $^{*}$ $p < 0.10$, $^{**}$ $p < 0.05$, $^{***}$ $p < 0.01$.
+\end{table}

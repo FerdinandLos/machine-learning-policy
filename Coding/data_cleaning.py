@@ -355,6 +355,88 @@ with pd.option_context('display.max_rows', None, 'display.float_format', lambda 
 print("="*80 + "\n")
 
 # ---------------------------------------------------------
+# Export LaTeX Table: Combined Treatment Assignment by Cluster
+# ---------------------------------------------------------
+print("Generating Combined Treatment by Cluster Cross-Tabulation...")
+
+# 1. Aggregate to the unique city level
+# 'max' ensures that if a city EVER had the policy active, it counts as 1
+city_treatment = df.groupby('city_id').agg({
+    'cluster_id': 'first',
+    'cp_active': 'max',
+    'lez_active': 'max'
+}).reset_index()
+
+# 2. Map the cluster IDs to your official thesis names
+cluster_map = {
+    0: 'Regional Hubs (0)',
+    1: 'Dense Metropolises (1)'
+}
+city_treatment['Cluster'] = city_treatment['cluster_id'].map(cluster_map)
+
+# 3. Create a mutually exclusive combined treatment category
+def determine_treatment(row):
+    if row['cp_active'] == 0 and row['lez_active'] == 0:
+        return 'Never Treated'
+    elif row['cp_active'] == 1 and row['lez_active'] == 0:
+        return 'CP Only'
+    elif row['cp_active'] == 0 and row['lez_active'] == 1:
+        return 'LEZ Only'
+    elif row['cp_active'] == 1 and row['lez_active'] == 1:
+        return 'Synergy'
+    return 'Unknown'
+
+city_treatment['Treatment_State'] = city_treatment.apply(determine_treatment, axis=1)
+
+# Force a specific logical column order for the final table
+col_order = ['Never Treated', 'CP Only', 'LEZ Only', 'Synergy']
+city_treatment['Treatment_State'] = pd.Categorical(city_treatment['Treatment_State'], categories=col_order, ordered=True)
+
+# 4. Create the cross-tabulation with row and column totals
+crosstab_combined = pd.crosstab(
+    city_treatment['Cluster'], 
+    city_treatment['Treatment_State'], 
+    margins=True, 
+    margins_name='Total'
+)
+
+# 5. Build the manual LaTeX table
+latex_lines = []
+latex_lines.append(r"\begin{table}[htbp]")
+latex_lines.append(r"\centering")
+latex_lines.append(r"\caption{Distribution of Climate Policy Treatments by Urban Typology}")
+latex_lines.append(r"\label{tab:treatment_by_cluster}")
+# lccccc creates 6 columns (1 string for cluster name, 5 numeric)
+latex_lines.append(r"\begin{tabular}{lccccc}")
+latex_lines.append(r"\toprule")
+latex_lines.append(r"Urban Typology & Never Treated & CP Only & LEZ Only & Synergy (CP $\times$ LEZ) & Total \\")
+latex_lines.append(r"\midrule")
+
+# Loop through the rows (excluding the last 'Total' row first)
+for index, row in crosstab_combined.iloc[:-1].iterrows():
+    latex_lines.append(f"{index} & {row['Never Treated']} & {row['CP Only']} & {row['LEZ Only']} & {row['Synergy']} & {row['Total']} \\\\")
+
+# Add a midrule before the Total line to make it pop
+latex_lines.append(r"\midrule")
+total_row = crosstab_combined.iloc[-1]
+latex_lines.append(f"\\textbf{{{total_row.name}}} & \\textbf{{{total_row['Never Treated']}}} & \\textbf{{{total_row['CP Only']}}} & \\textbf{{{total_row['LEZ Only']}}} & \\textbf{{{total_row['Synergy']}}} & \\textbf{{{total_row['Total']}}} \\\\")
+
+latex_lines.append(r"\bottomrule")
+latex_lines.append(r"\end{tabular}")
+latex_lines.append(r"") 
+latex_lines.append(r"\vspace{1ex}")
+latex_lines.append(r"{\raggedright \footnotesize \textit{Notes:} Table displays the count of unique cities.") 
+latex_lines.append(r"A city is classified as ``Ever Treated'' if Congestion Pricing was active in any year during the sample period.\par}")
+latex_lines.append(r"\end{table}")
+
+# 6. Save file to disk
+tables_dir = Path('Writing/Tables')
+with open(tables_dir / 'treatment_by_cluster.tex', 'w') as f:
+    f.write("\n".join(latex_lines) + "\n")
+
+print("Success: treatment_by_cluster.tex saved.")
+
+# ---------------------------------------------------------
 # 9. Export Final Cleaned Data
 # ---------------------------------------------------------
 variable_names = df.columns.tolist()

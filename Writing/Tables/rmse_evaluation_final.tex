@@ -1,14 +1,14 @@
 \begin{table}
 \caption{Cross-fitted RMSE for predicting Nuisance Parameters}
 \label{tab:rmse_evaluation}
-\begin{tabular}{lcccccc}
+\begin{tabular}{lccccc}
 \toprule
-Model & OLS - Basic & L1 (Lasso / Logit L1) & L2 (Ridge / Logit L2) & Elastic Net & Random Forest & Best Model \\
+Model & L1 (Lasso / Logit L1) & L2 (Ridge / Logit L2) & Elastic Net & Random Forest & Best Model \\
 \midrule
-RMSE Y (Outcome) & 0.5539 & 0.5250 & 0.5500 & 0.5250 & 0.4616 & Random Forest \\
-RMSE D (CP) & 0.3470 & 0.3058 & 0.3077 & 0.3067 & 0.2864 & Random Forest \\
-RMSE D (LEZ) & 0.3315 & 0.2822 & 0.2826 & 0.2846 & 0.2826 & L1 (Lasso / Logit L1) \\
-RMSE D (CP $\times$ LEZ) & 0.3009 & 0.2522 & 0.2563 & 0.2541 & 0.2550 & L1 (Lasso / Logit L1) \\
+RMSE Y (Outcome) & 0.5250 & 0.5500 & 0.5250 & 0.4616 & Random Forest \\
+RMSE D (CP) & 0.3058 & 0.3077 & 0.3067 & 0.2864 & Random Forest \\
+RMSE D (LEZ) & 0.2822 & 0.2826 & 0.2846 & 0.2826 & L1 (Lasso / Logit L1) \\
+RMSE D (CP $\times$ LEZ) & 0.2522 & 0.2563 & 0.2541 & 0.2550 & L1 (Lasso / Logit L1) \\
 \bottomrule
 \end{tabular}
 \end{table}
