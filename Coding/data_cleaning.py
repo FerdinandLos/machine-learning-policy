@@ -12,17 +12,14 @@ from sklearn.metrics import silhouette_score
 # ---------------------------------------------------------
 # 0. Global Academic Visual Styling
 # ---------------------------------------------------------
-# Apply the exact same style used in the causal estimation plots
 sns.set_theme(style="whitegrid", palette="muted")
 plt.rcParams.update({'font.size': 12, 'font.family': 'serif'})
 
-# Load the urban emissions panel dataset
 csv_path = Path(__file__).resolve().parents[1] / "Data" / "urban_emissions_panel.csv"
 df = pd.read_csv(csv_path)
 
 print(df.head())
 
-# Ensure the figures directory exists
 save_dir = os.path.join('Writing', 'Figures')
 os.makedirs(save_dir, exist_ok=True)
 
@@ -54,7 +51,6 @@ print("\n* Tip: Compare the 'min' and 'max' against the 'mean'. Look for negativ
 # ---------------------------------------------------------
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
-# Use the light blue for raw, dark blue for log-transformed
 ax1.hist(df['transport_co2'].dropna(), bins=40, color='#a6cee3', edgecolor='black', alpha=0.8)
 ax1.set_title('Raw Distribution of Transport $CO_2$', pad=15, fontweight='bold')
 ax1.set_xlabel('Transport $CO_2$ (kt)')
@@ -96,14 +92,12 @@ if highly_skewed_cols.empty:
     print("No highly skewed variables detected.")
 else:
     print(highly_skewed_cols)
-    print("\n* Note: Positive values indicate a right-skew (long tail to the right).")
 
 if not highly_skewed_cols.empty:
     cols_to_plot = highly_skewed_cols.index.tolist()
     n_cols = 3
     n_rows = math.ceil(len(cols_to_plot) / n_cols)
     
-    # Temporarily reduce font size for this multi-grid
     plt.rcParams.update({'font.size': 10})
     fig, axes = plt.subplots(n_rows, n_cols, figsize=(12, 3 * n_rows))
     
@@ -115,7 +109,6 @@ if not highly_skewed_cols.empty:
         axes = [axes] 
         
     for i, col in enumerate(cols_to_plot):
-        # Use a neutral purple/gray from the palette for diagnostics
         axes[i].hist(df[col].dropna(), bins=30, color='#7570b3', edgecolor='black', alpha=0.7)
         axes[i].set_title(f'{col}\n(Skew: {highly_skewed_cols[col]:.2f})', pad=10, fontweight='bold')
         axes[i].set_yticks([])
@@ -127,7 +120,6 @@ if not highly_skewed_cols.empty:
     plt.savefig(os.path.join(save_dir, 'skewness_diagnostics.pdf'), format='pdf', bbox_inches='tight')
     plt.close()
     
-    # Restore the main font size
     plt.rcParams.update({'font.size': 12})
 
 # ---------------------------------------------------------
@@ -143,243 +135,224 @@ df['log_transport_co2'] = np.log(df['transport_co2'])
 for col in covariates_to_log:
     df[f'log_{col}'] = np.log(df[col])
 
-# Drop the raw unlogged columns
 columns_to_drop = ['transport_co2'] + covariates_to_log
 df = df.drop(columns=columns_to_drop)
 
-# --------------------------
-# 6. Find the optimal K clusters
-# --------------------------
+# ---------------------------------------------------------
+# 6. Categorize and Construct Time-Invariant Proxies
+# ---------------------------------------------------------
+print("\n--- CONSTRUCTING PANEL HETEROGENEITY PROXIES ---")
 
-# 1. Isolate exogenous variables and account for panel structure
-# Define columns that must NOT be used for clustering
-# UPDATED: Swapped raw co2 columns for their log counterparts
-K_means_exclude_cols = ['year', 'log_transport_co2', 'log_total_co2', 'cp_active', 'lez_active', 
-                'cp_impl_year', 'lez_impl_year', 'cp_announce_year', 'lez_announce_year', 'country_id']
+# 1. Explicitly define your strict time-invariant variables
+time_invariant_cols = ['log_area_km2', 'elevation', 'coastal', 'latitude_zone']
+time_invariant_cols = [c for c in time_invariant_cols if c in df.columns]
 
-# Drop excluded columns and aggregate to one row per city (mean over time)
-city_features = df.drop(columns=K_means_exclude_cols).groupby('city_id').mean()
+# 2. Define base exclusions (Identifiers, Policy Timings, and Outcomes)
+base_exclusions = [
+    'city_id', 'year', 'country_id', 'cluster_id',
+    'cp_active', 'lez_active', 'cp_impl_year', 'lez_impl_year',
+    'cp_announce_year', 'lez_announce_year', 
+    'transport_co2', 'log_transport_co2', 'total_co2', 'log_total_co2'
+]
 
-# 2. Standardize the data (crucial for distance-based K-Means)
-X_scaled = StandardScaler().fit_transform(city_features)
+# 3. Dynamically capture ALL remaining numeric columns as time-varying covariates
+numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+time_varying_cols = [col for col in numeric_cols 
+                     if col not in base_exclusions 
+                     and col not in time_invariant_cols]
 
-# 3. Efficiently compute both metrics in a single loop
+# Ensure chronological order
+df = df.sort_values(by=['city_id', 'year']).reset_index(drop=True)
+
+# 4. Generate _initial variables strictly for time-invariant features
+for col in time_invariant_cols:
+    df[f'{col}_initial'] = df.groupby('city_id')[col].transform('first')
+
+print(f"Success: Isolated {len(time_invariant_cols)} time-invariant features.")
+
+# ---------------------------------------------------------
+# 7. PROPERLY-TIMED MUNDLAK DEVICE IMPLEMENTATION
+# ---------------------------------------------------------
+print(f"Constructing Mundlak device for {len(time_varying_cols)} time-varying covariates...")
+
+df['first_policy_year'] = df[['cp_impl_year', 'lez_impl_year']].min(axis=1)
+
+pre_treatment_mask = (df['year'] < df['first_policy_year']) | df['first_policy_year'].isna()
+pre_df = df[pre_treatment_mask]
+
+# Calculate the pre-treatment means for the massive list of time-varying variables
+mundlak_means = pre_df.groupby('city_id')[time_varying_cols].mean()
+mundlak_means = mundlak_means.add_suffix('_pre_mean')
+df = df.merge(mundlak_means, on='city_id', how='left')
+
+# Safety fallback for immediate adopters
+for col in mundlak_means.columns:
+    if df[col].isna().any():
+        base_col = col.replace('_pre_mean', '')
+        first_obs = df.sort_values(['city_id', 'year']).groupby('city_id')[base_col].transform('first')
+        df[col] = df[col].fillna(first_obs)
+
+df = df.drop(columns=['first_policy_year'])
+
+print("Success: Full Mundlak proxy matrix generated.")
+
+# ---------------------------------------------------------
+# Check and Remove Zero-Variance Variables (e.g., Climate Pact)
+# ---------------------------------------------------------
+# Define the specific column to investigate
+pact_col = 'national_climate_pact_pre_mean'
+
+if pact_col in df.columns:
+    # Check if the maximum value is 0 (meaning all rows are 0)
+    if df[pact_col].max() == 0:
+        print(f"\n[DIAGNOSTIC] Confirmed: '{pact_col}' is exactly 0 for all cities.")
+        print("This indicates the pact was non-existent during the pre-treatment period.")
+        print(f"-> Dropping '{pact_col}' from the dataset.")
+        
+        # Drop the pre_mean column
+        df = df.drop(columns=[pact_col])
+        
+        # Optionally, drop the raw base column as well if you don't need it for later estimations
+        if 'national_climate_pact' in df.columns:
+            df = df.drop(columns=['national_climate_pact'])
+            
+    else:
+        print(f"\n[DIAGNOSTIC] '{pact_col}' contains non-zero values.")
+        print("Mean value across cities:", df[pact_col].mean())
+
+# ---------------------------------------------------------
+# 8. Find the Optimal K Clusters (Strictly Pre-Treatment via Proxies)
+# ---------------------------------------------------------
+print("\n--- INITIATING K-MEANS CLUSTERING ---")
+
+# 1. Extract exactly one row per city, as the proxies are time-invariant
+city_features = df.drop_duplicates('city_id').set_index('city_id')
+
+# 2. Filter strictly for the newly created pre-treatment columns
+# We exclude the CO2 outcomes to prevent clustering on the dependent variables
+cluster_cols = [col for col in city_features.columns 
+                if (col.endswith('_pre_mean') or col.endswith('_initial')) 
+                and 'co2' not in col]
+
+city_features_cluster = city_features[cluster_cols].copy()
+
+# 3. Standardize and evaluate clusters
+X_scaled = StandardScaler().fit_transform(city_features_cluster)
 k_range = range(2, 10)
 inertias, silhouettes = [], []
 
 for k in k_range:
-    # n_init='auto' optimizes initialization to save computation time
     kmeans = KMeans(n_clusters=k, random_state=42, n_init='auto').fit(X_scaled)
     inertias.append(kmeans.inertia_)
     silhouettes.append(silhouette_score(X_scaled, kmeans.labels_))
 
-# 4. Academic Figure Formatting
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
 
-# Plot 1: Elbow Method (Orange)
 ax1.plot(k_range, inertias, marker='s', color='#d95f02', linestyle='-', linewidth=2, markersize=7)
 ax1.set_title('Elbow Method (Inertia)', pad=15, fontweight='bold')
 ax1.set_xlabel('Number of Clusters (K)')
 ax1.set_ylabel('Inertia')
 
-# Plot 2: Silhouette Analysis (Green)
 ax2.plot(k_range, silhouettes, marker='o', color='#1b9e77', linestyle='-', linewidth=2, markersize=7)
 ax2.set_title('Silhouette Analysis', pad=15, fontweight='bold')
 ax2.set_xlabel('Number of Clusters (K)')
 ax2.set_ylabel('Silhouette Score')
 
 plt.tight_layout()
-
-# Save to Specific Directory
-# os.makedirs ensures the code doesn't crash if the folders don't exist yet
-save_dir = os.path.join('Writing', 'Figures')
-os.makedirs(save_dir, exist_ok=True)
-
-# Save as both PNG (for quick viewing) and PDF (ideal for LaTeX/Word documents)
 pdf_path = os.path.join(save_dir, 'kmeans_evaluation.pdf')
 plt.savefig(pdf_path, format='pdf', bbox_inches='tight')
 plt.close()
 
-# 5. Apply the optimal K = 2 following Silhouette Analysis
+# 4. Apply the optimal K = 2
 optimal_k = 2
 final_kmeans = KMeans(n_clusters=optimal_k, random_state=42, n_init='auto').fit(X_scaled)
+city_features_cluster['cluster_id'] = final_kmeans.labels_
 
-# Assign the fixed cluster IDs back to the aggregated dataframe
-city_features['cluster_id'] = final_kmeans.labels_
-
-# Merge the fixed cluster IDs back to the original panel dataset based on city_id
-df = df.merge(city_features[['cluster_id']], on='city_id', how='left')
+# 5. Map the cluster IDs back to the main panel dataset
+cluster_mapping = dict(zip(city_features_cluster.index, final_kmeans.labels_))
+df['cluster_id'] = df['city_id'].map(cluster_mapping)
 
 # ----------
 # Show how the two types differ
 # ----------
-# 1. Load the Variable Descriptions for Real Names
-# Assuming the file is in a folder named 'Data' relative to your script
-desc_path = os.path.join('Data', 'variable_descriptions.csv')
-descriptions_df = pd.read_csv(desc_path)
 
-# Create a dictionary mapping 'variable_name' to 'description'
-name_mapping = dict(zip(descriptions_df['variable_name'], descriptions_df['description']))
-
-# 2. Calculate raw means for interpretability
-cluster_means = city_features.groupby('cluster_id').mean()
-
-# Identify the top 10 most distinguishing features
-percent_diff = abs(cluster_means.loc[0] - cluster_means.loc[1]) / cluster_means.mean()
-top_features = percent_diff.sort_values(ascending=False).head(10).index
-
-# Change the names to be less long
-# Create a dictionary for the specific variables that are too long
-custom_short_names = {
-    "Indicator: city participates in national climate pact (1=yes; persistent from 2016 once joined)": "National Climate Pact Participation",
-    "Temperature anomaly relative to 1991-2020 baseline (C)": "Temperature Anomaly",
-    "Green party vote share or equivalent index (0-1)": "Green Party Vote Share",
-    "Latitude zone (1=northern, 2=central, 3=southern)": "Latitude Zone",
-    "Environmental NGO activity index (0-100)": "Environmental NGO Activity Index",
-    "log_pop_density": "Log Population per $km^2$",
-    # Add any others that need shortening here
-}
-
-# 3. Create a Summary Table for the Main Text
-summary_table = cluster_means[top_features].T
-
-# Rename columns to your chosen typology names
-summary_table.columns = ['Sprawling Regional Hubs', 'Dense Progressive Metropolises']
-
-# Map the raw variable names in the index to the real descriptions
-summary_table = summary_table.rename(index=name_mapping)
-
-# Apply custom short names
-summary_table = summary_table.rename(index=custom_short_names)
-
-# Enforce two-digit rounding
-summary_table = summary_table.round(2)
-
-print("Top 10 Distinguishing Features:")
-print(summary_table)
-
-# Optional exports
-summary_table.to_latex('Writing/Tables/cluster_summary.tex', float_format="%.2f")
-
-# 4. Create an Academic Visualization (Standardized Differences)
-X_scaled_df = pd.DataFrame(X_scaled, columns=city_features.drop(columns='cluster_id').columns)
-X_scaled_df['cluster_id'] = city_features['cluster_id'].values
+X_scaled_df = pd.DataFrame(X_scaled, columns=city_features_cluster.drop(columns='cluster_id').columns)
+X_scaled_df['cluster_id'] = final_kmeans.labels_
 scaled_means = X_scaled_df.groupby('cluster_id').mean()
 
-# Calculate the difference in standard deviations
-scaled_diff = (scaled_means.loc[1] - scaled_means.loc[0])[top_features]
+# Calculate absolute differences for all features
+std_diff_absolute = abs(scaled_means.loc[1] - scaled_means.loc[0])
 
-# Map the raw variable names to the real descriptions for the plot's y-axis
-scaled_diff = scaled_diff.rename(index=name_mapping)
+# --- NEW: Extract Top 8 (Largest differences) and Bottom 4 (Smallest differences / Zeros) ---
+top_10_features = std_diff_absolute.sort_values(ascending=False).head(10).index.tolist()
+bottom_4_features = std_diff_absolute.sort_values(ascending=True).head(4).index.tolist()
 
-# Apply custom short names for the plot
-scaled_diff = scaled_diff.rename(index=custom_short_names)
+# Combine them into a single list of 12 features
+combined_features = top_10_features + bottom_4_features
 
-fig, ax = plt.subplots(figsize=(8, 6))
+# Build the Visualization using the combined features
+scaled_diff = (scaled_means.loc[1] - scaled_means.loc[0])[combined_features]
 
-# Apply the exact GATET cluster colors: dark blue for Dense, light blue for Sprawling
-# Positive values mean Type 1 is higher; negative means Type 0 is higher
+#plot_names = custom_short_names.copy()
+#plot_names['log_pop_density_pre_mean'] = "Log Population per $km^2$"
+#plot_names['log_population_pre_mean'] = "Log Population"
+
+#scaled_diff = scaled_diff.rename(index=name_mapping)
+#scaled_diff = scaled_diff.rename(index=plot_names)
+
+# This mathematically guarantees the bars taper down nicely, with the 0s at the very bottom
+scaled_diff = scaled_diff.reindex(scaled_diff.abs().sort_values(ascending=False).index)
+
+# Slightly increased figure height from 6 to 7 to comfortably fit 12 bars
+fig, ax = plt.subplots(figsize=(8, 7))
 colors = ['#1f78b4' if val > 0 else '#a6cee3' for val in scaled_diff]
 scaled_diff.plot(kind='barh', color=colors, edgecolor='black', ax=ax)
 
-ax.set_title('Top 10 Distinguishing City Characteristics', pad=15, fontweight='bold')
-ax.set_xlabel('Difference in Standard Deviations\n(Dense Metropolises - Sprawling Hubs)')
+# --- NEW: Add a subtle horizontal separator line ---
+# Because pandas plots the 12 bars at y-coordinates 0 through 11, 
+# and we are about to invert the y-axis, placing a line at y=7.5 
+# perfectly divides the 8th bar and the 9th bar.
+ax.axhline(y=9.5, color='black', linestyle='--', linewidth=1, alpha=0.5)
 
-# Invert y-axis so the biggest difference is at the top
+# Add text annotations directly onto the chart to explain the sections
+# The x-coordinate is set near the middle/right of the chart area. Adjust x as needed based on your actual data range.
+ax.text(x=1, y=9.35, s='Structural Drivers', color='black', fontsize=10, fontstyle='italic', ha='center')
+ax.text(x=1, y=9.85, s='Orthogonal Baselines', color='black', fontsize=10, fontstyle='italic', ha='center')
+
+# Updated Title to reflect the academic narrative
+ax.set_title('Top Structural Drivers vs. Orthogonal Controls', pad=15, fontweight='bold')
+ax.set_xlabel('Difference in Standard Deviations\n(Dense Metropolises - Sprawling Hubs)')
 plt.gca().invert_yaxis() 
 plt.tight_layout()
 
-# Save the figure
-save_dir = os.path.join('Writing', 'Figures')
-os.makedirs(save_dir, exist_ok=True)
 plt.savefig(os.path.join(save_dir, 'cluster_differences.pdf'), format='pdf', bbox_inches='tight')
 plt.close()
 
 # ---------------------------------------------------------
-# 7. Construct Panel Heterogeneity Proxies (Initial Conditions Only)
+# Print Scaled Differences Across ALL Features in Console
 # ---------------------------------------------------------
-print("\n--- CONSTRUCTING PANEL HETEROGENEITY PROXIES ---")
+# 1. Calculate the directional scaled difference for ALL features (Dense - Sprawling)
+full_scaled_diff = scaled_means.loc[1] - scaled_means.loc[0]
 
-# Define the dynamic covariates (X_{i,t}) by excluding IDs, static variables, treatments, and outcomes
-# We use the updated dataframe columns after the log transformation
-exclude_from_proxies = exclude_cols + ['log_transport_co2']
-numeric_df = df.select_dtypes(include=[np.number])
-X_covariates = [col for col in numeric_df.columns if col not in exclude_from_proxies]
+# 2. Sort by absolute magnitude so the most distinguishing features appear at the top
+full_scaled_diff_sorted = full_scaled_diff.reindex(full_scaled_diff.abs().sort_values(ascending=False).index)
 
-# Initial conditions (X_{i,0} and Y_{i,0})
-# We must sort the dataframe chronologically to ensure 'first' captures the true baseline year
-df = df.sort_values(by=['city_id', 'year']).reset_index(drop=True)
+# 3. Create a clean DataFrame for console display
+all_features_df = pd.DataFrame({
+    'Feature': full_scaled_diff_sorted.index,
+    'Std_Dev_Diff (Dense - Sprawling)': full_scaled_diff_sorted.values
+})
 
-# Covariate initial conditions
-initial_X = df.groupby('city_id')[X_covariates].transform('first')
-df = df.join(initial_X.add_suffix('_initial'))
+# Map clean descriptions if available
+all_features_df['Description'] = all_features_df['Feature'].fillna(all_features_df['Feature'])
 
-# Outcome initial conditions
-df['log_transport_co2_initial'] = df.groupby('city_id')['log_transport_co2'].transform('first')
-
-print("Success: Generated strictly pre-determined initial conditions (safely avoiding post-treatment contamination).")
-
-# ---------------------------------------------------------
-# 8. PROPERLY-TIMED MUNDLAK DEVICE IMPLEMENTATION
-# ---------------------------------------------------------
-print("Constructing properly-timed Mundlak device for time-invariant unobserved heterogeneity...")
-
-# 1. Identify the first implementation year for ANY policy per city
-# min(axis=1) finds the earliest adoption year between CP and LEZ. Never-takers get NaN.
-df['first_policy_year'] = df[['cp_impl_year', 'lez_impl_year']].min(axis=1)
-
-# 2. Define your time-varying confounders
-# UPDATED: Utilizing the exact column names present in the dataframe post-transformation
-time_varying_cols = [
-    'log_gdp_pc', 
-    'log_population',
-    'log_pop_density',
-    'log_electricity_price',
-    'log_fuel_price',
-    'unemployment',
-    'education_share',
-    'renewable_electricity_share',
-    'fleet_diesel_share',
-    'fleet_petrol_share',
-    'fleet_electric_share',
-    'public_transit_score',
-    'logistics_activity',
-    'fiscal_capacity',
-    'electoral_competitiveness',
-    'ngo_environment_index'
-]
-
-# Ensure we only try to process columns that actually exist in your dataframe
-time_varying_cols = [col for col in time_varying_cols if col in df.columns]
-
-# 3. Filter data to strictly pre-treatment years (or all years for never-takers)
-pre_treatment_mask = (df['year'] < df['first_policy_year']) | df['first_policy_year'].isna()
-pre_df = df[pre_treatment_mask]
-
-# 4. Calculate the pre-treatment means per city
-mundlak_means = pre_df.groupby('city_id')[time_varying_cols].mean()
-
-# 5. Rename columns to indicate they are baseline proxies
-mundlak_means = mundlak_means.add_suffix('_pre_mean')
-
-# 6. Merge back into the main dataframe
-df = df.merge(mundlak_means, on='city_id', how='left')
-
-# 7. Safety Fallback: "Always-Takers" or Year-1 Adopters
-# If a city implemented a policy in the very first year of your panel, it has no strict 
-# "pre-treatment" mean. To prevent NaN crashes, we backfill these specific cases 
-# using their Year 1 observation, which is the closest proxy available.
-for col in mundlak_means.columns:
-    if df[col].isna().any():
-        base_col = col.replace('_pre_mean', '')
-        # Grab the first available chronological observation for the missing cities
-        first_obs = df.sort_values(['city_id', 'year']).groupby('city_id')[base_col].transform('first')
-        df[col] = df[col].fillna(first_obs)
-
-# 8. Cleanup temporary column
-df = df.drop(columns=['first_policy_year'])
-
-print(f"Success: Added {len(time_varying_cols)} Mundlak proxy variables to the dataset.")
+print("\n" + "="*80)
+print("FULL LIST OF SCALED DIFFERENCES ACROSS ALL CLUSTER FEATURES (in Std. Devs)")
+print("="*80)
+# pd.option_context ensures Pandas prints all rows without truncating the middle with '...'
+with pd.option_context('display.max_rows', None, 'display.float_format', lambda x: f'{x:+.3f}'):
+    print(all_features_df[['Description', 'Feature', 'Std_Dev_Diff (Dense - Sprawling)']].to_string(index=False))
+print("="*80 + "\n")
 
 # ---------------------------------------------------------
 # 9. Export Final Cleaned Data

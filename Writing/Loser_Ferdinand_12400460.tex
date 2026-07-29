@@ -47,7 +47,9 @@ Abstract content goes here. This section should provide a concise summary of the
 
 \section{Empirical Strategy and Identification}
 \label{sec:emp_strategy}
-% Detail your Double Machine Learning (DML) and AIPW framework here.
+- Target parameters: ATE, ATT, GATT (possible differences in causal forest and aipw lasso estimation) (show math and explain shortly)
+
+
 
 % Figure 3 fits perfectly in the Identification section to visually prove 
 % your unconfoundedness and common support (positivity) assumptions.
@@ -60,28 +62,39 @@ Abstract content goes here. This section should provide a concise summary of the
 
 \section{Proposed Estimator}
 \label{sec:proposed_estimator}
-% Formalize the Riesz-representer and Causal Forest equations here.
+- Use AIPW and Causal Forest instead of IPW or Reg. adj.
+- Explain how they work and differences
+
 
 \section{Theoretical Properties}
 \label{sec:theoretical_properties}
-% Discuss the asymptotic normality, orthogonalization, and doubly robust properties.
+- Proof of Neymon Orthogonality (is it the same for both?)
+- Not yet sure about other properties
 
 \section{Data Preparation}
 \label{sec:data_preparation}
-% Explain the panel construction, the spatial matching of satellite data, 
-% and the clustering methodology here.
+- no missing values or absurd numbers
+- check for skewed distributions (plot in appendix)
+- log transform variables where it makes economic sense and where it solves skewness
+- Time invariant variables and creation of Mundlak device in order to account for panel structure (national climate pact removed because not changing)
+
+\section{K-means clustering}
+\label{sec:cluster}
+- determination of two clusters necessary to make heterogeneity analysis with many covariates viable
+- optimal k = 2 (interpretability and silhouette analysis)
+- Cluster 1: urban metropolises, Cluster 2: sprawling regional hubs
+- describe them based on the cluster differences plot
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Figures/cluster_differences.pdf}
+    \caption{Differences between the two clusters.}
+    \label{fig:cluster differences}
+\end{figure}
 
 \section{Results}
 \label{sec:results}
 
-\subsection{Nuisance Parameter Evaluation}
-% Table 1: Prove to the reviewers that your ML models actually fit the data.
-
-\input{Tables/rmse_evaluation_final.tex}
-
-
-\subsection{Main Causal Estimates}
-% Master Table: Your definitive Global ATE, Global ATT, and GATT results.
 \input{Tables/dml_master_results.tex}
 
 
