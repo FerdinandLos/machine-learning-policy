@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  28 JUL 2026 18:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  29 JUL 2026 09:40
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -668,7 +668,7 @@ Overfull \hbox (283.43185pt too wide) in paragraph at lines 4--14
  []
 
 ) (./Tables/dml_master_results.tex
-Overfull \hbox (96.0912pt too wide) in paragraph at lines 5--30
+Overfull \hbox (67.51515pt too wide) in paragraph at lines 5--30
  [][] 
  []
 
@@ -679,7 +679,7 @@ File: Figures/forest_plot_att.pdf Graphic file (type pdf)
 Package pdftex.def Info: Figures/forest_plot_att.pdf  used on input line 91.
 (pdftex.def)             Requested size: 407.66833pt x 241.02002pt.
  [2 <./Figures/overlap_density.pdf>]
-<Figures/heterogeneity_bar_gatt.pdf, id=167, 578.16pt x 361.35pt>
+<Figures/heterogeneity_bar_gatt.pdf, id=169, 578.16pt x 361.35pt>
 File: Figures/heterogeneity_bar_gatt.pdf Graphic file (type pdf)
 <use Figures/heterogeneity_bar_gatt.pdf>
 Package pdftex.def Info: Figures/heterogeneity_bar_gatt.pdf  used on input line 100.
@@ -693,7 +693,7 @@ Overfull \hbox (507.8699pt too wide) in paragraph at lines 5--20
 
 LaTeX Warning: Empty bibliography on input line 117.
 
-<Figures/appendix_overlap_sensitivity.pdf, id=168, 637.98727pt x 421.58505pt>
+<Figures/appendix_overlap_sensitivity.pdf, id=170, 637.98727pt x 421.58505pt>
 File: Figures/appendix_overlap_sensitivity.pdf Graphic file (type pdf)
 <use Figures/appendix_overlap_sensitivity.pdf>
 Package pdftex.def Info: Figures/appendix_overlap_sensitivity.pdf  used on input line 126.
@@ -718,9 +718,9 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  75i,11n,79p,804b,803s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecti1000.600pk> <c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk> <c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecti1200.600pk> <c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> <c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1728.600pk> <c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1200.600pk> <c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1000.600pk> <c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm0700.600pk> <c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1095.600pk> <c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1095.600pk> <c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecti1440.600pk> <c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk> <c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1440.600pk> <c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm2074.600pk><c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on Loser_Ferdinand_12400460.pdf (5 pages, 287466 bytes).
+Output written on Loser_Ferdinand_12400460.pdf (5 pages, 288434 bytes).
 PDF statistics:
- 921 PDF objects out of 1000 (max. 8388607)
+ 925 PDF objects out of 1000 (max. 8388607)
  235 compressed objects within 3 object streams
  26 named destinations out of 1000 (max. 500000)
  109 words of extra memory for PDF output out of 10000 (max. 10000000)

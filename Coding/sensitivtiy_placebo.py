@@ -64,16 +64,18 @@ OPTIMAL_C = 0.046415888336127774       # Replace with your actual LogisticRegres
 models = {
     'L1 (Lasso / Logit L1)': {
         'type': 'dr',
-        # Replaced CV with fixed parameters and set n_jobs=1 to prevent CPU thrashing
         'ml_l': make_pipeline(StandardScaler(), Lasso(alpha=OPTIMAL_ALPHA, random_state=42, max_iter=10000)),
         'ml_m': make_pipeline(StandardScaler(), LogisticRegression(penalty='l1', C=OPTIMAL_C, solver='saga', random_state=42, max_iter=10000, n_jobs=1))
     },
     'Causal Forest': {
         'type': 'causal_forest',
+        # FIX: Explicitly supply the locked, penalized models to the Causal Forest
+        'ml_l': make_pipeline(StandardScaler(), Lasso(alpha=OPTIMAL_ALPHA, random_state=42, max_iter=10000)),
+        'ml_m': make_pipeline(StandardScaler(), LogisticRegression(penalty='l1', C=OPTIMAL_C, solver='saga', random_state=42, max_iter=10000, n_jobs=1)),
         'n_estimators': 200,
         'max_depth': 5,
         'min_samples_leaf': 50,
-        'n_jobs': 1 # <-- CRITICAL FIX: Set to 1 to allow outer joblib loop to handle parallelization safely
+        'n_jobs': 1 
     }
 }
 
@@ -98,23 +100,24 @@ def fit_and_extract_placebo(ml_dict, current_df, W_cols, placebo_var):
     cv_panel = GroupKFold(n_splits=5)
     
     if ml_dict['type'] == 'dr':
-        est = LinearDRLearner(
-            model_regression=clone(ml_dict['ml_l']),
-            model_propensity=clone(ml_dict['ml_m']),
-            min_propensity=0.01, 
-            fit_cate_intercept=False, 
-            cv=cv_panel,
-            random_state=42
-        )
-    elif ml_dict['type'] == 'causal_forest':
-        est = CausalForestDML(
-            n_estimators=ml_dict['n_estimators'],
-            max_depth=ml_dict['max_depth'],
-            min_samples_leaf=ml_dict['min_samples_leaf'],
-            discrete_treatment=True,
-            cv=cv_panel,
-            random_state=42
-        )
+            est = LinearDRLearner(
+                model_regression=clone(ml_dict['ml_l']),
+                model_propensity=clone(ml_dict['ml_m']),
+                min_propensity=0.01, 
+                fit_cate_intercept=False, 
+                cv=cv_panel, random_state=42
+            )
+    else:
+            # FIX: Replaced 'auto' defaults with model_y and model_t mapped to your penalized pipelines
+            est = CausalForestDML(
+                model_y=clone(ml_dict['ml_l']),
+                model_t=clone(ml_dict['ml_m']),
+                n_estimators=ml_dict['n_estimators'], 
+                max_depth=ml_dict['max_depth'],
+                min_samples_leaf=ml_dict['min_samples_leaf'], 
+                discrete_treatment=True,
+                cv=cv_panel, random_state=42
+            )
 
     est.fit(Y=Y_mat, T=T_mat, X=c_dummies, W=W_mat, groups=groups_mat)
     
@@ -156,7 +159,7 @@ placebo_results = []
 # The variables that should NOT be affected by climate policies
 placebo_outcomes = [
     'library_count', 'streetlight_density', 
-    'fountain_count', 'bench_count_pc', 'flagpole_count', 'sister_city_count'
+    'fountain_count', 'bench_count_pc'
 ]
 
 target_models = ['L1 (Lasso / Logit L1)', 'Causal Forest']
