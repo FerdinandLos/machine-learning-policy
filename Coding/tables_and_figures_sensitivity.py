@@ -185,7 +185,6 @@ ax.axhline(0, color='black', linestyle='--', linewidth=1.5)
 
 ax.set_xlabel("Propensity Score Trimming Threshold (min_propensity)", labelpad=10)
 ax.set_ylabel("Global ATT Estimate (Log Transport CO2)", labelpad=10)
-ax.set_title("Appendix Figure A1: Sensitivity to Positivity Trimming (AIPW Lasso)", pad=15, fontweight='bold')
 ax.legend(title="Policy Regime", loc="best")
 
 plt.tight_layout()

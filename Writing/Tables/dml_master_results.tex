@@ -2,30 +2,27 @@
 \centering
 \caption{Double Machine Learning Estimates of Urban Climate Policies (Categorical Regime)}
 \label{tab:dml_master_results}
-\begin{tabular}{lccc}
+\begin{tabular}{lcc}
 \toprule
-Policy & (1) OLS Baseline & (2) AIPW (Lasso) & (3) Causal Forest \\
+Policy & (1) AIPW & (2) Causal Forest \\
 \midrule
-\multicolumn{4}{l}{\textbf{Panel A: Global Average Treatment Effect (ATE)}} \\
-\hspace{4mm} Congestion Pricing (CP) & -- & $-0.2991^{***}$ ($p=0.002$) & $-0.3829^{***}$ ($p=0.000$) \\
-\hspace{4mm} Low Emission Zone (LEZ) & -- & $-0.1001$ ($p=0.157$) & $-0.1528^{*}$ ($p=0.061$) \\
-\hspace{4mm} Synergy (CP $\times$ LEZ) & -- & $-1.0725^{***}$ ($p=0.000$) & $-0.8590^{***}$ ($p=0.000$) \\
 \addlinespace
-\multicolumn{4}{l}{\textbf{Panel B: Average Treatment Effect on the Treated (ATT)}} \\
-\hspace{4mm} Congestion Pricing (CP) & -- & $-0.3190^{**}$ ($p=0.013$) & $-0.3904^{***}$ ($p=0.000$) \\
-\hspace{4mm} Low Emission Zone (LEZ) & -- & $-0.1085$ ($p=0.123$) & $-0.1627^{*}$ ($p=0.056$) \\
-\hspace{4mm} Synergy (CP $\times$ LEZ) & -- & $-1.3667^{***}$ ($p=0.000$) & $-1.2622^{***}$ ($p=0.000$) \\
+\multicolumn{3}{l}{\textbf{Panel A: Average Treatment Effect on the Treated (ATT)}} \\
+\hspace{4mm} Congestion Pricing (CP) & $-0.3190^{*}$ ($p=0.085$) & $-0.3904^{***}$ ($p=0.000$) \\
+\hspace{4mm} Low Emission Zone (LEZ) & $-0.1085^{*}$ ($p=0.066$) & $-0.1627^{*}$ ($p=0.053$) \\
+\hspace{4mm} Synergy (CP $\times$ LEZ) & $-1.3667^{***}$ ($p=0.000$) & $-1.2622^{***}$ ($p=0.000$) \\
 \addlinespace
-\multicolumn{4}{l}{\textbf{Panel C: Group ATT (Heterogeneity by City Type)}} \\
-\multicolumn{4}{l}{\textit{Cluster 1: Dense Metropolis}} \\
-\hspace{4mm} Congestion Pricing (CP) & -- & $-0.3352^{*}$ ($p=0.061$) & $-0.3966^{***}$ ($p=0.007$) \\
-\hspace{4mm} Low Emission Zone (LEZ) & -- & $-0.1651^{*}$ ($p=0.089$) & $-0.2299^{*}$ ($p=0.072$) \\
-\hspace{4mm} Synergy (CP $\times$ LEZ) & -- & $-1.4586^{***}$ ($p=0.000$) & $-1.3881^{***}$ ($p=0.000$) \\
-\multicolumn{4}{l}{\textit{Cluster 0: Sprawling Cities}} \\
-\hspace{4mm} Congestion Pricing (CP) & -- & $-0.2717^{***}$ ($p=0.003$) & $-0.3725^{***}$ ($p=0.001$) \\
-\hspace{4mm} Low Emission Zone (LEZ) & -- & $-0.0508$ ($p=0.586$) & $-0.0942$ ($p=0.402$) \\
-\hspace{4mm} Synergy (CP $\times$ LEZ) & -- & $-0.7792^{***}$ ($p=0.002$) & $-0.4570$ ($p=0.184$) \\
+\multicolumn{3}{l}{\textbf{Panel B: Group ATT (Heterogeneity by City Type)}} \\
+\multicolumn{3}{l}{\textit{Cluster 1: Dense Metropolis}} \\
+\hspace{4mm} Congestion Pricing (CP) & $-0.3352$ ($p=0.157$) & $-0.3966^{***}$ ($p=0.000$) \\
+\hspace{4mm} Low Emission Zone (LEZ) & $-0.1651^{**}$ ($p=0.011$) & $-0.2299$ ($p=0.110$) \\
+\hspace{4mm} Synergy (CP $\times$ LEZ) & $-1.4586^{***}$ ($p=0.000$) & $-1.3881^{***}$ ($p=0.000$) \\
+\multicolumn{3}{l}{\textit{Cluster 0: Sprawling Cities}} \\
+\hspace{4mm} Congestion Pricing (CP) & $-0.2717^{***}$ ($p=0.005$) & $-0.3725^{***}$ ($p=0.001$) \\
+\hspace{4mm} Low Emission Zone (LEZ) & $-0.0508$ ($p=0.629$) & $-0.0942$ ($p=0.418$) \\
+\hspace{4mm} Synergy (CP $\times$ LEZ) & $-0.7792^{***}$ ($p=0.003$) & $-0.4570$ ($p=0.104$) \\
 \bottomrule
 \end{tabular}
+
 \raggedright \footnotesize \textit{Notes:} $p$-values in parentheses. $^{*} p < 0.10$, $^{**} p < 0.05$, $^{***} p < 0.01$. 'Failed' estimation bounds denote overlap violations.
 \end{table}

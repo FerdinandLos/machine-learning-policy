@@ -1,29 +1,27 @@
 # Fdb version 4
-["biber Loser_Ferdinand_12400460"] 0 "Loser_Ferdinand_12400460.bcf" "Loser_Ferdinand_12400460.bbl" "Loser_Ferdinand_12400460" 1785332122.81333 0
+["biber Loser_Ferdinand_12400460"] 0 "Loser_Ferdinand_12400460.bcf" "Loser_Ferdinand_12400460.bbl" "Loser_Ferdinand_12400460" 1785337643.48444 0
   "Loser_Ferdinand_12400460.bcf" 0 -1 0 "pdflatex"
   "Monte Carlo Simulations.bib" 0 -1 0 ""
   (generated)
   "Loser_Ferdinand_12400460.bbl"
   "Loser_Ferdinand_12400460.blg"
   (rewritten before read)
-["pdflatex"] 1785332121.00533 "c:/Users/ferdi/Documents/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" "Loser_Ferdinand_12400460.pdf" "Loser_Ferdinand_12400460" 1785332122.81463 0
-  "Figures/appendix_overlap_sensitivity.pdf" 1785331142 31329 12ad8a8561314ac1da1c1405d3574c63 ""
+["pdflatex"] 1785337641.76426 "c:/Users/ferdi/Documents/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" "Loser_Ferdinand_12400460.pdf" "Loser_Ferdinand_12400460" 1785337643.48639 0
+  "Figures/appendix_overlap_sensitivity.pdf" 1785334997 21031 1aab8fb8eb78ec0f8bba1c8cdbd9a791 ""
   "Figures/cluster_differences.pdf" 1785332120 34635 8664aff9df802ff169ecd1cffddc46d3 ""
-  "Figures/forest_plot_att.pdf" 1785331353 33250 f6c7291aa4fa6db5d0a2f1ff7c110390 ""
-  "Figures/heterogeneity_bar_gatt.pdf" 1785331354 29267 40cff48ed7c3aa7d99310486155b63ed ""
-  "Figures/overlap_density.pdf" 1785331354 36659 d59328a80ab5132fba6a50ecf6a9ec85 ""
-  "Loser_Ferdinand_12400460.aux" 1785332122 4702 d7b874053b6a42343806a1b8e1d7fdc7 "pdflatex"
+  "Figures/forest_plot_att_gatt.pdf" 1785337640 24837 69336e720933463d1b9b55a07baa464b ""
+  "Figures/overlap_density.pdf" 1785337640 36955 b987e14b23b7aacb3de5e0fae7323fc6 ""
+  "Loser_Ferdinand_12400460.aux" 1785337643 4341 26701af7624041158e7c91f16e1ad954 "pdflatex"
   "Loser_Ferdinand_12400460.bbl" 0 -1 0 "biber Loser_Ferdinand_12400460"
-  "Loser_Ferdinand_12400460.out" 1785332122 1478 91107aeee7786062b2bc4aea47502d5f "pdflatex"
-  "Loser_Ferdinand_12400460.run.xml" 1785332122 2498 6b6b05ecd6b03fde6cc80ad6e380c8fe "pdflatex"
-  "Loser_Ferdinand_12400460.tex" 1785331552 5756 c18464b55159306f7e9601605a0d903d ""
-  "Tables/appendix_placebo_tests.tex" 1785331141 1366 4f47049311c95a1350df99c890d9f6e7 ""
-  "Tables/dml_master_results.tex" 1785331353 2129 051d451b2ab4cb4ec8067169fa1fd524 ""
-  "Tables/propensity_score_summary.tex" 1785331354 685 d0a49c8dfb3504991c5271d5f9047c83 ""
+  "Loser_Ferdinand_12400460.out" 1785337643 1312 e6383aa0519f0aea38ede9d11ff54343 "pdflatex"
+  "Loser_Ferdinand_12400460.run.xml" 1785337643 2498 6b6b05ecd6b03fde6cc80ad6e380c8fe "pdflatex"
+  "Loser_Ferdinand_12400460.tex" 1785333847 5417 e6a71fb9ba82940b687d623155e4fda0 ""
+  "Tables/appendix_placebo_tests.tex" 1785334997 1366 4f47049311c95a1350df99c890d9f6e7 ""
+  "Tables/dml_master_results.tex" 1785337639 1662 f761b0ddfbcc3f98a688ca9aa1100a30 ""
+  "Tables/propensity_score_summary.tex" 1785337640 697 c3902f03dcd4a64bbcc07319adb3265d ""
   "Tables/treatment_by_cluster.tex" 1785332120 737 9f03881b8ed6c595d50dd24d6c4dbfbc ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/jknappen/ec/ecbx1095.tfm" 1747240602 3584 21b378cca2e40816b0e6d74a4dc98f04 ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/jknappen/ec/ecbx1200.tfm" 1747240602 3584 402da0b29eafbad07963b1224b222f18 ""
-  "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/jknappen/ec/ecbx1440.tfm" 1747240602 3584 13049b61b922a28b158a38aeff75ee9b ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/jknappen/ec/ecbx1728.tfm" 1747240602 3584 ad49a18d8515beef6d92d4d3f197d0fd ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/jknappen/ec/ecrm0700.tfm" 1747240603 3584 cf973739aac7ab6247f9150296af7954 ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/jknappen/ec/ecrm1000.tfm" 1747240603 3584 adb004a0c8e7c46ee66cad73671f37b4 ""
@@ -142,7 +140,6 @@
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1771352443 210926 bce2351d8efca5ccbd9f6291e3d554a3 ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1095.600pk" 1779723396 28952 f5782561df5519142a002ef5b32b028a ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk" 1779723394 31928 c3f3e7bb2e3c219a9620d24896df9953 ""
-  "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk" 1779723394 40112 3ec415b2e4a823caffc015805a67f6cc ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1728.600pk" 1779723395 49076 17c39044f263ddb430f2fd9ff470abf0 ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1000.600pk" 1779723491 23784 15b4514d077741c01126bfcc5338f67a ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1095.600pk" 1779723396 26208 84a199cb5112824cfeaf331eaa1ca007 ""
@@ -156,7 +153,7 @@
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1779723493 11524 9f3e48b550994109e3d7fad15f683495 ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1771352530 2236262 dae90ef3062d3e0bc38ec1de445c41ec ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf.cnf" 1747240626 955 6591b7e09ece6af4143024019d5a863d ""
-  "c:/Users/ferdi/Documents/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" 1785331552 5756 c18464b55159306f7e9601605a0d903d ""
+  "c:/Users/ferdi/Documents/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" 1785333847 5417 e6a71fb9ba82940b687d623155e4fda0 ""
   (generated)
   "Loser_Ferdinand_12400460.aux"
   "Loser_Ferdinand_12400460.bcf"

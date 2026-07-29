@@ -70,18 +70,13 @@ models = {
 regime_mapping = {'cp_active': 1, 'lez_active': 2, 'cp_x_lez': 3}
 
 def extract_point_estimates(estimator, data_df, X_array, t_val):
-    """Extracts raw causal estimates without relying on EconML's naive i.i.d. inference."""
+    """Extracts raw causal estimates strictly for the Treated populations."""
     res = {}
-    res['Global_ATE_coef'] = np.atleast_1d(estimator.ate(X=X_array, T0=0, T1=t_val))[0]
-    
     treated_mask = (data_df['policy_regime'].to_numpy() == t_val)
     res['Global_ATT_coef'] = np.atleast_1d(estimator.ate(X=X_array[treated_mask], T0=0, T1=t_val))[0]
 
     c0_mask = (data_df['cluster_id'].to_numpy() == 0)
     c1_mask = (data_df['cluster_id'].to_numpy() == 1)
-
-    res['GATE_Cluster_0_coef'] = np.atleast_1d(estimator.ate(X=X_array[c0_mask], T0=0, T1=t_val))[0]
-    res['GATE_Cluster_1_coef'] = np.atleast_1d(estimator.ate(X=X_array[c1_mask], T0=0, T1=t_val))[0]
 
     res['GATT_Cluster_0_coef'] = np.atleast_1d(estimator.ate(X=X_array[treated_mask & c0_mask], T0=0, T1=t_val))[0]
     res['GATT_Cluster_1_coef'] = np.atleast_1d(estimator.ate(X=X_array[treated_mask & c1_mask], T0=0, T1=t_val))[0]
@@ -218,33 +213,3 @@ results_df = pd.DataFrame(final_results)
 csv_export_path = results_dir / 'dml_robustness_results_aipw.csv'
 results_df.to_csv(csv_export_path, index=False)
 print(f"Success: Validated panel estimations safely exported to {csv_export_path}")
-
-# ---------------------------------------------------------
-# 5. Extract Propensity Scores (Champion Model)
-# ---------------------------------------------------------
-print("\n--- EXPORTING EXACT PROPENSITY SCORES FOR FIGURE 3 ---")
-champion_clf = clone(models['L1 (Lasso / Logit L1)']['ml_m'])
-
-# Scikit-learn handles multiclass LogisticRegression natively
-# Note: n_jobs=-1 is fine here because this is outside the bootstrap parallel loop
-exact_p_scores_matrix = cross_val_predict(
-    champion_clf,
-    df[base_W_cols].to_numpy(),
-    df['policy_regime'].to_numpy(),
-    cv=GroupKFold(n_splits=5),
-    groups=df['city_id'].to_numpy(),
-    method='predict_proba',
-    n_jobs=-1
-)
-
-# Marginal Probability of CP Adoption P(Regime=1) + P(Regime=3)
-marginal_cp_prob = exact_p_scores_matrix[:, 1] + exact_p_scores_matrix[:, 3]
-
-ps_df = pd.DataFrame({
-    'cp_active': df['cp_active'],
-    'propensity_score': marginal_cp_prob
-})
-
-ps_export_path = results_dir / 'propensity_scores_exact_aipw.csv'
-ps_df.to_csv(ps_export_path, index=False)
-print(f"Success: Exact propensity scores saved to {ps_export_path}")

@@ -33,72 +33,13 @@ except FileNotFoundError:
 dml_df = pd.read_csv(results_dir / 'dml_robustness_results_aipw.csv')
 
 # ---------------------------------------------------------
-# 2. Process and Export RMSE Evaluation Table
-# ---------------------------------------------------------
-if has_rmse:
-    print("Formatting RMSE evaluation table...")
-    
-    # Define the exact models to keep for the thesis table
-    models_to_keep = [
-        'L1 (Lasso / Logit L1)', 
-        'L2 (Ridge / Logit L2)', 
-        'Elastic Net', 
-        'Random Forest'
-    ]
-    
-    # Filter the dataframe to only include the target models
-    filtered_rmse_df = rmse_df[rmse_df['Model'].isin(models_to_keep)].copy()
-    
-    # Explicitly map the column names
-    rename_dict = {
-        "RMSE D (cp_active)": "RMSE D (CP)", 
-        "RMSE D (lez_active)": "RMSE D (LEZ)", 
-        "RMSE D (cp_x_lez)": "RMSE D (CP $\\times$ LEZ)"
-    }
-    filtered_rmse_df.rename(columns=rename_dict, inplace=True)
-
-    # Set index and isolate numeric operations
-    rmse_indexed = filtered_rmse_df.set_index('Model')
-    
-    # Calculate best models BEFORE altering the dataframe structure
-    best_models = rmse_indexed.idxmin()
-    
-    # Round the numeric values safely
-    rmse_formatted = rmse_indexed.round(4)
-    
-    # Transpose FIRST so the model names become columns and metrics become rows
-    rmse_transposed = rmse_formatted.T
-    
-    # Add the 'Best Model' row directly to the transposed dataframe
-    rmse_transposed['Best Model'] = best_models
-
-    # CRITICAL FIX: Ensure the transposed index (the row labels) matches the clean LaTeX names
-    rmse_transposed.index = rmse_transposed.index.map(lambda x: rename_dict.get(x, x))
-
-    # Generate LaTeX code
-    latex_table_rmse = rmse_transposed.to_latex(
-        float_format="%.4f",
-        caption="Cross-fitted RMSE for predicting Nuisance Parameters",
-        label="tab:rmse_evaluation",
-        column_format="l" + "c" * len(rmse_transposed.columns),
-        escape=False
-    )
-
-    with open(tables_dir / 'rmse_evaluation_final.tex', 'w') as f: 
-        f.write(latex_table_rmse)
-        
-    print("Success: rmse_evaluation_final.tex saved.")
-
-
-# ---------------------------------------------------------
 # 3. Process and Export DML Master Table (Panels A, B, C)
 # ---------------------------------------------------------
 print("Formatting DML Master Causal Table...")
 
 target_models = {
-    'OLS - Basic': '(1) OLS Baseline',
-    'L1 (Lasso / Logit L1)': '(2) AIPW (Lasso)',
-    'Causal Forest': '(3) Causal Forest'
+    'L1 (Lasso / Logit L1)': '(1) AIPW',
+    'Causal Forest': '(2) Causal Forest'
 }
 
 policy_map = {
@@ -123,7 +64,7 @@ def format_estimate(coef, pval):
         
     return f"${coef:.4f}{stars}$ ($p={pval:.3f}$)"
 
-for prefix in ['Global_ATE', 'Global_ATT', 'GATT_Cluster_1', 'GATT_Cluster_0']:
+for prefix in ['Global_ATT', 'GATT_Cluster_1', 'GATT_Cluster_0']:
     dml_core[f'{prefix}_fmt'] = dml_core.apply(
         lambda row: format_estimate(row[f'{prefix}_coef'], row[f'{prefix}_pval']), axis=1
     )
@@ -141,39 +82,34 @@ latex_lines.append(r"\begin{table}[htbp]")
 latex_lines.append(r"\centering")
 latex_lines.append(r"\caption{Double Machine Learning Estimates of Urban Climate Policies (Categorical Regime)}")
 latex_lines.append(r"\label{tab:dml_master_results}")
-latex_lines.append(r"\begin{tabular}{lccc}")
+latex_lines.append(r"\begin{tabular}{lcc}")
 latex_lines.append(r"\toprule")
-latex_lines.append(r"Policy & (1) OLS Baseline & (2) AIPW (Lasso) & (3) Causal Forest \\")
+latex_lines.append(r"Policy & (1) AIPW & (2) Causal Forest \\")
 latex_lines.append(r"\midrule")
-
-# Panel A
-latex_lines.append(r"\multicolumn{4}{l}{\textbf{Panel A: Global Average Treatment Effect (ATE)}} \\")
-for pol, clean_name in policy_map.items():
-    v = get_row_vals(pol, 'Global_ATE')
-    latex_lines.append(f"\\hspace{{4mm}} {clean_name} & {v[0]} & {v[1]} & {v[2]} \\\\")
 
 # Panel B
 latex_lines.append(r"\addlinespace")
-latex_lines.append(r"\multicolumn{4}{l}{\textbf{Panel B: Average Treatment Effect on the Treated (ATT)}} \\")
+latex_lines.append(r"\multicolumn{3}{l}{\textbf{Panel A: Average Treatment Effect on the Treated (ATT)}} \\")
 for pol, clean_name in policy_map.items():
     v = get_row_vals(pol, 'Global_ATT')
-    latex_lines.append(f"\\hspace{{4mm}} {clean_name} & {v[0]} & {v[1]} & {v[2]} \\\\")
+    latex_lines.append(f"\\hspace{{4mm}} {clean_name} & {v[0]} & {v[1]} \\\\")
 
-# Panel C
+# Panel B
 latex_lines.append(r"\addlinespace")
-latex_lines.append(r"\multicolumn{4}{l}{\textbf{Panel C: Group ATT (Heterogeneity by City Type)}} \\")
-latex_lines.append(r"\multicolumn{4}{l}{\textit{Cluster 1: Dense Metropolis}} \\")
+latex_lines.append(r"\multicolumn{3}{l}{\textbf{Panel B: Group ATT (Heterogeneity by City Type)}} \\")
+latex_lines.append(r"\multicolumn{3}{l}{\textit{Cluster 1: Dense Metropolis}} \\")
 for pol, clean_name in policy_map.items():
     v = get_row_vals(pol, 'GATT_Cluster_1')
-    latex_lines.append(f"\\hspace{{4mm}} {clean_name} & {v[0]} & {v[1]} & {v[2]} \\\\")
+    latex_lines.append(f"\\hspace{{4mm}} {clean_name} & {v[0]} & {v[1]} \\\\")
 
-latex_lines.append(r"\multicolumn{4}{l}{\textit{Cluster 0: Sprawling Cities}} \\")
+latex_lines.append(r"\multicolumn{3}{l}{\textit{Cluster 0: Sprawling Cities}} \\")
 for pol, clean_name in policy_map.items():
     v = get_row_vals(pol, 'GATT_Cluster_0')
-    latex_lines.append(f"\\hspace{{4mm}} {clean_name} & {v[0]} & {v[1]} & {v[2]} \\\\")
+    latex_lines.append(f"\\hspace{{4mm}} {clean_name} & {v[0]} & {v[1]} \\\\")
 
 latex_lines.append(r"\bottomrule")
 latex_lines.append(r"\end{tabular}")
+latex_lines.append(r"") 
 latex_lines.append(r"\raggedright \footnotesize \textit{Notes:} $p$-values in parentheses. $^{*} p < 0.10$, $^{**} p < 0.05$, $^{***} p < 0.01$. 'Failed' estimation bounds denote overlap violations.")
 latex_lines.append(r"\end{table}")
 
@@ -187,9 +123,9 @@ sns.set_theme(style="whitegrid", palette="muted")
 plt.rcParams.update({'font.size': 12, 'font.family': 'serif'})
 
 # ---------------------------------------------------------
-# 4. Figure 1: Coefficient Forest Plot (Global ATT)
+# 4. Figure 1: Coefficient Forest Plot (ATT & GATTs)
 # ---------------------------------------------------------
-print("Generating Figure 1: Coefficient Forest Plot...")
+print("Generating Figure 1: Coefficient Forest Plot (ATT & GATTs)...")
 
 def approx_se(coef, pval):
     if pd.isna(coef) or pd.isna(pval): 
@@ -198,82 +134,119 @@ def approx_se(coef, pval):
     z = np.abs(norm.ppf(p / 2))
     return abs(coef) / z
 
-# UPDATED: Pulling directly from the Global_ATT columns
-dml_core['Global_ATT_se'] = dml_core.apply(lambda row: approx_se(row['Global_ATT_coef'], row['Global_ATT_pval']), axis=1)
+# Map your dataframe's column names for the GATT coefficients and p-values here
+col_att_coef, col_att_pval = 'Global_ATT_coef', 'Global_ATT_pval'
+col_g0_coef, col_g0_pval = 'GATT_Cluster_0_coef', 'GATT_Cluster_0_pval'  # Sprawling Hubs
+col_g1_coef, col_g1_pval = 'GATT_Cluster_1_coef', 'GATT_Cluster_1_pval'  # Dense Metropolises
 
-fig, ax = plt.subplots(figsize=(10, 6))
+# Calculate standard errors for all three estimands
+dml_core['ATT_se'] = dml_core.apply(lambda row: approx_se(row[col_att_coef], row[col_att_pval]), axis=1)
+dml_core['GATT_0_se'] = dml_core.apply(lambda row: approx_se(row[col_g0_coef], row[col_g0_pval]), axis=1)
+dml_core['GATT_1_se'] = dml_core.apply(lambda row: approx_se(row[col_g1_coef], row[col_g1_pval]), axis=1)
+
+# Increased height to comfortably fit 18 total bars (6 per policy)
+fig, ax = plt.subplots(figsize=(10, 8))
 
 y_labels = [policy_map[p] for p in core_policies]
 y_ticks = np.arange(len(y_labels))
 
-# UPDATED: Keys matching the new target_models dictionary
-offsets = {'(1) OLS Baseline': -0.15, '(2) AIPW (Lasso)': 0, '(3) Causal Forest': 0.15}
-colors = {'(1) OLS Baseline': 'gray', '(2) AIPW (Lasso)': '#d95f02', '(3) Causal Forest': '#1b9e77'}
+estimands = ['ATT', 'GATT_0', 'GATT_1']
+# Map the display labels used in the figure to the actual model names in the source data
+model_plot_map = {
+    '(1) AIPW': 'L1 (Lasso / Logit L1)',
+    '(2) Causal Forest': 'Causal Forest'
+}
+models_to_plot = list(model_plot_map.keys())
 
-for mod, clean_mod in target_models.items():
-    subset = dml_core[dml_core['Model'] == mod].set_index('Policy').reindex(core_policies)
-    y_pos = y_ticks + offsets[clean_mod]
+# Color mapping: Primary hue = Estimand | Shade = Algorithm
+colors = {
+    'ATT':    {'(1) AIPW': '#969696', '(2) Causal Forest': '#252525'}, # Greys
+    'GATT_0': {'(1) AIPW': '#6baed6', '(2) Causal Forest': '#08519c'}, # Blues (Sprawling)
+    'GATT_1': {'(1) AIPW': '#fb6a4a', '(2) Causal Forest': '#cb181d'}  # Reds (Dense)
+}
+
+# Vertical offsets to separate the 6 estimates neatly around the major y-tick
+offsets = {
+    'ATT':    {'(1) AIPW': 0.35, '(2) Causal Forest': 0.22},
+    'GATT_0': {'(1) AIPW': 0.05,  '(2) Causal Forest': -0.08},
+    'GATT_1': {'(1) AIPW': -0.25, '(2) Causal Forest': -0.38}
+}
+
+coef_cols = {'ATT': col_att_coef, 'GATT_0': col_g0_coef, 'GATT_1': col_g1_coef}
+se_cols = {'ATT': 'ATT_se', 'GATT_0': 'GATT_0_se', 'GATT_1': 'GATT_1_se'}
+
+handles_dict = {}
+
+for display_mod in models_to_plot:
+    actual_mod = model_plot_map[display_mod]
+    subset = dml_core[dml_core['Model'] == actual_mod].set_index('Policy').reindex(core_policies)
     
-    ax.errorbar(subset['Global_ATT_coef'], y_pos, xerr=subset['Global_ATT_se'] * 1.96, 
-                fmt='o', label=clean_mod, color=colors[clean_mod], 
-                capsize=4, elinewidth=2, markersize=8)
+    for est in estimands:
+        y_pos = y_ticks + offsets[est][display_mod]
+        coefs = subset[coef_cols[est]]
+        ses = subset[se_cols[est]]
+        
+        # Plot the error bars
+        eb = ax.errorbar(coefs, y_pos, xerr=ses * 1.96, 
+                         fmt='o', color=colors[est][display_mod], 
+                         capsize=4, elinewidth=2, markersize=7)
+        
+        # Save a handle for the custom legend
+        clean_mod_name = display_mod.split(') ')[-1]
+        label_str = f"{est} - {clean_mod_name}"
+        handles_dict[label_str] = eb[0]
 
 ax.axvline(0, color='black', linestyle='--', linewidth=1)
 ax.set_yticks(y_ticks)
 ax.set_yticklabels(y_labels)
-ax.set_xlabel("Average Treatment Effect on the Treated (ATT)\nLog Transport CO2")
-ax.set_title("Figure 1: Policy Efficacy by Algorithm (95% CI)", pad=15, fontweight='bold')
-ax.legend(title="Algorithm", loc="upper left", bbox_to_anchor=(1, 1))
+ax.set_xlabel("Treatment Effect on the Treated (Log Transport CO2)")
+
+# Construct a clean, ordered custom legend
+legend_keys = [
+    'ATT - AIPW', 'ATT - Causal Forest', 
+    'GATT_0 - AIPW', 'GATT_0 - Causal Forest',
+    'GATT_1 - AIPW', 'GATT_1 - Causal Forest'
+]
+
+legend_labels = [k.replace('GATT_0', 'GATT (Sprawling Hubs)').replace('GATT_1', 'GATT (Dense Metropolises)') for k in legend_keys]
+handles = [handles_dict[k] for k in legend_keys]
+
+ax.legend(
+    handles,
+    legend_labels,
+    title="Estimand & Algorithm",
+    loc="lower left",
+    bbox_to_anchor=(0.0, 0.0),
+    frameon=True,
+    framealpha=0.95,
+    borderpad=0.4,
+    handlelength=1.8,
+    handletextpad=0.6,
+)
 
 plt.tight_layout()
-fig.savefig(figures_dir / 'forest_plot_att.pdf', format='pdf', bbox_inches='tight')
+fig.savefig(figures_dir / 'forest_plot_att_gatt.pdf', format='pdf', bbox_inches='tight')
 plt.close()
 
-# ---------------------------------------------------------
-# 5. Figure 2: Heterogeneity Bar Chart (GATT)
-# ---------------------------------------------------------
-print("Generating Figure 2: Heterogeneity Bar Chart...")
-
-# UPDATED: Utilizing the champion AIPW model (Lasso) for the visualization
-champion_df = dml_core[dml_core['Model'] == 'L1 (Lasso / Logit L1)'].set_index('Policy').reindex(core_policies)
-
-fig, ax = plt.subplots(figsize=(8, 5))
-bar_width = 0.35
-x = np.arange(len(core_policies))
-
-# UPDATED: Pulling from the specific GATT columns
-ax.bar(x - bar_width/2, champion_df['GATT_Cluster_0_coef'], bar_width, 
-       label='Cluster 0 (Sprawling)', color='#a6cee3', edgecolor='black')
-ax.bar(x + bar_width/2, champion_df['GATT_Cluster_1_coef'], bar_width, 
-       label='Cluster 1 (Dense Metropolis)', color='#1f78b4', edgecolor='black')
-
-ax.axhline(0, color='black', linewidth=1)
-ax.set_xticks(x)
-ax.set_xticklabels(y_labels)
-ax.set_ylabel("Group Average Treatment Effect on the Treated (GATT)")
-ax.set_title("Figure 2: Urban Heterogeneity in Policy Impact (AIPW)", pad=15, fontweight='bold')
-ax.legend()
-
-plt.tight_layout()
-fig.savefig(figures_dir / 'heterogeneity_bar_gatt.pdf', format='pdf')
-plt.close()
 
 # ---------------------------------------------------------
 # 6. Figure 3: Common Support (Overlap) Density Plot
 # ---------------------------------------------------------
 print("Generating Figure 3: Common Support Density Plot...")
 
-# Assumes propensity_scores_exact_aipw.csv is generated from the Lasso model
+# Load the exact multinomial propensity scores
 ps_df = pd.read_csv(results_dir / 'propensity_scores_exact_aipw.csv')
 
 fig, ax = plt.subplots(figsize=(8, 5))
-sns.kdeplot(ps_df.loc[ps_df['cp_active'] == 1, 'propensity_score'], fill=True, label="Treated (CP Active)", color="#d95f02", ax=ax, alpha=0.5)
-sns.kdeplot(ps_df.loc[ps_df['cp_active'] == 0, 'propensity_score'], fill=True, label="Untreated (No CP)", color="#7570b3", ax=ax, alpha=0.5)
+# UPDATED: Using 'is_cp_only' and 'propensity_score_cp_only'
+sns.kdeplot(ps_df.loc[ps_df['is_cp_only'] == 1, 'propensity_score_cp_only'], fill=True, label="Treated (CP Only)", color="#d95f02", ax=ax, alpha=0.5)
+sns.kdeplot(ps_df.loc[ps_df['is_cp_only'] == 0, 'propensity_score_cp_only'], fill=True, label="Untreated", color="#7570b3", ax=ax, alpha=0.5)
 
 ax.set_xlim(0, 1)
-ax.set_xlabel("Estimated Propensity Score $\\hat{P}(D=1|X)$")
+ax.set_xlabel("Estimated Propensity Score $\\hat{P}(D=\\text{CP Only}|X)$")
 ax.set_ylabel("Density")
-ax.set_title("Figure 3: Common Support for Congestion Pricing (AIPW)", pad=15, fontweight='bold')
+ax.set_title("Figure 3: Common Support for Congestion Pricing", pad=15, fontweight='bold')
+
 ax.legend()
 
 plt.tight_layout()
@@ -283,13 +256,14 @@ plt.close()
 # ---------------------------------------------------------
 # Console Summary: Common Support Numerical Distribution
 # ---------------------------------------------------------
-ps_treated = ps_df.loc[ps_df['cp_active'] == 1, 'propensity_score']
-ps_control = ps_df.loc[ps_df['cp_active'] == 0, 'propensity_score']
+# UPDATED: Using exact column names
+ps_treated = ps_df.loc[ps_df['is_cp_only'] == 1, 'propensity_score_cp_only']
+ps_control = ps_df.loc[ps_df['is_cp_only'] == 0, 'propensity_score_cp_only']
 
 # 1. Summary Statistics Table
 ps_summary = pd.DataFrame({
-    'Treated (CP Active)': ps_treated.describe(percentiles=[0.05, 0.25, 0.50, 0.75, 0.95]),
-    'Untreated (No CP)': ps_control.describe(percentiles=[0.05, 0.25, 0.50, 0.75, 0.95])
+    'Treated (CP Only)': ps_treated.describe(percentiles=[0.05, 0.25, 0.50, 0.75, 0.95]),
+    'Untreated': ps_control.describe(percentiles=[0.05, 0.25, 0.50, 0.75, 0.95])
 }).round(4)
 
 # 2. Compute Common Support Boundaries
@@ -299,7 +273,7 @@ n_treated_in_range = (ps_treated >= overlap_min) & (ps_treated <= overlap_max)
 n_control_in_range = (ps_control >= overlap_min) & (ps_control <= overlap_max)
 
 print("\n" + "="*70)
-print("NUMERICAL PROPENSITY SCORE DISTRIBUTION (COMMON SUPPORT)")
+print("NUMERICAL PROPENSITY SCORE DISTRIBUTION (CP ONLY COMMON SUPPORT)")
 print("="*70)
 print(ps_summary.to_string())
 print("-" * 70)
@@ -335,21 +309,21 @@ control_pct = n_control_in_range.mean() * 100
 latex_lines = []
 latex_lines.append(r"\begin{table}[htbp]")
 latex_lines.append(r"\centering")
-latex_lines.append(r"\caption{Propensity Score Distribution and Common Support}")
+latex_lines.append(r"\caption{Propensity Score Distribution and Common Support (Congestion Pricing)}")
 latex_lines.append(r"\label{tab:propensity_scores}")
 latex_lines.append(r"\begin{tabular}{lcc}")
 latex_lines.append(r"\toprule")
-latex_lines.append(r"Statistic & Treated (CP Active) & Untreated (No CP) \\")
+latex_lines.append(r"Statistic & Treated (CP Only) & Untreated \\")
 latex_lines.append(r"\midrule")
 
 # Populate data rows
 for index, row in ps_summary_compact.iterrows():
     if 'Observations' in index:
-        val1 = f"{int(row['Treated (CP Active)'])}"
-        val2 = f"{int(row['Untreated (No CP)'])}"
+        val1 = f"{int(row['Treated (CP Only)'])}"
+        val2 = f"{int(row['Untreated'])}"
     else:
-        val1 = f"{row['Treated (CP Active)']:.3f}"
-        val2 = f"{row['Untreated (No CP)']:.3f}"
+        val1 = f"{row['Treated (CP Only)']:.3f}"
+        val2 = f"{row['Untreated']:.3f}"
     
     latex_lines.append(f"{index} & {val1} & {val2} \\\\")
 
@@ -371,4 +345,58 @@ with open(tables_dir / 'propensity_score_summary.tex', 'w') as f:
 
 print("Success: compact propensity_score_summary.tex saved.")
 
+# ---------------------------------------------------------
+# Export LaTeX Table: Unified Common Support Across All Policies
+# ---------------------------------------------------------
+print("Generating Unified Common Support Table...")
+
+# Define treatments matching exact column names in the new CSV
+treatments = {
+    'Congestion Pricing (CP Only)': ('is_cp_only', 'propensity_score_cp_only'),
+    'Low Emission Zone (LEZ Only)': ('is_lez_only', 'propensity_score_lez_only'),
+    'Synergy (CP $\\times$ LEZ)':   ('is_synergy', 'propensity_score_synergy')
+}
+
+latex_lines = []
+latex_lines.append(r"\begin{table}[htbp]")
+latex_lines.append(r"\centering")
+latex_lines.append(r"\caption{Common Support Bounds and Sample Retention by Policy}")
+latex_lines.append(r"\label{tab:unified_common_support}")
+latex_lines.append(r"\begin{tabular}{lcccc}")
+latex_lines.append(r"\toprule")
+latex_lines.append(r"Policy & Support Region & Treated Retained & Untreated Retained \\")
+latex_lines.append(r"\midrule")
+
+for name, (treat_col, ps_col) in treatments.items():
+    if treat_col in ps_df.columns and ps_col in ps_df.columns:
+        ps_treated_uni = ps_df.loc[ps_df[treat_col] == 1, ps_col]
+        ps_control_uni = ps_df.loc[ps_df[treat_col] == 0, ps_col]
+        
+        overlap_min_uni = max(ps_treated_uni.min(), ps_control_uni.min())
+        overlap_max_uni = min(ps_treated_uni.max(), ps_control_uni.max())
+        
+        n_treated_uni = len(ps_treated_uni)
+        n_control_uni = len(ps_control_uni)
+        treated_in_uni = ((ps_treated_uni >= overlap_min_uni) & (ps_treated_uni <= overlap_max_uni)).sum()
+        control_in_uni = ((ps_control_uni >= overlap_min_uni) & (ps_control_uni <= overlap_max_uni)).sum()
+        
+        treated_pct_uni = (treated_in_uni / n_treated_uni) * 100 if n_treated_uni > 0 else 0
+        control_pct_uni = (control_in_uni / n_control_uni) * 100 if n_control_uni > 0 else 0
+        
+        bounds_str = f"$[{overlap_min_uni:.3f}, {overlap_max_uni:.3f}]$"
+        treated_str = f"{treated_in_uni} ({treated_pct_uni:.1f}\\%)"
+        control_str = f"{control_in_uni} ({control_pct_uni:.1f}\\%)"
+        
+        latex_lines.append(f"{name} & {bounds_str} & {treated_str} & {control_str} \\\\")
+
+latex_lines.append(r"\bottomrule")
+latex_lines.append(r"\end{tabular}")
+latex_lines.append(r"\vspace{1ex}")
+latex_lines.append(r"{\raggedright \footnotesize \textit{Notes:} The common support region is defined mathematically as $[\max(\min_T, \min_C), \min(\max_T, \max_C)]$ for each respective policy's propensity score distribution. Units outside these bounds are strictly trimmed prior to causal estimation to ensure finite-sample overlap.\par}")
+latex_lines.append(r"\end{table}")
+
+with open(tables_dir / 'unified_common_support.tex', 'w') as f:
+    f.write("\n".join(latex_lines) + "\n")
+
+print("Success: unified_common_support.tex saved.")
 print(f"Success: All figures generated and saved as PDFs in {figures_dir}")
