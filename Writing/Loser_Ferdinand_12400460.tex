@@ -58,9 +58,10 @@ Abstract content goes here. This section should provide a concise summary of the
 \pagenumbering{arabic} 
 
 \section{Introduction}
+
 \label{sec:introduction}
 
-Discussions about global warming have been highly prevalent in public discourse, especially in the past 10, 15 years. Many different policies have been implemented and even more proposed and advocated for. Some are to be decided on the supranational level, e.g. the EU's climate certificate trading, some on the national level, e.g. electric vehicle subsidies, but many can also be implemented on the regional or even municipal level. Especially, when it comes to reducing transport $CO_2$ emissions, many decisions fall under the authority of the municipal government, be it how road infrastructure is designed, what speed limits are set or further driving regulations. This report estimates the effectiveness in reducing transport carbon emissions of two such regulatory policies:
+Discussions about global warming have been highly prevalent in public discourse, especially in the past 10 to 15 years. Many policies have been implemented, and even more have been proposed and advocated. Some are to be decided on the supranational level, e.g., the EU's climate certificate trading, some on the national level, e.g., electric vehicle subsidies, but many can also be implemented on the regional or even municipal level. Especially when it comes to reducing transport $CO_2$ emissions, many decisions fall under the authority of the municipal government, be it how road infrastructure is designed, what speed limits are set, or further driving regulations. This report estimates the effectiveness in reducing transport carbon emissions of two such regulatory policies:
 
 \begin{definition}
 \textbf{Congestion Pricing (CP): } Surcharges are implemented in certain areas of a city for cars that enter from outside.
@@ -68,7 +69,7 @@ Discussions about global warming have been highly prevalent in public discourse,
 \begin{definition}
 \textbf{Low-Emission Zones (LEZ): } Certain vehicles (older diesel or petrol engines) are banned in certain areas of a city.
 \end{definition}
-I study these two policies in a large panel dataset of many european cities, focussing especially on three core research questions:
+I study these two policies in a large panel dataset of many European cities, focusing especially on three core research questions:
 \begin{enumerate}
     \item Were the policies effective in reducing emissions?
     \item Which type of cities benefit the most/least from the policies?
@@ -85,25 +86,27 @@ The remainder of the report is structured as follows. Section~\ref{sec:emp_strat
 The target parameters of this study are the Average Treatment Effect on the Treated (ATT) and the Group Average Treatment Effect on the Treated (GATT). 
 
 The global ATT measures the average impact of a specific policy regime across all cities that actually implemented it, evaluated against the baseline of no policy ($d=0$). It is defined as:
+
 \begin{equation}
     \tau_{ATT, d} = \mathbb{E}[Y_{it}(d) - Y_{it}(0) \mid D_{it} = d]
 \end{equation}
 
-In this setting, treatment is not binary but has three states, CP ($d=1$), LEZ ($d=2$) and their synergy CP $\times$ LEZ ($d=3$).  
+In this setting, treatment is not binary but has three states: CP ($d=1$), LEZ ($d=2$), and their synergy CP $\times$ LEZ ($d=3$).  
 
 To address research question 2 regarding spatial heterogeneity, the GATT isolates this treatment effect within the specific structural typologies $G_i$. The two clusters $G_i \in \{0, 1\}$ are constructed using k-means clustering on $X_i = [X_{i}^{invariant}, \bar{X}_{i}^{pre-treatment}]$, both time-invariant factors like geographical features as well as pre-treatment averages of covariates, so called Mundlak devices (see Section~\ref{sec:data_preparation}). The GATT for each cluster is therefore defined as:
+
 \begin{equation}
     \tau_{GATT, d}(g) = \mathbb{E}[Y_{it}(d) - Y_{it}(0) \mid D_{it} = d, G_i = g] \quad \text{for } g \in \{0, 1\}
 \end{equation}
 
-For the ATT and GATT to be identified correctly three assumptions are required.
+For the ATT and GATT to be identified correctly, three assumptions are required.
 
 \begin{assumption}\label{as:cond_independence}
 \textbf{Conditional Independence: } $(Y(d), Y(0)) \perp\!\!\!\perp D \mid X_i$. Conditional on the Mundlak device and baseline geography, treatment assignment is independent of potential outcomes. I.e., variables of $X_i$ encompass all relevant factors that determine whether a city implements policy $d$.
 \end{assumption}
 
 \begin{assumption}\label{as:weak_overlap}
-\textbf{Weak Overlap: } $P(D=1 \mid X) < 1$. Policy implementation cannot be perfectly predicted by the pre-treatment covariates $X_i$. I.e., every treated city has a similar  untreated counterpart.
+\textbf{Weak Overlap: } $P(D=1 \mid X) < 1$. Policy implementation cannot be perfectly predicted by the pre-treatment covariates $X_i$. I.e., every treated city has a similar untreated counterpart.
 \end{assumption}
 
 \begin{assumption}\label{as:sutva}
@@ -113,25 +116,22 @@ For the ATT and GATT to be identified correctly three assumptions are required.
 \section{Proposed Estimator}
 \label{sec:proposed_estimator}
 
-In order to estimate the (G)ATT, I employ two different double machine learning approaches: Augmented Inverse Propensity Weighting (AIPW) and Causal Forest, estimating the treatment effects in two stages:
+To estimate the (G)ATT, I employ two different double machine learning approaches: Augmented Inverse Propensity Weighting (AIPW) and Causal Forest, estimating the treatment effects in two stages:
 
-\textbf{Stage 1 (Orthogonalization): } The algorithm first uses LASSO to estimate two "nuisance" functions using cross-fitting with 5 folds whereby the hyperparameters $\alpha$ and $C$ are determined once outside the cross-fitting in order to save computation time. The two nuisance functions are as such:
+\textbf{Stage 1 (Orthogonalization): } The algorithm first uses LASSO to estimate two "nuisance" functions using cross-fitting with 5 folds, whereby the hyperparameters $\alpha$ and $C$ are determined once outside the cross-fitting to save computation time. The two nuisance functions are as such:
 
 \begin{itemize}
     \item The propensity score: $p(W_{it}) = \mathbb{E}[D_{it} \mid W_{it}]$ is estimated via a logistic regression with L1 Lasso penalty. Then the Treatment Residual: $\tilde{D}_{it} = D_{it} - \hat{p}(W_{it})$ is calculated as the leftover residual of the true treatment $D_{it}$ minus the predicted propensity score $\hat{p}(W_{it})$ for each city-time observation, representing how much of the variable could not be explained by the regression.
     \item The expected outcome: $m(W_{it}) = \mathbb{E}[Y_{it} \mid W_{it}]$ is estimated via a linear LASSO regression. Then the Outcome Residual: $\tilde{Y}_{it} = Y_{it} - \hat{m}(W_{it})$ is calculated as the leftover residual of the true outcome $Y_{it}$ minus the predicted outcome $\hat{m}(W_{it})$ for each city-time observation.
 \end{itemize}
 
-Both of these LASSO regressions are fit with the whole set $W_{it} = X_{it} + X_i$, both contemporary and time-invariant covariates, whereby the LASSO penalty shrinks down and eliminates covariates in order to minimize prediction error in a cross-validation setting.  This stage is the same for both AIPW and Causal Forest. 
+Both of these LASSO regressions are fit with the whole set $W_{it} = X_{it} + X_i$, both contemporary and time-invariant covariates, whereby the LASSO penalty shrinks down and eliminates covariates to minimize prediction error in a cross-validation setting.  This stage is the same for both AIPW and Causal Forest. 
 
 \textbf{Stage 2 (CATE/ATT/GATT Estimation): } Here AIPW and Causal Forest differ in how they use the DR scores to estimate the treatment effects.
 
-\textit{AIPW} uses the treatment and outcome resdiuals ($\tilde{D}_{it}$ and $\tilde{Y}_{it}$) to estimate Doubly Robust scores (DR), a pseudo-outcome of how a specific city-year observation is should have based on what the first stage models can explain. The GATT then represents the average of all individual DR scores of treated cities within a cluster, the ATT the average of all treated cities.
+\textit{AIPW} uses the treatment and outcome residuals ($\tilde{D}_{it}$ and $\tilde{Y}_{it}$) to estimate Doubly Robust scores (DR), a pseudo-outcome of how a specific city-year observation should have been based on what the first stage models can explain. The GATT then represents the average of all individual DR scores of treated cities within a cluster, and the ATT the average of all treated cities.
 
-\textit{Caudal Forest} builds a large set of trees, 200, whereby each tree uses a random subsample of cities. Each tree is very shallow, consisting of only two terminal nods (leaves), the clusters for dense metropolises and regional hubs. Then within each leave an OLS regression is fitted on the orthogonalized residuals from Stage 1 ($\tilde{Y}_{it}$ and $\tilde{D}_{it}$). Finally the estimations of all different leaves are averaged for the final GATT estimate (and then the two GATT estimates averaged for the ATT estimate). The shallowness of the tree is beneficial as it makes estimation within each leave well estimable as each leave still contains a large number of treated and untreated cities which is especially necessary for estimating the synergy effect, which was relatively rarely implemented in the dataset.
-
-- Use AIPW and Causal Forest instead of IPW or Reg. adj.
-- Explain how they work and differences
+\textit{Caudal Forest} builds a large set of trees, 200, whereby each tree uses a random subsample of cities. Each tree is very shallow, consisting of only two terminal nodes (leaves), the clusters for dense metropolises and regional hubs. Then, within each leaf, an OLS regression is fitted on the orthogonalized residuals from Stage 1 ($\tilde{Y}_{it}$ and $\tilde{D}_{it}$). Finally, the estimations of all different leaves are averaged for the final GATT estimate (and then the two GATT estimates averaged for the ATT estimate). The shallowness of the tree is beneficial as it makes estimation within each leaf well estimable, as each leaf still contains a large number of treated and untreated cities, which is especially necessary for estimating the synergy effect, which was relatively rarely implemented in the dataset.
 
 
 \section{Theoretical Properties}
@@ -212,20 +212,20 @@ Expanding the residuals:
 \section{Data Preparation}
 \label{sec:data_preparation}
 
-The raw panel dataset, consisting of 51 variables for x cities in x time periods, has to be adjusted for a valid estimation via double machine learning. First, minor adjustments are done by changing the categorical variable on the latitude zone into separate dummies as well as log-transforming variables that have highly skewed distributions and/or where it is economically meaningfull to do so.
+The raw panel dataset, consisting of 51 variables for x cities in x time periods, has to be adjusted for a valid estimation via double machine learning. First, minor adjustments are made by changing the categorical variable on the latitude zone into separate dummies as well as log-transforming variables that have highly skewed distributions and/or where it is economically meaningful to do so.
 
-For accurate estimation in a panel setting, time-invariant traits have to be controlled for. For this purpose, the dataset already includes some time-invariant covariates $X^{geographic}_i$ depicting geographic features. Additionally, I transform all time-, non-dummy features into time-invariant Mundlak devices $\bar X^{pre}_i$ by taking the within-city average over all periods prior to the implementation of one of the two policies. This limitation on pre-periods insures that potential side-effects of the policies are not altering the averages. One variable that didn't change for any city in any pre-period is dropped, a dummy for signing a national climate pact.
+For accurate estimation in a panel setting, time-invariant traits have to be controlled for. For this purpose, the dataset already includes some time-invariant covariates $X^{geographic}_i$ depicting geographic features. Additionally, I transform all time-, non-dummy features into time-invariant Mundlak devices $\bar X^{pre}_i$ by taking the within-city average over all periods before the implementation of one of the two policies. This limitation on pre-periods ensures that potential side-effects of the policies are not altering the averages. One variable that didn't change for any city in any pre-period is dropped: a dummy for signing a national climate pact.
 
 \subsection*{K-means clustering}
 \label{sec:cluster}
 
-In the next step, I utilize the whole set of time-invariant covariates $X_i$ with the exception of latitude dummies in order to run k-means clustering to determine a good split of the city features into two types. The benefit of using clusters instead of raw covariates for the second stage of the estimations is \textit{1.} that it ensures that the split for the shallow tree of the causal forest is explainable and \textit{2.} to answer research question 2 not just based on single covariate differences but an overarching typology of city structure. The number of $K=2$ clusters is chosen based on the criterion of explainability as well as backed by silhouette analysis (see Figure~\ref{fig:k_means}). For the cluster determination, I standardize $X_i$ variables to have mean 0 and a standard deviation of 1 in order to make their magnitude comparable across different metrics. The optimal clusters are found by Euclidian partitioning. First, $K=2$ centroids, i.e. specifications of all the different variables, are randomly chosen and then the distance across all dimensions for each city to those centroids calculated and each city assigned to the closer centroid. Then the centroid is adjusted to the mean for all variables that are assigned to it. Now the distances to this adjusted centroid are calculated for each city and the process iterates forward like this until there is no further centroid adjustment.
+In the next step, I utilize the whole set of time-invariant covariates $X_i$ with the exception of latitude dummies in order to run k-means clustering to determine a good split of the city features into two types. The benefit of using clusters instead of raw covariates for the second stage of the estimations is \textit{1.} that it ensures that the split for the shallow tree of the causal forest is explainable and \textit{2.} to answer research question 2 not just based on single covariate differences but an overarching typology of city structure. The number of $K=2$ clusters is chosen based on the criterion of explainability as well as backed by silhouette analysis (see Figure~\ref{fig:k_means}). For the cluster determination, I standardize the $X_i$ variables to have mean 0 and a standard deviation of 1 in order to make their magnitude comparable across different metrics. The optimal clusters are found by Euclidean partitioning. First, $K=2$ centroids, i.e., specifications of all the different variables, are randomly chosen, and then the distance across all dimensions for each city to those centroids is calculated, and each city is assigned to the closer centroid. Then the centroid is adjusted to the mean for all variables that are assigned to it. Now the distances to this adjusted centroid are calculated for each city, and the process iterates forward like this until there is no further centroid adjustment.
 
-Then finally, after inspecting the structural drivers amongst all the factors $X_i$ for each cluster, the typology of both groups becomes clear. \textit{Cluster 0} consists of area-wise large cities with smaller population, more petrol engine vehicles and that has a large logistics share. \textit{Cluster 1} consists of dense, and population-wise large cities that have better public transit, more cars with Diesel and electric than diesel engine, and a higher share of green party votes in elections (also see Figure~\ref{fig:cluster differences} in the Appendix). Based on these criteria, I name \textit{Cluster 0} as "Sprawling Regional Hub" and \textit{Cluster 1} as "Dense Metropolis".
+Then finally, after inspecting the structural drivers amongst all the factors $X_i$ for each cluster, the typology of both groups becomes clear. \textit{Cluster 0} consists of area-wise large cities with smaller population, more petrol engine vehicles, and that has a large logistics share. \textit{Cluster 1} consists of dense, and population-wise large cities that have better public transit, more cars with Diesel and electric engines than diesel engines, and a higher share of green party votes in elections (also see Figure~\ref{fig:cluster differences} in the Appendix). Based on these criteria, I name \textit{Cluster 0} as "Sprawling Regional Hub" and \textit{Cluster 1} as "Dense Metropolis".
 
 \input{Tables/treatment_by_cluster.tex}
 
-Table~\ref{tab:treatment_by_cluster} shows that these clusters both have a sufficient number of cities for both single policies, Congestion Pricing and Low-Emission Zones, however the cities that implemented both are strongly concentrated in \textit{Cluster 1}. Hence, the GATT can be reliably estimated for both clusters with respect to the single treatment. However, for the synergy of both treatments only the coefficient for \textit{Cluster 1} can be robustly estimated.
+Table~\ref{tab:treatment_by_cluster} shows that these clusters both have a sufficient number of cities for both single policies, Congestion Pricing and Low-Emission Zones; however, the cities that implemented both are strongly concentrated in \textit{Cluster 1}. Hence, the GATT can be reliably estimated for both clusters with respect to the single treatment. However, for the synergy of both treatments, only the coefficient for \textit{Cluster 1} can be robustly estimated.
 
 \section{Results}
 \label{sec:results}
