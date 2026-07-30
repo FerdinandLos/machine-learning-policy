@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.6.18)  30 JUL 2026 14:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.6.18)  30 JUL 2026 16:40
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -335,57 +335,66 @@ Package: thm-amsthm 2023/05/04 v0.76
 \thmt@style@headstyle=\toks35
 ))
 \c@assumption=\count322
- (C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\biblatex.sty
+
+
+Package amsthm Warning: Unknown theoremstyle `mycustomstyle' on input line 30.
+
+\c@theorem=\count323
+
+Package amsthm Warning: Unknown theoremstyle `mycustomstyle' on input line 31.
+
+\c@lemma=\count324
+(C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\biblatex.sty
 Package: biblatex 2025/07/10 v3.21 programmable bibliographies (PK/MW)
  (C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex/latex/logreq\logreq.sty
 Package: logreq 2010/08/04 v1.0 xml request logger
-\lrq@indent=\count323
+\lrq@indent=\count325
  (C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex/latex/logreq\logreq.def
 File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
 ))
-\c@tabx@nest=\count324
-\c@listtotal=\count325
-\c@listcount=\count326
-\c@liststart=\count327
-\c@liststop=\count328
-\c@citecount=\count329
-\c@citetotal=\count330
-\c@multicitecount=\count331
-\c@multicitetotal=\count332
-\c@instcount=\count333
-\c@maxnames=\count334
-\c@minnames=\count335
-\c@maxitems=\count336
-\c@minitems=\count337
-\c@citecounter=\count338
-\c@maxcitecounter=\count339
-\c@savedcitecounter=\count340
-\c@uniquelist=\count341
-\c@uniquename=\count342
-\c@refsection=\count343
-\c@refsegment=\count344
-\c@maxextratitle=\count345
-\c@maxextratitleyear=\count346
-\c@maxextraname=\count347
-\c@maxextradate=\count348
-\c@maxextraalpha=\count349
-\c@abbrvpenalty=\count350
-\c@highnamepenalty=\count351
-\c@lownamepenalty=\count352
-\c@maxparens=\count353
-\c@parenlevel=\count354
-\blx@tempcnta=\count355
-\blx@tempcntb=\count356
-\blx@tempcntc=\count357
-\c@blx@maxsection=\count358
-\blx@maxsegment@0=\count359
-\blx@notetype=\count360
-\blx@parenlevel@text=\count361
-\blx@parenlevel@foot=\count362
-\blx@sectionciteorder@0=\count363
-\blx@sectionciteorderinternal@0=\count364
-\blx@entrysetcounter=\count365
-\blx@biblioinstance=\count366
+\c@tabx@nest=\count326
+\c@listtotal=\count327
+\c@listcount=\count328
+\c@liststart=\count329
+\c@liststop=\count330
+\c@citecount=\count331
+\c@citetotal=\count332
+\c@multicitecount=\count333
+\c@multicitetotal=\count334
+\c@instcount=\count335
+\c@maxnames=\count336
+\c@minnames=\count337
+\c@maxitems=\count338
+\c@minitems=\count339
+\c@citecounter=\count340
+\c@maxcitecounter=\count341
+\c@savedcitecounter=\count342
+\c@uniquelist=\count343
+\c@uniquename=\count344
+\c@refsection=\count345
+\c@refsegment=\count346
+\c@maxextratitle=\count347
+\c@maxextratitleyear=\count348
+\c@maxextraname=\count349
+\c@maxextradate=\count350
+\c@maxextraalpha=\count351
+\c@abbrvpenalty=\count352
+\c@highnamepenalty=\count353
+\c@lownamepenalty=\count354
+\c@maxparens=\count355
+\c@parenlevel=\count356
+\blx@tempcnta=\count357
+\blx@tempcntb=\count358
+\blx@tempcntc=\count359
+\c@blx@maxsection=\count360
+\blx@maxsegment@0=\count361
+\blx@notetype=\count362
+\blx@parenlevel@text=\count363
+\blx@parenlevel@foot=\count364
+\blx@sectionciteorder@0=\count365
+\blx@sectionciteorderinternal@0=\count366
+\blx@entrysetcounter=\count367
+\blx@biblioinstance=\count368
 \labelnumberwidth=\skip62
 \labelalphawidth=\skip63
 \biblabelsep=\skip64
@@ -397,9 +406,9 @@ File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
 \blx@bcfin=\read2
 \blx@bcfout=\write3
 \blx@langwohyphens=\language79
-\c@mincomprange=\count367
-\c@maxcomprange=\count368
-\c@mincompwidth=\count369
+\c@mincomprange=\count369
+\c@maxcomprange=\count370
+\c@mincompwidth=\count371
 Package biblatex Info: Trying to load biblatex default data model...
 Package biblatex Info: ... file 'blx-dm.def' found.
  (C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\blx-dm.def
@@ -409,74 +418,74 @@ Package biblatex Info: Trying to load biblatex style data model...
 Package biblatex Info: ... file 'authoryear.dbx' not found.
 Package biblatex Info: Trying to load biblatex custom data model...
 Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
-\c@afterword=\count370
-\c@savedafterword=\count371
-\c@annotator=\count372
-\c@savedannotator=\count373
-\c@author=\count374
-\c@savedauthor=\count375
-\c@bookauthor=\count376
-\c@savedbookauthor=\count377
-\c@commentator=\count378
-\c@savedcommentator=\count379
-\c@editor=\count380
-\c@savededitor=\count381
-\c@editora=\count382
-\c@savededitora=\count383
-\c@editorb=\count384
-\c@savededitorb=\count385
-\c@editorc=\count386
-\c@savededitorc=\count387
-\c@foreword=\count388
-\c@savedforeword=\count389
-\c@holder=\count390
-\c@savedholder=\count391
-\c@introduction=\count392
-\c@savedintroduction=\count393
-\c@namea=\count394
-\c@savednamea=\count395
-\c@nameb=\count396
-\c@savednameb=\count397
-\c@namec=\count398
-\c@savednamec=\count399
-\c@translator=\count400
-\c@savedtranslator=\count401
-\c@shortauthor=\count402
-\c@savedshortauthor=\count403
-\c@shorteditor=\count404
-\c@savedshorteditor=\count405
-\c@labelname=\count406
-\c@savedlabelname=\count407
-\c@institution=\count408
-\c@savedinstitution=\count409
-\c@lista=\count410
-\c@savedlista=\count411
-\c@listb=\count412
-\c@savedlistb=\count413
-\c@listc=\count414
-\c@savedlistc=\count415
-\c@listd=\count416
-\c@savedlistd=\count417
-\c@liste=\count418
-\c@savedliste=\count419
-\c@listf=\count420
-\c@savedlistf=\count421
-\c@location=\count422
-\c@savedlocation=\count423
-\c@organization=\count424
-\c@savedorganization=\count425
-\c@origlocation=\count426
-\c@savedoriglocation=\count427
-\c@origpublisher=\count428
-\c@savedorigpublisher=\count429
-\c@publisher=\count430
-\c@savedpublisher=\count431
-\c@language=\count432
-\c@savedlanguage=\count433
-\c@origlanguage=\count434
-\c@savedoriglanguage=\count435
-\c@pageref=\count436
-\c@savedpageref=\count437
+\c@afterword=\count372
+\c@savedafterword=\count373
+\c@annotator=\count374
+\c@savedannotator=\count375
+\c@author=\count376
+\c@savedauthor=\count377
+\c@bookauthor=\count378
+\c@savedbookauthor=\count379
+\c@commentator=\count380
+\c@savedcommentator=\count381
+\c@editor=\count382
+\c@savededitor=\count383
+\c@editora=\count384
+\c@savededitora=\count385
+\c@editorb=\count386
+\c@savededitorb=\count387
+\c@editorc=\count388
+\c@savededitorc=\count389
+\c@foreword=\count390
+\c@savedforeword=\count391
+\c@holder=\count392
+\c@savedholder=\count393
+\c@introduction=\count394
+\c@savedintroduction=\count395
+\c@namea=\count396
+\c@savednamea=\count397
+\c@nameb=\count398
+\c@savednameb=\count399
+\c@namec=\count400
+\c@savednamec=\count401
+\c@translator=\count402
+\c@savedtranslator=\count403
+\c@shortauthor=\count404
+\c@savedshortauthor=\count405
+\c@shorteditor=\count406
+\c@savedshorteditor=\count407
+\c@labelname=\count408
+\c@savedlabelname=\count409
+\c@institution=\count410
+\c@savedinstitution=\count411
+\c@lista=\count412
+\c@savedlista=\count413
+\c@listb=\count414
+\c@savedlistb=\count415
+\c@listc=\count416
+\c@savedlistc=\count417
+\c@listd=\count418
+\c@savedlistd=\count419
+\c@liste=\count420
+\c@savedliste=\count421
+\c@listf=\count422
+\c@savedlistf=\count423
+\c@location=\count424
+\c@savedlocation=\count425
+\c@organization=\count426
+\c@savedorganization=\count427
+\c@origlocation=\count428
+\c@savedoriglocation=\count429
+\c@origpublisher=\count430
+\c@savedorigpublisher=\count431
+\c@publisher=\count432
+\c@savedpublisher=\count433
+\c@language=\count434
+\c@savedlanguage=\count435
+\c@origlanguage=\count436
+\c@savedoriglanguage=\count437
+\c@pageref=\count438
+\c@savedpageref=\count439
 \shorthandwidth=\skip70
 \shortjournalwidth=\skip71
 \shortserieswidth=\skip72
@@ -500,19 +509,19 @@ Package biblatex Info: Trying to load generic definitions...
 Package biblatex Info: ... file 'biblatex.def' found.
  (C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\biblatex.def
 File: biblatex.def 2025/07/10 v3.21 biblatex compatibility (PK/MW)
-\c@textcitecount=\count438
-\c@textcitetotal=\count439
-\c@textcitemaxnames=\count440
-\c@biburlbigbreakpenalty=\count441
-\c@biburlbreakpenalty=\count442
-\c@biburlnumpenalty=\count443
-\c@biburlucpenalty=\count444
-\c@biburllcpenalty=\count445
+\c@textcitecount=\count440
+\c@textcitetotal=\count441
+\c@textcitemaxnames=\count442
+\c@biburlbigbreakpenalty=\count443
+\c@biburlbreakpenalty=\count444
+\c@biburlnumpenalty=\count445
+\c@biburlucpenalty=\count446
+\c@biburllcpenalty=\count447
 \biburlbigskip=\muskip19
 \biburlnumskip=\muskip20
 \biburlucskip=\muskip21
 \biburllcskip=\muskip22
-\c@smartand=\count446
+\c@smartand=\count448
 )
 Package biblatex Info: Trying to load natbib compatibility...
 Package biblatex Info: ... file 'blx-natbib.def' found.
@@ -528,8 +537,8 @@ Package biblatex Info: Trying to load bibliography style 'standard'...
 Package biblatex Info: ... file 'standard.bbx' found.
  (C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex/latex/biblatex/bbx\standard.bbx
 File: standard.bbx 2025/07/10 v3.21 biblatex bibliography style (PK/MW)
-\c@bbx:relatedcount=\count447
-\c@bbx:relatedtotal=\count448
+\c@bbx:relatedcount=\count449
+\c@bbx:relatedtotal=\count450
 ))
 Package biblatex Info: Trying to load citation style 'authoryear'...
 Package biblatex Info: ... file 'authoryear.cbx' found.
@@ -554,7 +563,7 @@ Package biblatex Info: Document encoding is UTF8 ....
 Package: expl3 2026-05-26 L3 programming layer (loader) 
  (C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
 File: l3backend-pdftex.def 2026-02-18 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count449
+\l__color_backend_stack_int=\count451
 ))
 Package biblatex Info: ... and expl3
 (biblatex)             2026-05-26 L3 programming layer (loader) 
@@ -565,29 +574,29 @@ Package: xparse 2025-10-09 L3 Experimental document command parser
 )
 Package: blx-case-expl3 2025/07/10 v3.21 expl3 case changing code for biblatex
 ))
-\@quotelevel=\count450
-\@quotereset=\count451
+\@quotelevel=\count452
+\@quotereset=\count453
  (Loser_Ferdinand_12400460.aux)
 \openout1 = `Loser_Ferdinand_12400460.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -625,16 +634,16 @@ LaTeX Font Info:    ... okay on input line 45.
 
 (C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count452
+\scratchcounter=\count454
 \scratchdimen=\dimen196
 \scratchbox=\box56
-\nofMPsegments=\count453
-\nofMParguments=\count454
+\nofMPsegments=\count455
+\nofMParguments=\count456
 \everyMPshowfont=\toks36
-\MPscratchCnt=\count455
+\MPscratchCnt=\count457
 \MPscratchDim=\dimen197
-\MPnumerator=\count456
-\makeMPintoPDFobject=\count457
+\MPnumerator=\count458
+\makeMPintoPDFobject=\count459
 \everyMPtoPDFconversion=\toks37
 ) (C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
@@ -652,7 +661,7 @@ File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package color Info: Driver file: pdftex.def on input line 149.
  (C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx))
-Package hyperref Info: Link coloring ON on input line 45.
+Package hyperref Info: Link coloring ON on input line 47.
  (Loser_Ferdinand_12400460.out) (Loser_Ferdinand_12400460.out)
 \@outlinefile=\write4
 \openout4 = `Loser_Ferdinand_12400460.out'.
@@ -671,35 +680,37 @@ Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'Loser_Ferdinand_12400460.bbl' not found.
 
 No file Loser_Ferdinand_12400460.bbl.
-Package biblatex Info: Reference section=0 on input line 45.
-Package biblatex Info: Reference segment=0 on input line 45.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 48.
+Package biblatex Info: Reference section=0 on input line 47.
+Package biblatex Info: Reference segment=0 on input line 47.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 50.
 (C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 48.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 50.
  (C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {C:/Users/ferdi/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
-Package hyperref Info: bookmark level for unknown assumption defaults to 0 on input line 82.
- [2] [3] (Tables/treatment_by_cluster.tex
+Package hyperref Info: bookmark level for unknown assumption defaults to 0 on input line 84.
+ [2] [3]
+Package hyperref Info: bookmark level for unknown theorem defaults to 0 on input line 125.
+ [4] [5] (Tables/treatment_by_cluster.tex
 Overfull \hbox (44.74568pt too wide) in paragraph at lines 5--15
  [][] 
  []
 
 )
-<Figures/cluster_differences.pdf, id=83, 568.35965pt x 493.61916pt>
+<Figures/cluster_differences.pdf, id=103, 568.35965pt x 493.61916pt>
 File: Figures/cluster_differences.pdf Graphic file (type pdf)
 <use Figures/cluster_differences.pdf>
-Package pdftex.def Info: Figures/cluster_differences.pdf  used on input line 143.
+Package pdftex.def Info: Figures/cluster_differences.pdf  used on input line 216.
 (pdftex.def)             Requested size: 407.66833pt x 354.06482pt.
  (Tables/dml_master_results.tex)
-<Figures/forest_plot_att_gatt.pdf, id=84, 712.36261pt x 566.36092pt>
+<Figures/forest_plot_att_gatt.pdf, id=104, 712.36261pt x 566.36092pt>
 File: Figures/forest_plot_att_gatt.pdf Graphic file (type pdf)
 <use Figures/forest_plot_att_gatt.pdf>
-Package pdftex.def Info: Figures/forest_plot_att_gatt.pdf  used on input line 156.
+Package pdftex.def Info: Figures/forest_plot_att_gatt.pdf  used on input line 229.
 (pdftex.def)             Requested size: 407.66833pt x 324.11673pt.
  (Tables/propensity_score_summary.tex) (Tables/appendix_placebo_tests.tex
 Overfull \hbox (66.87228pt too wide) in paragraph at lines 5--25
@@ -708,47 +719,51 @@ Overfull \hbox (66.87228pt too wide) in paragraph at lines 5--25
 
 )
 
-LaTeX Warning: Empty bibliography on input line 172.
+LaTeX Warning: Empty bibliography on input line 245.
 
-<Figures/overlap_density.pdf, id=85, 578.16pt x 361.35pt>
+<Figures/kmeans_evaluation.pdf, id=105, 710.09009pt x 277.04504pt>
+File: Figures/kmeans_evaluation.pdf Graphic file (type pdf)
+<use Figures/kmeans_evaluation.pdf>
+Package pdftex.def Info: Figures/kmeans_evaluation.pdf  used on input line 253.
+(pdftex.def)             Requested size: 407.66833pt x 159.05869pt.
+<Figures/overlap_density.pdf, id=106, 578.16pt x 361.35pt>
 File: Figures/overlap_density.pdf Graphic file (type pdf)
 <use Figures/overlap_density.pdf>
-Package pdftex.def Info: Figures/overlap_density.pdf  used on input line 180.
+Package pdftex.def Info: Figures/overlap_density.pdf  used on input line 260.
 (pdftex.def)             Requested size: 362.37569pt x 226.48279pt.
-[4] [5 <./Figures/cluster_differences.pdf>] [6 <./Figures/forest_plot_att_gatt.pdf>]
-<Figures/appendix_overlap_sensitivity.pdf, id=299, 637.98727pt x 421.7772pt>
+<Figures/appendix_overlap_sensitivity.pdf, id=107, 637.98727pt x 421.7772pt>
 File: Figures/appendix_overlap_sensitivity.pdf Graphic file (type pdf)
 <use Figures/appendix_overlap_sensitivity.pdf>
-Package pdftex.def Info: Figures/appendix_overlap_sensitivity.pdf  used on input line 188.
+Package pdftex.def Info: Figures/appendix_overlap_sensitivity.pdf  used on input line 268.
 (pdftex.def)             Requested size: 362.37569pt x 239.5724pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 195--198
+Underfull \hbox (badness 10000) in paragraph at lines 275--278
 
  []
 
-[7 <./Figures/overlap_density.pdf>] [8 <./Figures/appendix_overlap_sensitivity.pdf>] (Loser_Ferdinand_12400460.aux)
+[6] [7 <./Figures/cluster_differences.pdf>] [8 <./Figures/forest_plot_att_gatt.pdf>] [9 <./Figures/kmeans_evaluation.pdf> <./Figures/overlap_density.pdf>] [10 <./Figures/appendix_overlap_sensitivity.pdf>] (Loser_Ferdinand_12400460.aux)
  ***********
 LaTeX2e <2026-06-01>
 L3 programming layer <2026-05-26>
  ***********
 Package rerunfilecheck Info: File `Loser_Ferdinand_12400460.out' has not changed.
-(rerunfilecheck)             Checksum: E6383AA0519F0AEA38EDE9D11FF54343;1312.
+(rerunfilecheck)             Checksum: 4E34DCA2657110EEFF4028838D38C567;1176.
 Package logreq Info: Writing requests to 'Loser_Ferdinand_12400460.run.xml'.
 \openout1 = `Loser_Ferdinand_12400460.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 20015 strings out of 467509
- 354354 string characters out of 5408780
- 1197360 words of memory out of 5000000
- 48956 multiletter control sequences out of 15000+600000
- 647916 words of font info for 90 fonts, out of 8000000 for 9000
+ 20081 strings out of 467509
+ 355538 string characters out of 5408780
+ 1200202 words of memory out of 5000000
+ 49006 multiletter control sequences out of 15000+600000
+ 649390 words of font info for 92 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  74i,9n,79p,943b,803s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1000.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm0700.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1095.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1440.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1000.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm2074.pk><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on Loser_Ferdinand_12400460.pdf (8 pages, 374129 bytes).
+ <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1000.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0800.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbi1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm0700.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1095.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1440.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1000.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm2074.pk><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on Loser_Ferdinand_12400460.pdf (10 pages, 448653 bytes).
 PDF statistics:
- 943 PDF objects out of 1000 (max. 8388607)
- 37 named destinations out of 1000 (max. 500000)
- 93 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1110 PDF objects out of 1200 (max. 8388607)
+ 51 named destinations out of 1000 (max. 500000)
+ 90 words of extra memory for PDF output out of 10000 (max. 10000000)
 
