@@ -56,9 +56,28 @@ core_policies = ['cp_active', 'lez_active', 'cp_x_lez']
 # ---------------------------------------------------------
 # 3. Define the Learners Grid & Helper Functions
 # ---------------------------------------------------------
-# 1. Plug in the exact values from your optimal_hyperparameters_aipw.txt file
-OPTIMAL_ALPHA = 0.015025173054024272  # Found by find_optimal_hyperparameters script
-OPTIMAL_C = 0.046415888336127774       # Replace with your actual LogisticRegressionCV C
+# Plug in the exact values from your optimal_hyperparameters_aipw.json file
+import json
+
+# Dynamically load the optimal hyperparameters from the tuning script
+hyperparam_path = results_dir / 'optimal_hyperparameters_aipw.json'
+
+try:
+    with open(hyperparam_path, 'r') as f:
+        optimal_params = json.load(f)
+        
+    OPTIMAL_ALPHA = optimal_params['OPTIMAL_ALPHA']
+    OPTIMAL_C = optimal_params['OPTIMAL_C']
+    
+    print(f"[SETUP] Successfully loaded tuned hyperparameters:")
+    print(f"        Alpha: {OPTIMAL_ALPHA}")
+    print(f"        C: {OPTIMAL_C}")
+    
+except FileNotFoundError:
+    raise FileNotFoundError(
+        "Hyperparameter JSON not found. Please run the hyperparameter tuning script "
+        "first to generate 'optimal_hyperparameters_aipw.json' in the Results directory."
+    )   
 
 # 2. Updated Models Dictionary
 models = {

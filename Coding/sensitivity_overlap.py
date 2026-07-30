@@ -42,9 +42,28 @@ model_name = 'L1 (Lasso / Logit L1)'
 # ---------------------------------------------------------
 # 2. Hyperparameter Locking & Pipeline Setup
 # ---------------------------------------------------------
-# Exact values from your optimal_hyperparameters_aipw.txt file
-OPTIMAL_ALPHA = 0.015025173054024272  
-OPTIMAL_C = 0.046415888336127774       
+# Plug in the exact values from your optimal_hyperparameters_aipw.json file
+import json
+
+# Dynamically load the optimal hyperparameters from the tuning script
+hyperparam_path = results_dir / 'optimal_hyperparameters_aipw.json'
+
+try:
+    with open(hyperparam_path, 'r') as f:
+        optimal_params = json.load(f)
+        
+    OPTIMAL_ALPHA = optimal_params['OPTIMAL_ALPHA']
+    OPTIMAL_C = optimal_params['OPTIMAL_C']
+    
+    print(f"[SETUP] Successfully loaded tuned hyperparameters:")
+    print(f"        Alpha: {OPTIMAL_ALPHA}")
+    print(f"        C: {OPTIMAL_C}")
+    
+except FileNotFoundError:
+    raise FileNotFoundError(
+        "Hyperparameter JSON not found. Please run the hyperparameter tuning script "
+        "first to generate 'optimal_hyperparameters_aipw.json' in the Results directory."
+    )   
 
 # Updated with fixed hyperparameters, max_iter=10000 for convergence, and n_jobs=1 to avoid thread thrashing
 ml_l = make_pipeline(StandardScaler(), Lasso(alpha=OPTIMAL_ALPHA, random_state=42, max_iter=10000))
