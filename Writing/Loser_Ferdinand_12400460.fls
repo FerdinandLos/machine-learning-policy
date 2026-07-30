@@ -266,12 +266,6 @@ INPUT .\Tables\treatment_by_cluster.tex
 INPUT .\Tables\treatment_by_cluster.tex
 INPUT Tables\treatment_by_cluster.tex
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecti1000.tfm
-INPUT .\Figures\cluster_differences.pdf
-INPUT .\Figures\cluster_differences.pdf
-INPUT .\Figures\cluster_differences.pdf
-INPUT .\Figures\cluster_differences.pdf
-INPUT .\Figures\cluster_differences.pdf
-INPUT .\Figures\cluster_differences.pdf
 INPUT .\Tables\dml_master_results.tex
 INPUT .\Tables\dml_master_results.tex
 INPUT Tables\dml_master_results.tex
@@ -281,6 +275,9 @@ INPUT .\Figures\forest_plot_att_gatt.pdf
 INPUT .\Figures\forest_plot_att_gatt.pdf
 INPUT .\Figures\forest_plot_att_gatt.pdf
 INPUT .\Figures\forest_plot_att_gatt.pdf
+INPUT .\Tables\unified_common_support.tex
+INPUT .\Tables\unified_common_support.tex
+INPUT Tables\unified_common_support.tex
 INPUT .\Tables\propensity_score_summary.tex
 INPUT .\Tables\propensity_score_summary.tex
 INPUT Tables\propensity_score_summary.tex
@@ -293,6 +290,12 @@ INPUT .\Figures\kmeans_evaluation.pdf
 INPUT .\Figures\kmeans_evaluation.pdf
 INPUT .\Figures\kmeans_evaluation.pdf
 INPUT .\Figures\kmeans_evaluation.pdf
+INPUT .\Figures\cluster_differences.pdf
+INPUT .\Figures\cluster_differences.pdf
+INPUT .\Figures\cluster_differences.pdf
+INPUT .\Figures\cluster_differences.pdf
+INPUT .\Figures\cluster_differences.pdf
+INPUT .\Figures\cluster_differences.pdf
 INPUT .\Figures\overlap_density.pdf
 INPUT .\Figures\overlap_density.pdf
 INPUT .\Figures\overlap_density.pdf
@@ -324,10 +327,10 @@ INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecb
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbi1200.pk
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1200.pk
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1200.pk
-INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1728.pk
-INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1728.pk
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm1200.pk
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm1200.pk
+INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1728.pk
+INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1728.pk
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm1000.pk
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm1000.pk
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\tcrm0700.pk
@@ -350,6 +353,8 @@ INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\c
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi10.pfb
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi12.pfb
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi12.pfb
+INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi7.pfb
+INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi7.pfb
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi8.pfb
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi8.pfb
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr10.pfb

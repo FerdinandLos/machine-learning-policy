@@ -47,13 +47,15 @@
 \begin{document}
 
 \maketitle
+\thispagestyle{empty}
 
 \begin{abstract}
 \noindent
 Abstract content goes here. This section should provide a concise summary of the research question, methodology, key findings, and implications of the study. It should be clear and informative, allowing readers to quickly understand the purpose and results of the report.
 \end{abstract}
 
-\newpage
+\clearpage % Moves to the second page
+\pagenumbering{arabic} 
 
 \section{Introduction}
 \label{sec:introduction}
@@ -219,17 +221,11 @@ For accurate estimation in a panel setting, time-invariant traits have to be con
 
 In the next step, I utilize the whole set of time-invariant covariates $X_i$ with the exception of latitude dummies in order to run k-means clustering to determine a good split of the city features into two types. The benefit of using clusters instead of raw covariates for the second stage of the estimations is \textit{1.} that it ensures that the split for the shallow tree of the causal forest is explainable and \textit{2.} to answer research question 2 not just based on single covariate differences but an overarching typology of city structure. The number of $K=2$ clusters is chosen based on the criterion of explainability as well as backed by silhouette analysis (see Figure~\ref{fig:k_means}). For the cluster determination, I standardize $X_i$ variables to have mean 0 and a standard deviation of 1 in order to make their magnitude comparable across different metrics. The optimal clusters are found by Euclidian partitioning. First, $K=2$ centroids, i.e. specifications of all the different variables, are randomly chosen and then the distance across all dimensions for each city to those centroids calculated and each city assigned to the closer centroid. Then the centroid is adjusted to the mean for all variables that are assigned to it. Now the distances to this adjusted centroid are calculated for each city and the process iterates forward like this until there is no further centroid adjustment.
 
-Then finally, after inspecting the structural drivers amongst all the factors $X_i$ for each cluster, the typology of both groups becomes clear. \textit{Cluster 0} consists of area-wise large cities with smaller population, more petrol engine vehicles and that has a large logistics share. \textit{Cluster 1} consists of dense, and population-wise large cities that have better public transit, more cars with Diesel and electric than diesel engine, and a higher share of green party votes in elections (also see Figure~\ref{fig:cluster differences}). Based on these criteria, I name \textit{Cluster 0} as "Sprawling Regional Hub" and \textit{Cluster 1} as "Dense Metropolis".
-
+Then finally, after inspecting the structural drivers amongst all the factors $X_i$ for each cluster, the typology of both groups becomes clear. \textit{Cluster 0} consists of area-wise large cities with smaller population, more petrol engine vehicles and that has a large logistics share. \textit{Cluster 1} consists of dense, and population-wise large cities that have better public transit, more cars with Diesel and electric than diesel engine, and a higher share of green party votes in elections (also see Figure~\ref{fig:cluster differences} in the Appendix). Based on these criteria, I name \textit{Cluster 0} as "Sprawling Regional Hub" and \textit{Cluster 1} as "Dense Metropolis".
 
 \input{Tables/treatment_by_cluster.tex}
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.9\textwidth]{Figures/cluster_differences.pdf}
-    \caption{Differences between the two clusters.}
-    \label{fig:cluster differences}
-\end{figure}
+Table~\ref{tab:treatment_by_cluster} shows that these clusters both have a sufficient number of cities for both single policies, Congestion Pricing and Low-Emission Zones, however the cities that implemented both are strongly concentrated in \textit{Cluster 1}. Hence, the GATT can be reliably estimated for both clusters with respect to the single treatment. However, for the synergy of both treatments only the coefficient for \textit{Cluster 1} can be robustly estimated.
 
 \section{Results}
 \label{sec:results}
@@ -247,6 +243,8 @@ Then finally, after inspecting the structural drivers amongst all the factors $X
 \section{Sensitivity Analysis}
 \label{sec:sensitivity_analysis}
 
+\input{Tables/unified_common_support.tex}
+
 \input{Tables/propensity_score_summary.tex}
 
 \input{Tables/appendix_placebo_tests.tex}
@@ -257,7 +255,7 @@ Then finally, after inspecting the structural drivers amongst all the factors $X
 % Print the bibliography
 \printbibliography
 
-
+\clearpage
 \appendix
 \section*{Appendix}
 
@@ -266,6 +264,13 @@ Then finally, after inspecting the structural drivers amongst all the factors $X
     \includegraphics[width=0.9\textwidth]{Figures/kmeans_evaluation.pdf}
     \caption{Evaluation of k-Means Number of Clusters.}
     \label{fig:k_means}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Figures/cluster_differences.pdf}
+    \caption{Differences between the two clusters.}
+    \label{fig:cluster differences}
 \end{figure}
 
 \begin{figure}[htbp]
@@ -283,6 +288,7 @@ Then finally, after inspecting the structural drivers amongst all the factors $X
     \label{fig:appendix_overlap_sensitivity}
 \end{figure}
 
+\clearpage
 \section*{Declaration of Autorship}
 
 I confirm that this report is based on my own work. In preparing

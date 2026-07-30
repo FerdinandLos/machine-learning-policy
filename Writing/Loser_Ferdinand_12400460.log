@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.7.30)  30 JUL 2026 21:21
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.7.30)  30 JUL 2026 22:05
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -686,58 +686,74 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {C:/Users/ferdi/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
-Package hyperref Info: bookmark level for unknown definition defaults to 0 on input line 64.
+Package hyperref Info: bookmark level for unknown definition defaults to 0 on input line 66.
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.90 \end{equation}
+                    [1
+
+]
+Package hyperref Info: bookmark level for unknown assumption defaults to 0 on input line 101.
  [2]
-Package hyperref Info: bookmark level for unknown assumption defaults to 0 on input line 99.
- [3]
-Package hyperref Info: bookmark level for unknown theorem defaults to 0 on input line 140.
- [4] [5] [6] (Tables/treatment_by_cluster.tex
+Package hyperref Info: bookmark level for unknown theorem defaults to 0 on input line 142.
+ [3] [4] [5] (Tables/treatment_by_cluster.tex
 Overfull \hbox (44.74568pt too wide) in paragraph at lines 5--15
  [][] 
  []
 
-)
-<Figures/cluster_differences.pdf, id=123, 568.35965pt x 493.61916pt>
-File: Figures/cluster_differences.pdf Graphic file (type pdf)
-<use Figures/cluster_differences.pdf>
-Package pdftex.def Info: Figures/cluster_differences.pdf  used on input line 233.
-(pdftex.def)             Requested size: 407.66833pt x 354.06482pt.
- (Tables/dml_master_results.tex)
+) (Tables/dml_master_results.tex)
 <Figures/forest_plot_att_gatt.pdf, id=124, 712.36261pt x 566.36092pt>
 File: Figures/forest_plot_att_gatt.pdf Graphic file (type pdf)
 <use Figures/forest_plot_att_gatt.pdf>
-Package pdftex.def Info: Figures/forest_plot_att_gatt.pdf  used on input line 246.
+Package pdftex.def Info: Figures/forest_plot_att_gatt.pdf  used on input line 238.
 (pdftex.def)             Requested size: 407.66833pt x 324.11673pt.
- (Tables/propensity_score_summary.tex) (Tables/appendix_placebo_tests.tex
+ (Tables/unified_common_support.tex
+Overfull \hbox (30.9298pt too wide) in paragraph at lines 5--15
+[][] 
+ []
+
+) (Tables/propensity_score_summary.tex) (Tables/appendix_placebo_tests.tex
 Overfull \hbox (71.12234pt too wide) in paragraph at lines 5--25
 [][] 
  []
 
 )
 
-LaTeX Warning: Empty bibliography on input line 262.
+LaTeX Warning: Empty bibliography on input line 256.
 
-<Figures/kmeans_evaluation.pdf, id=125, 710.09009pt x 277.04504pt>
+[6] [7 <./Figures/forest_plot_att_gatt.pdf>] [8]
+<Figures/kmeans_evaluation.pdf, id=220, 710.09009pt x 277.04504pt>
 File: Figures/kmeans_evaluation.pdf Graphic file (type pdf)
 <use Figures/kmeans_evaluation.pdf>
-Package pdftex.def Info: Figures/kmeans_evaluation.pdf  used on input line 270.
+Package pdftex.def Info: Figures/kmeans_evaluation.pdf  used on input line 264.
 (pdftex.def)             Requested size: 407.66833pt x 159.05869pt.
-<Figures/overlap_density.pdf, id=126, 578.16pt x 361.35pt>
+<Figures/cluster_differences.pdf, id=221, 568.35965pt x 493.61916pt>
+File: Figures/cluster_differences.pdf Graphic file (type pdf)
+<use Figures/cluster_differences.pdf>
+Package pdftex.def Info: Figures/cluster_differences.pdf  used on input line 271.
+(pdftex.def)             Requested size: 407.66833pt x 354.06482pt.
+<Figures/overlap_density.pdf, id=222, 578.16pt x 361.35pt>
 File: Figures/overlap_density.pdf Graphic file (type pdf)
 <use Figures/overlap_density.pdf>
-Package pdftex.def Info: Figures/overlap_density.pdf  used on input line 277.
+Package pdftex.def Info: Figures/overlap_density.pdf  used on input line 278.
 (pdftex.def)             Requested size: 362.37569pt x 226.48279pt.
-<Figures/appendix_overlap_sensitivity.pdf, id=127, 637.98727pt x 421.8209pt>
+<Figures/appendix_overlap_sensitivity.pdf, id=223, 637.98727pt x 421.8209pt>
 File: Figures/appendix_overlap_sensitivity.pdf Graphic file (type pdf)
 <use Figures/appendix_overlap_sensitivity.pdf>
-Package pdftex.def Info: Figures/appendix_overlap_sensitivity.pdf  used on input line 285.
+Package pdftex.def Info: Figures/appendix_overlap_sensitivity.pdf  used on input line 286.
 (pdftex.def)             Requested size: 362.37569pt x 239.59723pt.
+ [9
 
-Underfull \hbox (badness 10000) in paragraph at lines 292--295
+ <./Figures/kmeans_evaluation.pdf>] [10 <./Figures/cluster_differences.pdf> <./Figures/overlap_density.pdf>] [11 <./Figures/appendix_overlap_sensitivity.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 294--297
 
  []
 
-[7] [8 <./Figures/cluster_differences.pdf>] [9 <./Figures/forest_plot_att_gatt.pdf>] [10 <./Figures/kmeans_evaluation.pdf> <./Figures/overlap_density.pdf>] [11 <./Figures/appendix_overlap_sensitivity.pdf>] (Loser_Ferdinand_12400460.aux)
+[12
+
+] (Loser_Ferdinand_12400460.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
@@ -749,17 +765,17 @@ Package logreq Info: Writing requests to 'Loser_Ferdinand_12400460.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 20081 strings out of 467870
- 354843 string characters out of 5418355
- 1193147 words of memory out of 5000000
- 48641 multiletter control sequences out of 15000+600000
+ 20090 strings out of 467870
+ 355195 string characters out of 5418355
+ 1193228 words of memory out of 5000000
+ 48645 multiletter control sequences out of 15000+600000
  649390 words of font info for 92 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,11n,79p,1559b,803s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1000.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0800.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbi1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm0700.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1095.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1440.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1000.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm2074.pk><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on Loser_Ferdinand_12400460.pdf (11 pages, 458812 bytes).
+ <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1000.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0800.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbi1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm0700.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1095.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1440.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1000.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\ferdi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm2074.pk><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on Loser_Ferdinand_12400460.pdf (13 pages, 472790 bytes).
 PDF statistics:
- 1143 PDF objects out of 1200 (max. 8388607)
- 58 named destinations out of 1000 (max. 500000)
+ 1158 PDF objects out of 1200 (max. 8388607)
+ 60 named destinations out of 1000 (max. 500000)
  90 words of extra memory for PDF output out of 10000 (max. 10000000)
 
