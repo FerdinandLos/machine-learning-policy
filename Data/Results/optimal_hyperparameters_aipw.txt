@@ -1,4 +1,4 @@
 --- LASSO (L1) OPTIMAL HYPERPARAMETERS (FULL SAMPLE) ---
 
-Outcome Model (Lasso) Selected alpha (regularization penalty): 0.015025173054024272
+Outcome Model (Lasso) Selected alpha (regularization penalty): 0.04156583583437143
 Treatment Model (LogisticRegression L1) Selected C (inverse penalty): 0.046415888336127774

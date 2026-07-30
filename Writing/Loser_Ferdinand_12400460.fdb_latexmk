@@ -1,24 +1,24 @@
 # Fdb version 4
-["biber Loser_Ferdinand_12400460"] 0 "Loser_Ferdinand_12400460.bcf" "Loser_Ferdinand_12400460.bbl" "Loser_Ferdinand_12400460" 1785399844.80754 0
+["biber Loser_Ferdinand_12400460"] 0 "Loser_Ferdinand_12400460.bcf" "Loser_Ferdinand_12400460.bbl" "Loser_Ferdinand_12400460" 1785423004.88238 0
   "Loser_Ferdinand_12400460.bcf" 0 -1 0 "pdflatex"
   "Monte Carlo Simulations.bib" 0 -1 0 ""
   (generated)
   "Loser_Ferdinand_12400460.bbl"
   "Loser_Ferdinand_12400460.blg"
   (rewritten before read)
-["pdflatex"] 1785399838.56811 "c:/Users/ferdi/Documents/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" "Loser_Ferdinand_12400460.pdf" "Loser_Ferdinand_12400460" 1785399844.80901 0
-  "Figures/appendix_overlap_sensitivity.pdf" 1785361742 21035 f858771a268125fefb7e8556cb983f09 ""
+["pdflatex"] 1785423002.62262 "c:/Users/ferdi/Documents/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" "Loser_Ferdinand_12400460.pdf" "Loser_Ferdinand_12400460" 1785423004.88382 0
+  "Figures/appendix_overlap_sensitivity.pdf" 1785423000 20982 16dd08211735f75f87dd22071e18171a ""
   "Figures/cluster_differences.pdf" 1785399836 39464 f317e1df5e5902f03212cd8e2d1b5a60 ""
-  "Figures/forest_plot_att_gatt.pdf" 1785361738 24846 6248ab76e1b3e1975f9fe5a9837a03c1 ""
-  "Figures/overlap_density.pdf" 1785361738 36955 85be2a560bba1db7a98fad6e01accb8f ""
-  "Loser_Ferdinand_12400460.aux" 1785399843 4341 26701af7624041158e7c91f16e1ad954 "pdflatex"
+  "Figures/forest_plot_att_gatt.pdf" 1785407318 24833 31cdda10fd2d02e97fc9a912230a02cb ""
+  "Figures/overlap_density.pdf" 1785407318 36907 d2fe2d61dcf594d0270369c5bdcdcfc6 ""
+  "Loser_Ferdinand_12400460.aux" 1785423004 4341 26701af7624041158e7c91f16e1ad954 "pdflatex"
   "Loser_Ferdinand_12400460.bbl" 0 -1 0 "biber Loser_Ferdinand_12400460"
-  "Loser_Ferdinand_12400460.out" 1785399843 1312 e6383aa0519f0aea38ede9d11ff54343 "pdflatex"
-  "Loser_Ferdinand_12400460.run.xml" 1785399843 2498 6b6b05ecd6b03fde6cc80ad6e380c8fe "pdflatex"
-  "Loser_Ferdinand_12400460.tex" 1785351880 5415 225bb3266fabac02464dd70fa6e3471f ""
-  "Tables/appendix_placebo_tests.tex" 1785361741 1371 9796a2785ca55e34af65bdadbb3b32f5 ""
-  "Tables/dml_master_results.tex" 1785361737 1659 b4a1cab369099772e33932803e246b01 ""
-  "Tables/propensity_score_summary.tex" 1785361738 697 c3902f03dcd4a64bbcc07319adb3265d ""
+  "Loser_Ferdinand_12400460.out" 1785423004 1312 e6383aa0519f0aea38ede9d11ff54343 "pdflatex"
+  "Loser_Ferdinand_12400460.run.xml" 1785423004 2498 6b6b05ecd6b03fde6cc80ad6e380c8fe "pdflatex"
+  "Loser_Ferdinand_12400460.tex" 1785407317 5415 225bb3266fabac02464dd70fa6e3471f ""
+  "Tables/appendix_placebo_tests.tex" 1785423000 1372 7150989b584130588e7c7496c3ab7914 ""
+  "Tables/dml_master_results.tex" 1785407317 1653 53b7dabcb04c6d2250665e40a4ed80e9 ""
+  "Tables/propensity_score_summary.tex" 1785407318 696 a1130d1c15bf67d92727dc6bf85271d3 ""
   "Tables/treatment_by_cluster.tex" 1785399836 737 db9093bb79634a0f5fe9ae1f219afd38 ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/jknappen/ec/ecbx1095.tfm" 1747240602 3584 21b378cca2e40816b0e6d74a4dc98f04 ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/jknappen/ec/ecbx1200.tfm" 1747240602 3584 402da0b29eafbad07963b1224b222f18 ""
@@ -153,7 +153,7 @@
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1779723493 11524 9f3e48b550994109e3d7fad15f683495 ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1771352530 2236262 dae90ef3062d3e0bc38ec1de445c41ec ""
   "c:/Users/ferdi/AppData/Roaming/TinyTeX/texmf.cnf" 1747240626 955 6591b7e09ece6af4143024019d5a863d ""
-  "c:/Users/ferdi/Documents/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" 1785351880 5415 225bb3266fabac02464dd70fa6e3471f ""
+  "c:/Users/ferdi/Documents/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" 1785407317 5415 225bb3266fabac02464dd70fa6e3471f ""
   (generated)
   "Loser_Ferdinand_12400460.aux"
   "Loser_Ferdinand_12400460.bcf"
