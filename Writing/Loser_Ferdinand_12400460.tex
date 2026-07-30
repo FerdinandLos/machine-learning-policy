@@ -80,24 +80,21 @@ The remainder of the report is structured as follows. Section~\ref{sec:emp_strat
 \section{Empirical Strategy and Identification}
 \label{sec:emp_strategy}
 
-I first estimate the Conditional Average Treatment Effect (CATE), representing the expected difference of being treated compared to not being treated conditioned on pre-treatment covariates, as:
+The target parameters of this study are the Average Treatment Effect on the Treated (ATT) and the Group Average Treatment Effect on the Treated (GATT). 
 
+The global ATT measures the average impact of a specific policy regime across all cities that actually implemented it, evaluated against the baseline of no policy ($d=0$). It is defined as:
 \begin{equation}
-    \tau_d(X_i) = \mathbb{E}[Y_{it}(d) - Y_{it}(0) \mid X_i] \quad \text{for } d \in \{1, 2, 3\}
+    \tau_{ATT, d} = \mathbb{E}[Y_{it}(d) - Y_{it}(0) \mid D_{it} = d]
 \end{equation}
 
-In this setting, treatment is not binary but has three states, CP ($d=1$), LEZ ($d=2$) and their synergy CP $\times$ LEZ ($d=3$).  $X_i = [X_{i}^{invariant}, \bar{X}_{i}^{pre-treatment}]$ represents both time-invariant factors like geographical features as well as pre-treatment averages of covariates, so called Mundlak devices.
+In this setting, treatment is not binary but has three states, CP ($d=1$), LEZ ($d=2$) and their synergy CP $\times$ LEZ ($d=3$).  
 
-To answer the three research questions, the CATE can be aggregated into the ATT, the average treatment effect on the treated. In comparison to the general average treatment effect, the ATT measures what impact treatment had on those types of cities that implemented the policy, not the hypothetical case of all cities implementing the policy. Additionally, for research question 2, I estimate the Group-$ATT$ ($GATT$) for two clusters, "regional hubs" (type $0$) and "urban metropolises" (type $1$), that are determined by k-means clustering as described in Section~\ref{sec:data_preparation}. These target parameters can be formulated as:
+To address research question 2 regarding spatial heterogeneity, the GATT isolates this treatment effect within the specific structural typologies $G_i$. The two clusters $G_i \in \{0, 1\}$ are constructed using k-means clustering on $X_i = [X_{i}^{invariant}, \bar{X}_{i}^{pre-treatment}]$, both time-invariant factors like geographical features as well as pre-treatment averages of covariates, so called Mundlak devices (see Section~\ref{sec:data_preparation}). The GATT for each cluster is therefore defined as:
 \begin{equation}
-    \tau_{ATT} = \mathbb{E}[\tau(X_i) \mid D_{it} = 1]
+    \tau_{GATT, d}(g) = \mathbb{E}[Y_{it}(d) - Y_{it}(0) \mid D_{it} = d, G_i = g] \quad \text{for } g \in \{0, 1\}
 \end{equation}
 
-\begin{equation}
-    \tau_{GATT, g} = \mathbb{E}[\tau(X_i) \mid D_{it} = 1, G_i = g] \text{where} G \in \{0, 1\}
-\end{equation}
-
-For the CATE, and thereby also the ATT and GATT, to be identified correctly three assumptions are required.
+For the ATT and GATT to be identified correctly three assumptions are required.
 
 \begin{assumption}\label{as:cond_independence}
 \textbf{Conditional Independence: } $(Y(d), Y(0)) \perp\!\!\!\perp D \mid X_i$. Conditional on the Mundlak device and baseline geography, treatment assignment is independent of potential outcomes. I.e., variables of $X_i$ encompass all relevant factors that determine whether a city implements policy $d$.
@@ -114,7 +111,7 @@ For the CATE, and thereby also the ATT and GATT, to be identified correctly thre
 \section{Proposed Estimator}
 \label{sec:proposed_estimator}
 
-In order to estimate the CATE, I rely on two different double machine learning approaches: Augmented Inverse Propensity Weighting (AIPW) and Causal Forest, estimating the treatment effects in two stages.
+In order to estimate the (G)ATT, I employ two different double machine learning approaches: Augmented Inverse Propensity Weighting (AIPW) and Causal Forest, estimating the treatment effects in two stages:
 
 \textbf{Stage 1 (Orthogonalization): } The algorithm first uses LASSO to estimate two "nuisance" functions using cross-fitting with 5 folds whereby the hyperparameters $\alpha$ and $C$ are determined once outside the cross-fitting in order to save computation time. The two nuisance functions are as such:
 
@@ -220,12 +217,10 @@ For accurate estimation in a panel setting, time-invariant traits have to be con
 \subsection*{K-means clustering}
 \label{sec:cluster}
 
-In the next step, I utilize the whole set of time-invariant covariates $X_i$ in order to run k-means clustering to determine a good split of the city features into two types. The benefit of using clusters instead of raw covariates for the second stage of the estimations is \textit{1.} that it ensures that the split for the shallow tree of the causal forest is explainable and \textit{2.} to answer research question 2 not just based on single covariate differences but an overarching typology of city structure. The number of two clusters is chosen based on the criterion of explainability as well as backed by sihouette analysis (see Figure~\ref{fig:k_means}).
+In the next step, I utilize the whole set of time-invariant covariates $X_i$ with the exception of latitude dummies in order to run k-means clustering to determine a good split of the city features into two types. The benefit of using clusters instead of raw covariates for the second stage of the estimations is \textit{1.} that it ensures that the split for the shallow tree of the causal forest is explainable and \textit{2.} to answer research question 2 not just based on single covariate differences but an overarching typology of city structure. The number of $K=2$ clusters is chosen based on the criterion of explainability as well as backed by silhouette analysis (see Figure~\ref{fig:k_means}). For the cluster determination, I standardize $X_i$ variables to have mean 0 and a standard deviation of 1 in order to make their magnitude comparable across different metrics. The optimal clusters are found by Euclidian partitioning. First, $K=2$ centroids, i.e. specifications of all the different variables, are randomly chosen and then the distance across all dimensions for each city to those centroids calculated and each city assigned to the closer centroid. Then the centroid is adjusted to the mean for all variables that are assigned to it. Now the distances to this adjusted centroid are calculated for each city and the process iterates forward like this until there is no further centroid adjustment.
 
-- determination of two clusters necessary to make heterogeneity analysis with many covariates viable
-- optimal k = 2 (interpretability and silhouette analysis)
-- Cluster 1: urban metropolises, Cluster 2: sprawling regional hubs
-- describe them based on the cluster differences plot
+Then finally, after inspecting the structural drivers amongst all the factors $X_i$ for each cluster, the typology of both groups becomes clear. \textit{Cluster 0} consists of area-wise large cities with smaller population, more petrol engine vehicles and that has a large logistics share. \textit{Cluster 1} consists of dense, and population-wise large cities that have better public transit, more cars with Diesel and electric than diesel engine, and a higher share of green party votes in elections (also see Figure~\ref{fig:cluster differences}). Based on these criteria, I name \textit{Cluster 0} as "Sprawling Regional Hub" and \textit{Cluster 1} as "Dense Metropolis".
+
 
 \input{Tables/treatment_by_cluster.tex}
 
