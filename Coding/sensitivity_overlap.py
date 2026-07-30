@@ -66,7 +66,7 @@ except FileNotFoundError:
     )   
 
 # Updated with fixed hyperparameters, max_iter=10000 for convergence, and n_jobs=1 to avoid thread thrashing
-ml_l = make_pipeline(StandardScaler(), Lasso(alpha=OPTIMAL_ALPHA, random_state=42, max_iter=10000))
+ml_l = make_pipeline(StandardScaler(), Lasso(alpha=OPTIMAL_ALPHA, random_state=42, max_iter=10000)),
 ml_m = make_pipeline(StandardScaler(), LogisticRegression(penalty='l1', C=OPTIMAL_C, solver='saga', random_state=42, max_iter=10000, n_jobs=1))
 
 def fit_and_extract_overlap(current_df, W_cols, trim):

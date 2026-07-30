@@ -26,9 +26,9 @@
   spacebelow=6pt
 ]{assumptionstyle}
 \declaretheorem[style=assumptionstyle, name=Assumption]{assumption}
-\declaretheorem[style=mycustomstyle, name=Theorem]{theorem}
-\declaretheorem[style=mycustomstyle, name=Lemma]{lemma}
-
+\declaretheorem[name=Theorem]{theorem}
+\declaretheorem[name=Lemma]{lemma}
+\declaretheorem[name=Definition]{definition}
 
 % BibLaTeX setup for Zotero Better BibLaTeX
 \usepackage[style=authoryear, backend=biber, natbib=true, maxcitenames=2]{biblatex}
@@ -50,14 +50,32 @@
 
 \begin{abstract}
 \noindent
-Abstract content goes here. This section should provide a concise summary of the research question, methodology, key findings, and implications of the study. It should be clear and informative, allowing readers to quickly understand the purpose and results of the paper.
+Abstract content goes here. This section should provide a concise summary of the research question, methodology, key findings, and implications of the study. It should be clear and informative, allowing readers to quickly understand the purpose and results of the report.
 \end{abstract}
 
 \newpage
 
 \section{Introduction}
 \label{sec:introduction}
-% Your introductory text here.
+
+Discussions about global warming have been highly prevalent in public discourse, especially in the past 10, 15 years. Many different policies have been implemented and even more proposed and advocated for. Some are to be decided on the supranational level, e.g. the EU's climate certificate trading, some on the national level, e.g. electric vehicle subsidies, but many can also be implemented on the regional or even municipal level. Especially, when it comes to reducing transport $CO_2$ emissions, many decisions fall under the authority of the municipal government, be it how road infrastructure is designed, what speed limits are set or further driving regulations. This report estimates the effectiveness in reducing transport carbon emissions of two such regulatory policies:
+
+\begin{definition}
+\textbf{Congestion Pricing (CP): } Surcharges are implemented in certain areas of a city for cars that enter from outside.
+\end{definition}
+\begin{definition}
+\textbf{Low-Emission Zones (LEZ): } Certain vehicles (older diesel or petrol engines) are banned in certain areas of a city.
+\end{definition}
+I study these two policies in a large panel dataset of many european cities, focussing especially on three core research questions:
+\begin{enumerate}
+    \item Were the policies effective in reducing emissions?
+    \item Which type of cities benefit the most/least from the policies?
+    \item Does implementation of both policies simultaneously produce greater emission reductions than what would have been expected from the sum of the individual effects of implementing either policy alone?
+\end{enumerate}
+
+My findings show that ....
+
+The remainder of the report is structured as follows. Section~\ref{sec:emp_strategy} introduces the empirical strategy and the identification assumptions underlying the analysis. Section~\ref{sec:proposed_estimator} outlines the proposed estimation framework, while Section~\ref{sec:theoretical_properties} discusses its theoretical properties and the relevance of orthogonality. Section~\ref{sec:data_preparation} describes the construction of the empirical dataset and the clustering procedure used to distinguish city types. Section~\ref{sec:results} presents the main empirical findings, Section~\ref{sec:sensitivity_analysis} evaluates robustness and sensitivity checks, and Section~\ref{sec:conclusion} provides an interpretation of the results and their policy implications.
 
 \section{Empirical Strategy and Identification}
 \label{sec:emp_strategy}

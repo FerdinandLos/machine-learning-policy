@@ -79,7 +79,7 @@ except FileNotFoundError:
         "first to generate 'optimal_hyperparameters_aipw.json' in the Results directory."
     )   
 
-# 2. Updated Models Dictionary
+# 2. Models Dictionary
 models = {
     'L1 (Lasso / Logit L1)': {
         'type': 'dr',
@@ -88,7 +88,6 @@ models = {
     },
     'Causal Forest': {
         'type': 'causal_forest',
-        # FIX: Explicitly supply the locked, penalized models to the Causal Forest
         'ml_l': make_pipeline(StandardScaler(), Lasso(alpha=OPTIMAL_ALPHA, random_state=42, max_iter=10000)),
         'ml_m': make_pipeline(StandardScaler(), LogisticRegression(penalty='l1', C=OPTIMAL_C, solver='saga', random_state=42, max_iter=10000, n_jobs=1)),
         'n_estimators': 200,
