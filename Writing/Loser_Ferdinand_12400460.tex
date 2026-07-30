@@ -16,6 +16,18 @@
 \usepackage{subcaption}
 \usepackage[colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 
+% Package to format assumptions
+\usepackage{amsthm}
+\usepackage{thmtools}
+\declaretheoremstyle[
+  headfont=\bfseries, 
+  bodyfont=\normalfont, % keeps text upright, not italic
+  spaceabove=6pt, 
+  spacebelow=6pt
+]{assumptionstyle}
+\declaretheorem[style=assumptionstyle, name=Assumption]{assumption}
+
+
 % BibLaTeX setup for Zotero Better BibLaTeX
 \usepackage[style=authoryear, backend=biber, natbib=true, maxcitenames=2]{biblatex}
 \addbibresource{Monte Carlo Simulations.bib}
@@ -47,27 +59,66 @@ Abstract content goes here. This section should provide a concise summary of the
 
 \section{Empirical Strategy and Identification}
 \label{sec:emp_strategy}
-- Target parameters: ATE, ATT, GATT (possible differences in causal forest and aipw lasso estimation) (show math and explain shortly)
 
+I first estimate the Conditional Average Treatment Effect (CATE), representing the expected difference of being treated compared to not being treated conditioned on pre-treatment covariates, as:
 
+\begin{equation}
+    \tau_d(X_i) = \mathbb{E}[Y_{it}(d) - Y_{it}(0) \mid X_i] \quad \text{for } d \in \{1, 2, 3\}
+\end{equation}
 
-% Figure 3 fits perfectly in the Identification section to visually prove 
-% your unconfoundedness and common support (positivity) assumptions.
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{Figures/overlap_density.pdf}
-    \caption{Common Support for Congestion Pricing (AIPW)}
-    \label{fig:overlap_density}
-\end{figure}
+In this setting, treatment is not binary but has three states, CP ($d=1$), LEZ ($d=2$) and their synergy CP $\times$ LEZ ($d=3$).  $X_i = [X_{i}^{invariant}, \bar{X}_{i}^{pre-treatment}]$ represents both time-invariant factors like geographical features as well as pre-treatment averages of covariates, so called Mundlak devices.
+
+To answer the three research questions, the CATE can be aggregated into the ATT, the average treatment effect on the treated. In comparison to the general average treatment effect, the ATT measures what impact treatment had on those types of cities that implemented the policy, not the hypothetical case of all cities implementing the policy. Additionally, for research question 2, I estimate the Group-$ATT$ ($GATT$) for two clusters, "regional hubs" (type $0$) and "urban metropolises" (type $1$), that are determined by k-means clustering as described in Section~\ref{sec:data_preparation}. These target parameters can be formulated as:
+\begin{equation}
+    \tau_{ATT} = \mathbb{E}[\tau(X_i) \mid D_{it} = 1]
+\end{equation}
+
+\begin{equation}
+    \tau_{GATT, g} = \mathbb{E}[\tau(X_i) \mid D_{it} = 1, G_i = g] \text{where} G \in \{0, 1\}
+\end{equation}
+
+For the CATE, and thereby also the ATT and GATT, to be identified correctly three assumptions are required.
+
+\begin{assumption}\label{as:cond_independence}
+\textbf{Conditional Independence:} $(Y(d), Y(0)) \perp\!\!\!\perp D \mid X_i$. Conditional on the Mundlak device and baseline geography, treatment assignment is independent of potential outcomes. I.e., variables of $X_i$ encompass all relevant factors that determine whether a city implements policy $d$.
+\end{assumption}
+
+\begin{assumption}\label{as:weak_overlap}
+\textbf{Weak Overlap:} $P(D=1 \mid X) < 1$. Policy implementation cannot be perfectly predicted by the pre-treatment covariates $X_i$. I.e., every treated city has a similar  untreated counterpart.
+\end{assumption}
+
+\begin{assumption}\label{as:sutva}
+\textbf{SUTVA:} The potential outcomes of city $i$ are unaffected by the treatment status of city $j$ (no spatial spillovers).
+\end{assumption}
 
 \section{Proposed Estimator}
 \label{sec:proposed_estimator}
+
+In order to estimate the CATE, I rely on two different double machine learning approaches: Augmented Inverse Propensity Weighting (AIPW) and Causal Forest, estimating the treatment effects in two stages.
+
+\textbf{Stage 1 (Orthogonalization):} The algorithm first uses LASSO to estimate two "nuisance" functions using cross-fitting with 5 folds whereby the hyperparameters $\alpha$ and $C$ are determined once outside the cross-fitting in order to save computation time. The two nuisance functions are as such:
+
+\begin{itemize}
+    \item The propensity score: $p(W_{it}) = \mathbb{E}[D_{it} \mid W_{it}]$ is estimated via a logistic regression with L1 Lasso penalty. Then the Treatment Residual: $\tilde{D}_{it} = D_{it} - \hat{p}(W_{it})$ is calculated as the leftover residual of the true treatment $D_{it}$ minus the predicted propensity score $\hat{p}(W_{it})$ for each city-time observation, representing how much of the variable could not be explained by the regression.
+    \item The expected outcome: $m(W_{it}) = \mathbb{E}[Y_{it} \mid W_{it}]$ is estimated via a linear LASSO regression. Then the Outcome Residual: $\tilde{Y}_{it} = Y_{it} - \hat{m}(W_{it})$ is calculated as the leftover residual of the true outcome $Y_{it}$ minus the predicted outcome $\hat{m}(W_{it})$ for each city-time observation.
+\end{itemize}
+
+Both of these LASSO regressions are fit with the whole set $W_{it} = X_{it} + X_i$, both contemporary and time-invariant covariates, whereby the LASSO penalty shrinks down and eliminates covariates in order to minimize prediction error in a cross-validation setting.  This stage is the same for both AIPW and Causal Forest. 
+
+\textbf{Stage 2 (CATE/ATT/GATT Estimation):} Here AIPW and Causal Forest differ in how they use the DR scores to estimate the treatment effects.
+
+\textit{AIPW} uses the treatment and outcome resdiuals ($\tilde{D}_{it}$ and $\tilde{Y}_{it}$) to estimate Doubly Robust scores (DR), a pseudo-outcome of how a specific city-year observation is should have based on what the first stage models can explain. The GATT then represents the average of all individual DR scores of treated cities within a cluster, the ATT the average of all treated cities.
+
+\textit{Caudal Forest} builds a large set of trees, 200, whereby each tree uses a random subsample of cities. Each tree is very shallow, consisting of only two terminal nods (leaves), the clusters for dense metropolises and regional hubs. Then within each leave an OLS regression is fitted on the orthogonalized residuals from Stage 1 ($\tilde{Y}_{it}$ and $\tilde{D}_{it}$). Finally the estimations of all different leaves are averaged for the final GATT estimate (and then the two GATT estimates averaged for the ATT estimate). The shallowness of the tree is beneficial as it makes estimation within each leave well estimable as each leave still contains a large number of treated and untreated cities which is especially necessary for estimating the synergy effect, which was relatively rarely implemented in the dataset.
+
 - Use AIPW and Causal Forest instead of IPW or Reg. adj.
 - Explain how they work and differences
 
 
 \section{Theoretical Properties}
 \label{sec:theoretical_properties}
+
+Both methods rely on Neymon orthogonality as proof for their unbiasedness.
 - Proof of Neymon Orthogonality (is it the same for both?)
 - Not yet sure about other properties
 
@@ -123,6 +174,13 @@ Abstract content goes here. This section should provide a concise summary of the
 
 \appendix
 \section*{Appendix}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figures/overlap_density.pdf}
+    \caption{Common Support for Congestion Pricing (AIPW)}
+    \label{fig:overlap_density}
+\end{figure}
 
 % Positivity Trimming Graph (Ensure the line remains stable across thresholds).
 \begin{figure}[htbp]
