@@ -181,8 +181,8 @@ placebo_results = []
 
 # The variables that should NOT be affected by climate policies
 placebo_outcomes = [
-    'library_count', 'streetlight_density'#, 
-    #'fountain_count', 'bench_count_pc'
+    #'library_count', 'streetlight_density', 
+    'fountain_count', 'bench_count_pc'
 ]
 
 target_models = ['L1 (Lasso / Logit L1)', 'Causal Forest']
@@ -248,6 +248,6 @@ for model_name in target_models:
 # 5. Export the results
 # ---------------------------------------------------------
 placebo_df = pd.DataFrame(placebo_results)
-placebo_export_path = results_dir / 'sensitivity_placebo_tests.csv'
+placebo_export_path = results_dir / 'sensitivity_placebo_tests2.csv'
 placebo_df.to_csv(placebo_export_path, index=False)
 print(f"\nSuccess: Falsification estimates safely exported to {placebo_export_path}")
