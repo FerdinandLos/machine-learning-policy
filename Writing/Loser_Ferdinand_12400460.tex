@@ -85,7 +85,7 @@
 
 \begin{abstract}
 \noindent
-This report evaluates the effectiveness of Congestion Pricing (CP) and Low-Emission Zones (LEZs) on urban transport $CO_2$ emissions across 183 cities from 2008 to 2024 using a Double Machine Learning framework. Applying LASSO orthogonalization alongside Augmented Inverse Propensity Weighting (AIPW) and Causal Forest algorithms, the analysis reveals that CP yields a substantial 27\% to 33\% reduction in emissions, significantly outperforming the 10\% to 19\% reduction driven by LEZs. Furthermore, k-means clustering demonstrates that climate policy efficacy depends on urban structural typologies: CP is highly effective in "Sprawling Regional Hubs" where LEZs fail, while both policies are viable and effective in "Dense Metropolises". Finally, the lack of common support between treatment and control group prevents the reliable estimation of simultaneous synergetic effects.
+This report evaluates the effectiveness of Congestion Pricing (CP) and Low-Emission Zones (LEZs) on urban transport $CO_2$ emissions across 183 cities from 2008 to 2024 using a Double Machine Learning framework. Applying LASSO orthogonalization alongside Augmented Inverse Propensity Weighting (AIPW) and Causal Forest algorithms, the analysis reveals that CP yields a substantial 27\% to 33\% reduction in emissions, significantly outperforming the 10\% to 19\% reduction driven by LEZs. Furthermore, k-means clustering demonstrates that climate policy efficacy depends on urban structural typologies: CP is highly effective in \textit{Sprawling Regional Hubs} where LEZs fail, while both policies are viable and effective in \textit{Dense Metropolises}. Finally, the lack of common support between treatment and control group prevents the reliable estimation of simultaneous synergetic effects.
 \end{abstract}
 
 \clearpage % Moves to the second page
@@ -221,7 +221,7 @@ $$= \mathbb{E}\left[ -\frac{D \cdot h_p(W)}{p_0(W)^2}\Big(Y - \mu_{1,0}(W)\Big) 
 \end{proof}
 
 \begin{proof}\label{proof:Neyman_causal_forest}
-\textbf{Causal Forest (Robinson Transformation / R-Learner): } Let the parameter $\theta$ be the average treatment effect. The true nuisance functions are $\eta_0 = (m_0, p_0)$, where $m_0(W) = \mathbb{E}[Y \mid W]$ and $p_0(W) = \mathbb{E}[D \mid W]$.
+\textbf{Causal Forest: } Let the parameter $\theta$ be the average treatment effect. The true nuisance functions are $\eta_0 = (m_0, p_0)$, where $m_0(W) = \mathbb{E}[Y \mid W]$ and $p_0(W) = \mathbb{E}[D \mid W]$.
 
 The score function for the partialled-out regression is:
 
