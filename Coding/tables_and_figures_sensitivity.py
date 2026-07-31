@@ -18,7 +18,7 @@ figures_dir.mkdir(parents=True, exist_ok=True)
 
 print("Loading sensitivity datasets...")
 try:
-    placebo_df = pd.read_csv(results_dir / 'sensitivity_placebo_tests.csv')
+    placebo_df = pd.read_csv(results_dir / 'sensitivity_placebo_tests_combined.csv')
     overlap_df = pd.read_csv(results_dir / 'sensitivity_overlap_trimming.csv')
 except FileNotFoundError as e:
     print(f" [!] Missing data file: {e}. Please ensure the sensitivity scripts have been run.")
@@ -35,7 +35,7 @@ outcome_map = {
     'library_count': 'No. of Libraries', 
     'streetlight_density': 'Streetlight Density', 
     'fountain_count': 'No. of Fountains', 
-    'bench_count_pc': 'No. of benches pc', 
+    'bench_count_pc': 'No. of Benches pc', 
     'flagpole_count': 'No. of flagpoles', 
     'sister_city_count': 'No. of Sister Cities'
 }
