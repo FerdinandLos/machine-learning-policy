@@ -2381,10 +2381,11 @@
     <bcf:citekey order="5" intorder="1">chernozhukovDoubleDebiasedMachine2018</bcf:citekey>
     <bcf:citekey order="6" intorder="1">wagerEstimationInferenceHeterogeneous2018</bcf:citekey>
     <bcf:citekey order="6" intorder="2">atheyGeneralizedRandomForests2019</bcf:citekey>
-    <bcf:citekey order="7" intorder="1">mundlakPoolingTimeSeries1978</bcf:citekey>
-    <bcf:citekey order="8" intorder="1">jamesIntroductionStatisticalLearning2023</bcf:citekey>
-    <bcf:citekey order="9" intorder="1">callawayDifferenceinDifferencesMultipleTime2021a</bcf:citekey>
+    <bcf:citekey order="7" intorder="1">CausalMLBookAppliedCausal</bcf:citekey>
+    <bcf:citekey order="8" intorder="1">mundlakPoolingTimeSeries1978</bcf:citekey>
+    <bcf:citekey order="9" intorder="1">jamesIntroductionStatisticalLearning2023</bcf:citekey>
     <bcf:citekey order="10" intorder="1">callawayDifferenceinDifferencesMultipleTime2021a</bcf:citekey>
+    <bcf:citekey order="11" intorder="1">callawayDifferenceinDifferencesMultipleTime2021a</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nyt">

@@ -115,7 +115,8 @@ exclude_cols = [
     'museum_visitors_pc', 'library_count', 'streetlight_density', 
     'fountain_count', 'bench_count_pc', 'flagpole_count', 'sister_city_count',
     'public_transit_score', 'logistics_activity', 'fiscal_capacity', 
-    'electoral_competitiveness', 'ngo_environment_index'
+    'electoral_competitiveness', 'ngo_environment_index',
+    'year_2009', 'year_2010', 'year_2011', 'year_2012', 'year_2013','year_2014', 'year_2015', 'year_2016', 'year_2017', 'year_2018','year_2019', 'year_2020', 'year_2021', 'year_2022', 'year_2023','year_2024'
 ]
 
 numeric_cols = [col for col in df.select_dtypes(include=[np.number]).columns if col not in exclude_cols]
@@ -187,7 +188,8 @@ base_exclusions = [
     'city_id', 'year', 'country_id', 'cluster_id',
     'cp_active', 'lez_active', 'cp_impl_year', 'lez_impl_year',
     'cp_announce_year', 'lez_announce_year', 
-    'transport_co2', 'log_transport_co2', 'total_co2', 'log_total_co2'
+    'transport_co2', 'log_transport_co2', 'total_co2', 'log_total_co2',
+    'year_2009', 'year_2010', 'year_2011', 'year_2012', 'year_2013','year_2014', 'year_2015', 'year_2016', 'year_2017', 'year_2018','year_2019', 'year_2020', 'year_2021', 'year_2022', 'year_2023','year_2024'
 ]
 
 # 3. Dynamically capture ALL remaining numeric columns as time-varying covariates
