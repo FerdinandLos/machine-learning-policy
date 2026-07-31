@@ -16,6 +16,27 @@
 \usepackage{subcaption}
 \usepackage[colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 
+% Make it fit 10 pages
+\usepackage{fullpage} % Slightly reduces standard 1-inch margins
+\linespread{0.98} % Reduces line spacing by a virtually unnoticeable 2%
+\setlength{\parskip}{0pt plus 1pt} % Minimizes spacing between paragraphs
+\setlength{\parsep}{0pt} % Reduces internal paragraph spacing
+\usepackage{enumitem}
+\let\oldbibliography\bibliography
+\renewcommand{\bibliography}[1]{
+  \setlength{\itemsep}{0pt} % Removes spacing between references
+  \setlength{\parsep}{0pt}
+  \oldbibliography{#1}
+}
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{12pt plus 2pt minus 2pt}{6pt plus 2pt}
+\titlespacing*{\subsection}{0pt}{10pt plus 2pt minus 2pt}{4pt plus 2pt}
+\setlength{\textfloatsep}{10pt plus 2pt minus 4pt} % Space between top/bottom floats and text
+\setlength{\floatsep}{8pt plus 2pt minus 2pt} % Space between two floats
+\setlength{\intextsep}{8pt plus 2pt minus 2pt} % Space for in-text floats
+
+
+
 % Package to format assumptions
 \usepackage{amsthm}
 \usepackage{thmtools}
@@ -31,8 +52,21 @@
 \declaretheorem[name=Definition]{definition}
 
 % BibLaTeX setup for Zotero Better BibLaTeX
-\usepackage[style=authoryear, backend=biber, natbib=true, maxcitenames=2]{biblatex}
+\usepackage[
+  style=authoryear, 
+  backend=biber, 
+  natbib=true, 
+  maxcitenames=2,
+  isbn=false,   % Hides ISSN and ISBN fields
+  doi=false,    % Hides DOI fields
+  url=false,    % Hides URL fields
+  urldate=comp, % Hides "visited on" date fields
+  eprint=false  % Hides Google Books, JSTOR, arXiv, and other eprint IDs
+]{biblatex}
 \addbibresource{DML_Policy_Project.bib}
+
+% Option A: Global fix for biblatex font size (Put this in the preamble)
+\renewcommand*{\bibfont}{\footnotesize} 
 
 % Change formatting to fit policy report style:
 \renewcommand{\abstractname}{Executive Summary}
@@ -61,7 +95,7 @@ Abstract content goes here. This section should provide a concise summary of the
 
 \label{sec:introduction}
 
-Discussions about global warming have been highly prevalent in public discourse, especially in the past 10 to 15 years. Many policies have been implemented, and even more have been proposed and advocated. Some are to be decided on the supranational level, e.g., the EU's climate certificate trading, some on the national level, e.g., electric vehicle subsidies, but many can also be implemented on the regional or even municipal level. Especially when it comes to reducing transport $CO_2$ emissions, many decisions fall under the authority of the municipal government, be it how road infrastructure is designed, what speed limits are set, or further driving regulations. This report estimates the effectiveness in reducing transport carbon emissions of two such regulatory policies:
+Discussions about global warming have been highly prevalent in public discourse, especially in the past 10 to 15 years. Many policies have been implemented, and even more have been proposed and advocated for. Some are to be decided on the supranational level, e.g., the EU's climate certificate trading, some on the national level, e.g., electric vehicle subsidies, but many can also be implemented on the regional or even municipal level. Especially when it comes to reducing transport $CO_2$ emissions, many decisions fall under the authority of the municipal government, be it how road infrastructure is designed, what speed limits are set, or further driving regulations. This report estimates the effectiveness in reducing transport carbon emissions of two such regulatory policies:
 
 \begin{definition}
 \textbf{Congestion Pricing (CP): } Surcharges are implemented in certain areas of a city for cars that enter from outside.
@@ -69,21 +103,23 @@ Discussions about global warming have been highly prevalent in public discourse,
 \begin{definition}
 \textbf{Low-Emission Zones (LEZ): } Certain vehicles (older diesel or petrol engines) are banned in certain areas of a city.
 \end{definition}
-I study these two policies in a large panel dataset of many European cities, focusing especially on three core research questions:
-\begin{enumerate}
-    \item Were the policies effective in reducing emissions?
-    \item Which type of cities benefit the most/least from the policies?
-    \item Does implementation of both policies simultaneously produce greater emission reductions than what would have been expected from the sum of the individual effects of implementing either policy alone?
-\end{enumerate}
+I study these two policies in a large panel dataset of 183 cities from 2008 to 2024, focusing especially on three core research questions:
 
-My findings show that ....
+ \textbf{Research Question 1. } Were the policies effective in reducing emissions?
+
+\textbf{Research Question 2. } Which type of cities benefit the most/least from the policies?
+
+\textbf{Research Question 3. } Does implementation of both policies simultaneously produce greater emission reductions than what would have been expected from the sum of the individual effects of implementing either policy alone?
+
+
+Using the Double Machine Learning framework with LASSO first stage estimation and a comparison of AIPW and Causal Forest for the second stage, my results show that both policies were effective in reducing carbon emissions, yet Congestion Pricing is found to have a stronger impact, decreasing transport $CO_2$ emissions by around 28\% to 32\% whereas LEZs only lead to a reduction of 10\% to 18\%. Synergy effects of implementing both policies simultaneously cannot reliably be determined as the group of cities that implemented these policies differs too strongly from cities in the control group.
 
 The remainder of the report is structured as follows. Section~\ref{sec:emp_strategy} introduces the empirical strategy and the identification assumptions underlying the analysis. Section~\ref{sec:proposed_estimator} outlines the proposed estimation framework, while Section~\ref{sec:theoretical_properties} discusses its theoretical properties and the relevance of orthogonality. Section~\ref{sec:data_preparation} describes the construction of the empirical dataset and the clustering procedure used to distinguish city types. Section~\ref{sec:results} presents the main empirical findings, Section~\ref{sec:sensitivity_analysis} evaluates robustness and sensitivity checks, and Section~\ref{sec:conclusion} provides an interpretation of the results and their policy implications.
 
 \section{Empirical Strategy and Identification}
 \label{sec:emp_strategy}
 
-The target parameters of this study are the Average Treatment Effect on the Treated (ATT) and the Group Average Treatment Effect on the Treated (GATT). 
+The target parameters of this study are the Average Treatment Effect on the Treated (ATT) and the Group Average Treatment Effect on the Treated (GATT). The ATT is chosen over the general Average Treatment Effect (ATE) as this report aims to address the question of how efficient these policies were in the cities that really implemented them, not the hypothetical case where all cities are forced to implement the policies.
 
 The global ATT measures the average impact of a specific policy regime across all cities that actually implemented it, evaluated against the baseline of no policy ($d=0$). It is defined as:
 
@@ -137,27 +173,9 @@ Both of these LASSO regressions are fit with the whole set $W_{it} = X_{it} + X_
 \section{Theoretical Properties}
 \label{sec:theoretical_properties}
 
-Both methods rely on Neyman orthogonality as proof for their unbiasedness. Let us first recall the general theorem of Neyman orthogonality.
+Both AIPW and the Causal Forest circumvent the inherent regularization bias of Lasso (which stems from L1 penalization) by specifying orthogonal second-stage moments. This prevents the transmission of first-stage prediction errors into the final causal estimates. Their confirmation of Neyman orthogonality is demonstrated in the following two proofs \citep[Based on][]{CausalMLBookAppliedCausal}.
 
-\begin{theorem}\label{the:Neyman_orthogonality}
-\textbf{Neyman Orthogonality: }A score function $\psi(Z; \theta, \eta)$ identifying a causal parameter $\theta$ with nuisance parameters $\eta$ is Neyman orthogonal if the derivative of the expected score with respect to the nuisance parameters, evaluated at their true values $\eta_0$, equals zero:
-\begin{equation}
-    \partial_\eta \mathbb{E}[\psi(Z; \theta_0, \eta_0)] = 0
-\end{equation}
-\end{theorem}
-
-Both AIPW and Causal Forest circumvent the inherent bias of Lasso estimation (which stems from the penalization) by their specification of the second stage, thereby eliminating transmission of bias from the first stage Lasso regularized estimation into the final estimates. Their confirmation of Neyman orthogonality is shown in the following two proofs.
-
-\begin{theorem}\label{the:Neyman_orthogonality}
-\textbf{Neyman Orthogonality: } Let $Z = (Y, D, W)$ denote the full data vector. A score function $\psi(Z; \theta, \eta)$ identifying a causal parameter $\theta$ with nuisance parameters $\eta$ is Neyman orthogonal if the Gateaux derivative of the expected score with respect to the nuisance parameters, evaluated at their true values $\eta_0$, equals zero:
-\begin{equation}
-    \partial_\eta \mathbb{E}[\psi(Z; \theta_0, \eta_0)] = 0
-\end{equation}
-\end{theorem}
-
-Both AIPW and the Causal Forest circumvent the inherent regularization bias of Lasso (which stems from L1 penalization) by specifying orthogonal second-stage moments. This prevents the transmission of first-stage prediction errors into the final causal estimates. Their confirmation of Neyman orthogonality is demonstrated in the following two proofs.
-
-\begin{theorem}\label{the:Neyman_orthogonality}
+\begin{theorem}\label{the:Neyman_orthogonality_pathwise}
 \textbf{Neyman Orthogonality: } Let $Z = (Y, D, W)$ denote the full data vector. A score function $\psi(Z; \theta, \eta)$ identifying a causal parameter $\theta$ with nuisance parameters $\eta$ is Neyman orthogonal if the pathwise (Gateaux) derivative of the expected score with respect to the nuisance parameters, evaluated at their true values $\eta_0$, equals zero for all permissible perturbation directions $h$:
 
 
@@ -229,7 +247,7 @@ $$= \mathbb{E}_W\left[ h_p(W) \Big( 2\theta_0 \underbrace{\mathbb{E}[D - p_0(W) 
 \section{Data Preparation}
 \label{sec:data_preparation}
 
-The raw panel dataset, consisting of 51 variables for 183 cities in the time frame from 2008 to 2024, has to be adjusted for a valid estimation via double machine learning. First, minor adjustments are made by changing the categorical variable on the latitude zone into separate dummies as well as log-transforming variables that have highly skewed distributions and/or where it is economically meaningful to do so.
+The raw panel dataset, consisting of 51 variables for 183 cities in the time frame from 2008 to 2024, has to be adjusted for a valid estimation via double machine learning. First, minor adjustments are made by changing the categorical variable on the latitude zone into separate dummies as well as log-transforming variables that have highly skewed distributions and/or where it is economically meaningful to do so.\footnote{Log-transformed variables are: Total $CO_2$ Emissions, Population, Population Density, GDP per capita, Land Area, Electricity Price, and Fuel Price.}
 
 For accurate estimation in a panel setting, time-invariant traits have to be controlled for. For this purpose, the dataset already includes some time-invariant covariates $X^{geographic}_i$ depicting geographic features. Additionally, I transform all time-, non-dummy features into time-invariant Mundlak devices $\bar X^{pre}_i$ by taking the within-city average over all periods before the implementation of one of the two policies \citep[See][]{mundlakPoolingTimeSeries1978}. This limitation on pre-periods ensures that potential side-effects of the policies are not altering the averages. One variable that didn't change for any city in any pre-period is dropped: a dummy for signing a national climate pact. Additonally, I add year dummies in order to account for time fixed effects.
 
@@ -247,40 +265,30 @@ Table~\ref{tab:treatment_by_cluster} shows that these clusters both have a suffi
 \section{Results}
 \label{sec:results}
 
-For all the estimations, AIPW and Causal forest find relatively similar point estimates, indicating that, if the assumptions hold, both methods come to estimates that are mostly very similar in coefficient size and agree in statistical significance. I  will first answer the three research questions based on the main results in Table~\ref{tab:dml_master_results} and then discuss possible concerns surrounding the magnitude of the estimates and their significance in Section~\ref{sec:sensitivity_analysis}.
+For most estimations, AIPW and Causal forest find relatively similar point estimates, however AIPW consistently estimates slightly lower effects and is more conservative in assessing statistical significance. I  will first answer the three research questions based on the main results in Table~\ref{tab:dml_master_results} and then test the robustness of the estimates in Section~\ref{sec:sensitivity_analysis}.
 
 \input{Tables/dml_master_results.tex}
 
-\textbf{Research Question 1. } Congestion pricing as well as low-emission zones are estimated to have a negative effect on transport $CO_2$ emissions. Congestion Pricing is estimated to reduce emissions by 28\% (AIPW) to 32\% (Causal Forest). Low-Emission Zones are expected to lead to a reduction of 10\% (AIPW) to 18\% (Causal Forest). The coefficients for both policies are significant to the 5 \% level under both estimation procedures.
+\textbf{Research Question 1. } Congestion pricing as well as low-emission zones are estimated to have a negative effect on transport $CO_2$ emissions. Congestion Pricing is estimated to reduce emissions by 27\% (AIPW) to 33\% (Causal Forest). Low-Emission Zones are expected to lead to a reduction of 10\% (AIPW) to 19\% (Causal Forest). The coefficients for both policies are significant to the 10 \% level under both estimation procedures, but LEZ has the highest p-value, going slightly above the 5\% threshold when estimated by AIPW.
 
-\textbf{Research Question 2. } Panel B in Table~\ref{tab:dml_master_results} shows separate estimations for the GATT for both clusters. Interestingly, it is found that Low-Emission Zones only have a significant effect for cities of \textit{Cluster 1}, the Dense Metropolis, whereas Congestion Pricing only exhibits a significant effect to the 5\% level for Sprawling Regional Hubs in \textit{Cluster 0}. It is estimated that LEZs are highly effective in the Dense Metropolis type, reducing transport emissions by 32\% (AIPW) to nearly 50\% (Causal Forest). Similarily, CP is shown to be more effective for cities in \textit{Cluster 0} than in the general ATT; with an estimated reduction of around 30\% for both AIPW and Causal Forest.
+\textbf{Research Question 2. } Panel B in Table~\ref{tab:dml_master_results} shows separate estimations for the GATT for both clusters. Here AIPW and Causal Forest exhibit stronger estimation differences. Both come to the conclusion that Congestion Pricing has a stronger effect in \textit{Cluster 0}, the Sprawling Regional Hub type; an additonal 2 to 3 percentage points (pp) over the ATT. However, Causal Forest still finds a highly significant and only marginally lower than global effect for CP in \textit{Cluster 1} whereas AIPW fails to reject the null hypothesis even at the 10\% level for this city type. For LEZ, both methods can only find a significant effect in dense metropolises (\textit{Cluster 1}). But the magnitude also differs a lot between both methods, the AIPW measured $GATT_1$ is equal to the overall ATT whereas Causal Forest determines that Low-Emission Zones have a more than 10 pp higher effect in \textit{Cluster 1} than in the overall average.
 
-\textbf{Research Question 3. } The most startling result is definitely the coefficient for the synergy effects of implementing both CP and a LEZ simulataneously. Both AIPW and Causal Forest estimate that this combination of policies lead to a reduction of $CO_2$ in treated cities by at least 73\% (AIPW) or even staggering 83\% (Causal Forest). This is a lot more than the simple addition of both policy's effects which is just 36\% (AIPW) or 44\% (Causal Forest). Therefore, the additional synergy effect can be determined to be around 40\% for both methods.
+\textbf{Research Question 3. } The most startling result is definitely the coefficient for the synergy effects of implementing both CP and a LEZ simulataneously. Both AIPW and Causal Forest estimate that this combination of policies lead to a reduction of $CO_2$ in treated cities by at least 74\% (AIPW) or even 81\% (Causal Forest). This is a lot more than the simple addition of both policy's effects which is just 34\% (AIPW) or 46\% (Causal Forest). Therefore, the additional synergy effect can be determined to be around 35\% to 40\%, a number that seems intuitively unrealistic. The next section is therefore testing the reliability of his estimation.
 
 \section{Sensitivity Analysis}
 \label{sec:sensitivity_analysis}
 
-To investigate whether the results are robust estimations of the true causal effect of policy implementation, it is important to check whether the comparison of treated and untreated cities is valid. For this, one can look at the distribution of propensity scores and how 
-
-There are two main concerns about these results: \textit{1.} AIPW and Causal Forest disagree about the significance of the coefficients, and \textit{2.} the coefficients appear very high, especially for the synergy effects.
-
-\textit{1.} can be explained by weak overlap of propensity scores for treated and control units. Untreated units are generally assigned much lower propensity scores with many observations being found to have a probability close to 0 of implementing a policy. The median propensity score for CP is 0.31 for those observations where it was implemented compared to 0.026 for those where it was not (see Table~\ref{tab:propensity_scores} and Figure~\ref{fig:overlap_density}). Therefore, although the support region is pretty wide and both groups have relatively large retainment rates (See Table~\ref{tab:unified_common_support}). The lack of overlap causes the inverse-propensity weights in the AIPW estimation to explode, thereby increasing variance and leading to a strong estimated uncertainty around estimates. Causal Forest doesn't employ such weighting but simply runs OLS regressions in both leaves, and is therefore more confident about its estimates.
+To investigate whether the results are robust estimations of the true causal effect of policy implementation, it is important to check whether the comparison of treated and untreated cities is valid. For this, one can look at the distribution of propensity scores to determine whether the implementation of the policy is highly deterministic or whether many untreated observations are also predicted to have a large probability of implementing a policy. Table~\ref{tab:unified_common_support} shows the common support region and retainment rates, i.e. the range of propensity scores that are existent in both treatment and control group and how many observations had to be excluded because they are outside of this range. Congestion Pricing has the best common support as more than 90\% of observations with CP implementation and more than 75\% untreated observations fall within the region showing that the policy is not too strongly predicted as well as keeping a large enough sample for estimation. Nevertheless, even for this policy regime, the distribution of propensity scores diverges strongly between the two groups (See Table~\ref{tab:propensity_scores_all} and Figure~\ref{fig:overlap_density} in the Appendix). Low-Emission Zones also still have decent coverage with nearly all treated observations and more than half of the untreated sample being kept for estimation. The overlap for both is not optimal but decent enough for the estimation.
 
 \input{Tables/unified_common_support.tex}
 
-\textit{2.}, the issue of unrealistically high coefficients, is attributed to two entirely different reasons: For AIPW, weak overlap is again the driver. The inclusion of many control observations with propensity scores very close to 0 while treated units generally get a lot higher scores represents a violation of \ref{as:cond_independence}, Conditional Independence. Policy implementation is not probabilistic but highly deterministic in many cases. As observations are inverse-propensity weighted, those observations that are predicted with close to certainty to not implement a policy get a massive influence on the final estimate. As these low propensity scores are nearly exclusively concentrated in the untreated group, coefficients are overestimated by comparing treated cities mainly with untreated cities that have the lowest likelihood of implementing such climate policies. As they are predicted to have a low probability to implement these two environmental policies, it is likely that they likely to also not implement much other climate policy and have a very strong $CO_2$ output. What is estimated is therefore not just the ATT of CP or LEZ, but also a general difference between high-emitting and low-emitting cities.
-
-Causal Forest does not suffer from the weak overlap as it is not skewed by inverse-propensity weighting. The unrealistic coefficients are therefore mostly 
-
-It indicates that treated and control cities are so structurally different that comparison between them is rendered invalid. Whether lower transport $CO_2$ emissions are truly caused by the implementation of Congestion Pricing and/or Low-Emission Zones cannot reasonably be asserted as there is no similar counterpart to many cities that implemented these in the untreated group.
-
-- Issue of only 50 bootstrap iterations
-
-
-
 \input{Tables/propensity_score_summary_all.tex}
 
-\input{Tables/appendix_placebo_tests.tex}
+ However, for the synergy of both CP and LEZ common support is strictly violated. As a rare occurrence with in total only 28 cities, the propensity score distribution reveals that there is strong selection into this policy, making it strongly determined by previous city-specific factors. While the propensity score for treated observations is already 19\% in the minimum and even 68\% in just the 25th percentile, untreated units are strongly concentrated at propensity scores of 0. Therefore, only 3.6\% of untreated observations can even be retained in the estimation. This constitutes a violation of Assumption~\ref{as:overlap} (Weak Overlap), thereby rendering the results unreliable. Inference of possible synergetic effects is therefore invalid. On the other hand, the overlap for Congestion Pricing and Low-Emission Zones is solid enough as the coefficients also remain stable when increasing the trimming in AIPW, i.e. the exclusion of observations with propensity scores to close to 1 or 0 in order to protect the weighting. Across trimming rates of 0.01 (baseline result value), 0.05, and 0.1, the coefficients remain largely the same; albeit a small reduction in the coefficient for LEZ renders it just outside the bounds of the 5\% significance level (See Figure~\ref{fig:appendix_overlap_sensitivity}).
+
+ \input{Tables/appendix_placebo_tests.tex}
+
+As an additional sensitivity test, I conduct placebo estimations for the variables "Number of Libraries" and "Streetlight Density", two factors that should be unrelated to any of the two policies. Table~\ref{tab:placebo_tests} (in the Appendix) shows that this test is partially passed as most coefficients are insignificant to the 5\% level, yet a few estimates are still significantly different from 0. Therefore, it is shown that some relevant factors are still omitted that can drive both the outcome variable Transport $CO_2$ as well as unrelated city-specific amenity developments. Yet for the placebo regressions, AIPW and Lasso also diverge strongly, with no case where both measure significant effects. Therefore, the main results for Congestion Pricing and Low-Emission Zones are still not refuted by these findings. 
 
 \section{Interpretation and Discussion}
 \label{sec:conclusion}
@@ -293,7 +301,7 @@ It indicates that treated and control cities are so structurally different that 
 
 - Point out methods benefits but that the results may be influenced by the issues
 
-
+The approach chosen in this study, DML with AIPW and Causal Forest estimation, relies on the assumption that conditioning on the large set $W_it$ of contemporaneous controls, Mundlak devices as well as time fixed effects the decision to implement a policy or not is effectively random. The sensitivity analysis showed that this is partly given, yet the treated and untreated observations still retain structural differences. An alternative to circumvent this assumption would be to conduct a Staggered Difference-in-Differences (DiD) event study following \citet{callawayDifferenceinDifferencesMultipleTime2021a}. Yet this approach then requires the parallel trends assumption, i.e. the outcome variable, transport $CO_2$ emissions, exhibits the same time trend for both treated and untreated cities in the absence of treatment. If you, the Board of Mayors, wish to get an additional robustness check on the efficacy of Congestion Pricing and Low-Emission Zones, commissioning a second study using the \citet{callawayDifferenceinDifferencesMultipleTime2021a} Doubly-Robust DiD approach may be a worthwhile endeavour.
 
 - contrast with alternative of staggered DiD
 
@@ -328,7 +336,7 @@ It indicates that treated and control cities are so structurally different that 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{Figures/overlap_density.pdf}
-    \caption{Common Support for Congestion Pricing (AIPW)}
+    \caption{Common Support for Congestion Pricing}
     \label{fig:overlap_density}
 \end{figure}
 
@@ -341,13 +349,13 @@ It indicates that treated and control cities are so structurally different that 
 \end{figure}
 
 \clearpage
-\section*{Declaration of Autorship}
+\section*{Declaration of Authorship}
 
-I confirm that this report is based on my own work. In preparing
-this report, I have not received any help from another human nor have I
-discussed any aspects of the empirical project with others.\\
+I confirm that this report is based on my own work. In preparing this report, I have not received any help from another human nor have I discussed any aspects of the empirical project with others.
 
-\vspace{5mm} %5mm vertical space
+\vspace{10mm} %10mm vertical space
+
+\includegraphics[width=0.2\textwidth]{Ferdinand_Unterschrift.PNG}
 
 Ferdinand Loser
 

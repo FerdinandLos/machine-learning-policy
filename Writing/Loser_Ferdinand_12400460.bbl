@@ -85,6 +85,67 @@
       \verb https://www.jstor.org/stable/26581894
       \endverb
     \endentry
+    \entry{callawayDifferenceinDifferencesMultipleTime2021a}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=4a5a67b3788b4a3653a14d9ab03fba0e}{%
+           family={Callaway},
+           familyi={C\bibinitperiod},
+           given={Brantly},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7767820037a369ec59519519e44c7e9a}{%
+           family={Sant’Anna},
+           familyi={S\bibinitperiod},
+           given={Pedro\bibnamedelimb H.\bibnamedelimi C.},
+           giveni={P\bibinitperiod\bibinitdelim H\bibinitperiod\bibinitdelim C\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{81e94baa528cefc8bb56e5c1a70471e2}
+      \strng{fullhash}{81e94baa528cefc8bb56e5c1a70471e2}
+      \strng{fullhashraw}{81e94baa528cefc8bb56e5c1a70471e2}
+      \strng{bibnamehash}{81e94baa528cefc8bb56e5c1a70471e2}
+      \strng{authorbibnamehash}{81e94baa528cefc8bb56e5c1a70471e2}
+      \strng{authornamehash}{81e94baa528cefc8bb56e5c1a70471e2}
+      \strng{authorfullhash}{81e94baa528cefc8bb56e5c1a70471e2}
+      \strng{authorfullhashraw}{81e94baa528cefc8bb56e5c1a70471e2}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{In this article, we consider identification, estimation, and inference procedures for treatment effect parameters using Difference-in-Differences (DiD) with (i) multiple time periods, (ii) variation in treatment timing, and (iii) when the “parallel trends assumption” holds potentially only after conditioning on observed covariates. We show that a family of causal effect parameters are identified in staggered DiD setups, even if differences in observed characteristics create non-parallel outcome dynamics between groups. Our identification results allow one to use outcome regression, inverse probability weighting, or doubly-robust estimands. We also propose different aggregation schemes that can be used to highlight treatment effect heterogeneity across different dimensions as well as to summarize the overall effect of participating in the treatment. We establish the asymptotic properties of the proposed estimators and prove the validity of a computationally convenient bootstrap procedure to conduct asymptotically valid simultaneous (instead of pointwise) inference. Finally, we illustrate the relevance of our proposed tools by analyzing the effect of the minimum wage on teen employment from 2001–2007. Open-source software is available for implementing the proposed methods.}
+      \field{day}{1}
+      \field{issn}{0304-4076}
+      \field{journaltitle}{Journal of Econometrics}
+      \field{month}{12}
+      \field{number}{2}
+      \field{series}{Themed {{Issue}}: {{Treatment Effect}} 1}
+      \field{shortjournal}{Journal of Econometrics}
+      \field{title}{Difference-in-{{Differences}} with Multiple Time Periods}
+      \field{urlday}{31}
+      \field{urlmonth}{7}
+      \field{urlyear}{2026}
+      \field{volume}{225}
+      \field{year}{2021}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{200\bibrangedash 230}
+      \range{pages}{31}
+      \verb{doi}
+      \verb 10.1016/j.jeconom.2020.12.001
+      \endverb
+      \verb{file}
+      \verb C\:\\Users\\ferdi\\Zotero\\storage\\ALPVL3VH\\Callaway and Sant’Anna - 2021 - Difference-in-Differences with multiple time periods.pdf;C\:\\Users\\ferdi\\Zotero\\storage\\AEEAW9LT\\S0304407620303948.html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0304407620303948
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0304407620303948
+      \endverb
+      \keyw{Difference-in-Differences,Doubly robust,Dynamic treatment effects,Event study,Semi-parametric,Treatment effect heterogeneity,Variation in treatment timing}
+    \endentry
     \entry{CausalMLBookAppliedCausal}{book}{}{}
       \name{author}{5}{}{%
         {{un=1,uniquepart=given,hash=cd8889c8533fa715ed655a757cef5619}{%

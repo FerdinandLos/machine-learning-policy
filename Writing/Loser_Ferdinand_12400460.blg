@@ -1,15 +1,15 @@
 [0] Config.pm:328> INFO - This is Biber 2.21
 [0] Config.pm:331> INFO - Logfile is 'Loser_Ferdinand_12400460.blg'
-[280] biber-MSWIN64:342> INFO - === 
-[353] Biber.pm:421> INFO - Reading 'Loser_Ferdinand_12400460.bcf'
-[515] Biber.pm:1002> INFO - Found 6 citekeys in bib section 0
-[536] Biber.pm:4487> INFO - Processing section 0
-[551] Biber.pm:4678> INFO - Looking for bibtex file 'DML_Policy_Project.bib' for section 0
-[628] bibtex.pm:1713> INFO - LaTeX decoding ...
-[677] bibtex.pm:1519> INFO - Found BibTeX data source 'DML_Policy_Project.bib'
-[825] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[826] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[826] Biber.pm:4307> INFO - Sorting list 'nyt/global//global/global/global' of type 'entry' with template 'nyt' and locale 'en-US'
-[826] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
-[842] bbl.pm:676> INFO - Writing 'Loser_Ferdinand_12400460.bbl' with encoding 'UTF-8'
-[852] bbl.pm:779> INFO - Output to Loser_Ferdinand_12400460.bbl
+[262] biber-MSWIN64:342> INFO - === 
+[356] Biber.pm:421> INFO - Reading 'Loser_Ferdinand_12400460.bcf'
+[543] Biber.pm:1002> INFO - Found 7 citekeys in bib section 0
+[564] Biber.pm:4487> INFO - Processing section 0
+[581] Biber.pm:4678> INFO - Looking for bibtex file 'DML_Policy_Project.bib' for section 0
+[673] bibtex.pm:1713> INFO - LaTeX decoding ...
+[717] bibtex.pm:1519> INFO - Found BibTeX data source 'DML_Policy_Project.bib'
+[872] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[872] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[872] Biber.pm:4307> INFO - Sorting list 'nyt/global//global/global/global' of type 'entry' with template 'nyt' and locale 'en-US'
+[872] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
+[891] bbl.pm:676> INFO - Writing 'Loser_Ferdinand_12400460.bbl' with encoding 'UTF-8'
+[904] bbl.pm:779> INFO - Output to Loser_Ferdinand_12400460.bbl
