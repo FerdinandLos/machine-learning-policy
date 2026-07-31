@@ -38,6 +38,19 @@ else:
     print("\n")
 
 # ---------------------------------------------------------
+# 1b. Check Dataset Dimensions (Cities & Years)
+# ---------------------------------------------------------
+print("--- DATASET OVERVIEW ---")
+num_cities = df['city_id'].nunique()
+min_year = df['year'].min()
+max_year = df['year'].max()
+
+print(f"Total unique cities: {num_cities}")
+print(f"Panel time range: {min_year} to {max_year}")
+print(f"Total observations (rows): {len(df)}")
+print("-" * 25 + "\n")
+
+# ---------------------------------------------------------
 # 2. Check for Outliers and Data Errors
 # ---------------------------------------------------------
 print("--- DESCRIPTIVE STATISTICS (Outlier Detection) ---")
@@ -70,6 +83,22 @@ plt.close()
 # ---------------------------------------------------------
 # Convert latitude_zone (1, 2, 3) into binary indicators to prevent continuous treatment
 df = pd.get_dummies(df, columns=['latitude_zone'], prefix='lat_zone', drop_first=True, dtype=int)
+
+# ---------------------------------------------------------
+# 3c. Generate Year Fixed Effects (Time Dummies)
+# ---------------------------------------------------------
+print("Generating Year Fixed Effects...")
+
+# We use pd.get_dummies on the 'year' column.
+# drop_first=True is mathematically required to drop one base year 
+# and prevent perfect multicollinearity (the dummy variable trap).
+year_dummies = pd.get_dummies(df['year'], prefix='year', drop_first=True, dtype=int)
+
+# Concatenate the new dummies to the dataframe while keeping the original 'year' column 
+# intact, as it is needed later for panel sorting and the Mundlak device logic.
+df = pd.concat([df, year_dummies], axis=1)
+
+print(f"Added {year_dummies.shape[1]} year dummies to the dataset.\n")
 
 #---------------------------------------------------------
 # 4. Check all variables for skewed distributions

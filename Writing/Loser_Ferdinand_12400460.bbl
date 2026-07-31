@@ -1,0 +1,434 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nyt/global//global/global/global}
+    \entry{atheyGeneralizedRandomForests2019}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=cab7b4f39472e6c01dc0fc30a32c6d89}{%
+           family={Athey},
+           familyi={A\bibinitperiod},
+           given={Susan},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7d255257e355c7b9af6030b797bd6edb}{%
+           family={Tibshirani},
+           familyi={T\bibinitperiod},
+           given={Julie},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e22c2c3bb1bd12e43f46c07ea788b581}{%
+           family={Wager},
+           familyi={W\bibinitperiod},
+           given={Stefan},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Institute of Mathematical Statistics}%
+      }
+      \strng{namehash}{1814ceab4a06c58a6b128b5fd3273c29}
+      \strng{fullhash}{aed26c19027a498842fb4405b81c74f5}
+      \strng{fullhashraw}{aed26c19027a498842fb4405b81c74f5}
+      \strng{bibnamehash}{aed26c19027a498842fb4405b81c74f5}
+      \strng{authorbibnamehash}{aed26c19027a498842fb4405b81c74f5}
+      \strng{authornamehash}{1814ceab4a06c58a6b128b5fd3273c29}
+      \strng{authorfullhash}{aed26c19027a498842fb4405b81c74f5}
+      \strng{authorfullhashraw}{aed26c19027a498842fb4405b81c74f5}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We propose generalized random forests, a method for nonparametric statistical estimation based on random forests (Breiman [Mach. Learn. 45 (2001) 5–32]) that can be used to fit any quantity of interest identified as the solution to a set of local moment equations. Following the literature on local maximum likelihood estimation, our method considers a weighted set of nearby training examples; however, instead of using classical kernel weighting functions that are prone to a strong curse of dimensionality, we use an adaptive weighting function derived from a forest designed to express heterogeneity in the specified quantity of interest. We propose a flexible, computationally efficient algorithm for growing generalized random forests, develop a large sample theory for our method showing that our estimates are consistent and asymptotically Gaussian and provide an estimator for their asymptotic variance that enables valid confidence intervals. We use our approach to develop new methods for three statistical tasks: nonparametric quantile regression, conditional average partial effect estimation and heterogeneous treatment effect estimation via instrumental variables. A software implementation, grf for R and C++, is available from CRAN.}
+      \field{eprinttype}{jstor}
+      \field{issn}{0090-5364}
+      \field{journaltitle}{The Annals of Statistics}
+      \field{number}{2}
+      \field{title}{Generalized {{Random Forests}}}
+      \field{urlday}{28}
+      \field{urlmonth}{7}
+      \field{urlyear}{2026}
+      \field{volume}{47}
+      \field{year}{2019}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{1148\bibrangedash 1178}
+      \range{pages}{31}
+      \verb{eprint}
+      \verb 26581894
+      \endverb
+      \verb{file}
+      \verb C:\Users\ferdi\Zotero\storage\C8MBPCTW\Athey et al. - 2019 - Generalized Random Forests.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/26581894
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/26581894
+      \endverb
+    \endentry
+    \entry{CausalMLBookAppliedCausal}{book}{}{}
+      \name{author}{5}{}{%
+        {{un=1,uniquepart=given,hash=cd8889c8533fa715ed655a757cef5619}{%
+           family={Chernozhukov},
+           familyi={C\bibinitperiod},
+           given={ictor},
+           giveni={i\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=b38b53cdfa3ce5b62046f22663d5cc6f}{%
+           family={Hansen},
+           familyi={H\bibinitperiod},
+           given={Christian},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2db96cc54afe3fe8c684be53af54a7bf}{%
+           family={Kallus},
+           familyi={K\bibinitperiod},
+           given={Nathan},
+           giveni={N\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d8b1ae9734f477eac207fdb4e76b4b4d}{%
+           family={Spindler},
+           familyi={S\bibinitperiod},
+           given={Martin},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=342033b26b8f8c243380f2343a53e1fa}{%
+           family={Syrgkanis},
+           familyi={S\bibinitperiod},
+           given={Vasilis},
+           giveni={V\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {arXiv preprint arXiv:2403.02467}%
+      }
+      \strng{namehash}{485a5da448d18cbe666a1e3c0012a22b}
+      \strng{fullhash}{151b0906ef111aff3f839726c673919d}
+      \strng{fullhashraw}{151b0906ef111aff3f839726c673919d}
+      \strng{bibnamehash}{485a5da448d18cbe666a1e3c0012a22b}
+      \strng{authorbibnamehash}{485a5da448d18cbe666a1e3c0012a22b}
+      \strng{authornamehash}{485a5da448d18cbe666a1e3c0012a22b}
+      \strng{authorfullhash}{151b0906ef111aff3f839726c673919d}
+      \strng{authorfullhashraw}{151b0906ef111aff3f839726c673919d}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Applied Causal Inference Powered by ML and AI. Victor Chernozhukov, Christian Hansen, Nathan Kallus, Martin Spindler, Vasilis Syrgkanis.}
+      \field{langid}{american}
+      \field{title}{Applied {{Causal Inference Powered}} by {{ML}} and {{AI}}}
+      \field{urlday}{28}
+      \field{urlmonth}{7}
+      \field{urlyear}{2026}
+      \field{year}{2024}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \verb{doi}
+      \verb 10.48550/arXiv.2403.02467
+      \endverb
+      \verb{file}
+      \verb C:\Users\ferdi\Zotero\storage\XCWPFNC5\causalml-book.org.html
+      \endverb
+      \verb{urlraw}
+      \verb https://causalml-book.org/
+      \endverb
+      \verb{url}
+      \verb https://causalml-book.org/
+      \endverb
+    \endentry
+    \entry{chernozhukovDoubleDebiasedMachine2018}{article}{}{}
+      \name{author}{7}{}{%
+        {{un=1,uniquepart=given,hash=c75cbe2cefd1e532f636a50892605d06}{%
+           family={Chernozhukov},
+           familyi={C\bibinitperiod},
+           given={Victor},
+           giveni={V\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=ef4b66d2ca2dde47ec1b0afa98306775}{%
+           family={Chetverikov},
+           familyi={C\bibinitperiod},
+           given={Denis},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d3c2cc443c71254678269de10d61d61c}{%
+           family={Demirer},
+           familyi={D\bibinitperiod},
+           given={Mert},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7e6b0ea4eee38822cdb0a4361e98752c}{%
+           family={Duflo},
+           familyi={D\bibinitperiod},
+           given={Esther},
+           giveni={E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b38b53cdfa3ce5b62046f22663d5cc6f}{%
+           family={Hansen},
+           familyi={H\bibinitperiod},
+           given={Christian},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9c98526d9f1775b95096664c9cf0c633}{%
+           family={Newey},
+           familyi={N\bibinitperiod},
+           given={Whitney},
+           giveni={W\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=bf615cc72310078c444f0c653a1fc5e7}{%
+           family={Robins},
+           familyi={R\bibinitperiod},
+           given={James},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{e8ad45c8076487daa445bfbeb4e02a04}
+      \strng{fullhash}{7892f5fdea2b46a0fb4e6c031c27c781}
+      \strng{fullhashraw}{7892f5fdea2b46a0fb4e6c031c27c781}
+      \strng{bibnamehash}{e8ad45c8076487daa445bfbeb4e02a04}
+      \strng{authorbibnamehash}{e8ad45c8076487daa445bfbeb4e02a04}
+      \strng{authornamehash}{e8ad45c8076487daa445bfbeb4e02a04}
+      \strng{authorfullhash}{7892f5fdea2b46a0fb4e6c031c27c781}
+      \strng{authorfullhashraw}{7892f5fdea2b46a0fb4e6c031c27c781}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We revisit the classic semi‐parametric problem of inference on a low‐dimensional parameter θ0 in the presence of high‐dimensional nuisance parameters η0. We depart from the classical setting by allowing for η0 to be so high‐dimensional that the traditional assumptions (e.g. Donsker properties) that limit complexity of the parameter space for this object break down. To estimate η0, we consider the use of statistical or machine learning (ML) methods, which are particularly well suited to estimation in modern, very high‐dimensional cases. ML methods perform well by employing regularization to reduce variance and trading off regularization bias with overfitting in practice. However, both regularization bias and overfitting in estimating η0 cause a heavy bias in estimators of θ0 that are obtained by naively plugging ML estimators of η0 into estimating equations for θ0. This bias results in the naive estimator failing to be N−1/2 consistent, where N is the sample size. We show that the impact of regularization bias and overfitting on estimation of the parameter of interest θ0 can be removed by using two simple, yet critical, ingredients: (1) using Neyman‐orthogonal moments/scores that have reduced sensitivity with respect to nuisance parameters to estimate θ0; (2) making use of cross‐fitting, which provides an efficient form of data‐splitting. We call the resulting set of methods double or debiased ML (DML). We verify that DML delivers point estimators that concentrate in an N−1/2‐neighbourhood of the true parameter values and are approximately unbiased and normally distributed, which allows construction of valid confidence statements. The generic statistical theory of DML is elementary and simultaneously relies on only weak theoretical requirements, which will admit the use of a broad array of modern ML methods for estimating the nuisance parameters, such as random forests, lasso, ridge, deep neural nets, boosted trees, and various hybrids and ensembles of these methods. We illustrate the general theory by applying it to provide theoretical properties of the following: DML applied to learn the main regression parameter in a partially linear regression model; DML applied to learn the coefficient on an endogenous variable in a partially linear instrumental variables model; DML applied to learn the average treatment effect and the average treatment effect on the treated under unconfoundedness; DML applied to learn the local average treatment effect in an instrumental variables setting. In addition to these theoretical applications, we also illustrate the use of DML in three empirical examples.}
+      \field{day}{1}
+      \field{issn}{1368-4221}
+      \field{journaltitle}{The Econometrics Journal}
+      \field{month}{2}
+      \field{number}{1}
+      \field{shortjournal}{Econom J}
+      \field{title}{Double/Debiased Machine Learning for Treatment and Structural Parameters}
+      \field{urlday}{28}
+      \field{urlmonth}{7}
+      \field{urlyear}{2026}
+      \field{volume}{21}
+      \field{year}{2018}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{C1\bibrangedash C68}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1111/ectj.12097
+      \endverb
+      \verb{file}
+      \verb C\:\\Users\\ferdi\\Zotero\\storage\\H8Z58THH\\Chernozhukov et al. - 2018 - Doubledebiased machine learning for treatment and structural parameters.pdf;C\:\\Users\\ferdi\\Zotero\\storage\\Y9GJJMFR\\ectj.html
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1111/ectj.12097
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1111/ectj.12097
+      \endverb
+    \endentry
+    \entry{jamesIntroductionStatisticalLearning2023}{book}{}{}
+      \name{author}{5}{}{%
+        {{un=0,uniquepart=base,hash=df184c5fa522ac8a515ec4de13aef234}{%
+           family={James},
+           familyi={J\bibinitperiod},
+           given={Gareth},
+           giveni={G\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1ab16961e0de50711fa6bd9425f9b4a6}{%
+           family={Witten},
+           familyi={W\bibinitperiod},
+           given={Daniela},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0cb8fe4210baa81c4b0e67913b4d2768}{%
+           family={Hastie},
+           familyi={H\bibinitperiod},
+           given={Trevor},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=88eea600247d798f8b2ce0b2dc614492}{%
+           family={Tibshirani},
+           familyi={T\bibinitperiod},
+           given={Robert},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b8cade64946cb0231704af1140601996}{%
+           family={Taylor},
+           familyi={T\bibinitperiod},
+           given={Jonathan},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer Nature}%
+      }
+      \strng{namehash}{f8f737f83d9e451c1afaa13cdc120516}
+      \strng{fullhash}{61b6a0d707f33194f7a15882118e54f5}
+      \strng{fullhashraw}{61b6a0d707f33194f7a15882118e54f5}
+      \strng{bibnamehash}{f8f737f83d9e451c1afaa13cdc120516}
+      \strng{authorbibnamehash}{f8f737f83d9e451c1afaa13cdc120516}
+      \strng{authornamehash}{f8f737f83d9e451c1afaa13cdc120516}
+      \strng{authorfullhash}{61b6a0d707f33194f7a15882118e54f5}
+      \strng{authorfullhashraw}{61b6a0d707f33194f7a15882118e54f5}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{An Introduction to Statistical Learning provides an accessible overview of the field of statistical learning, an essential toolset for making sense of the vast and complex data sets that have emerged in fields ranging from biology to finance, marketing, and astrophysics in the past twenty years. This book presents some of the most important modeling and prediction techniques, along with relevant applications. Topics include linear regression, classification, resampling methods, shrinkage approaches, tree-based methods, support vector machines, clustering, deep learning, survival analysis, multiple testing, and more. Color graphics and real-world examples are used to illustrate the methods presented. This book is targeted at statisticians and non-statisticians alike, who wish to use cutting-edge statistical learning techniques to analyze their data. Four of the authors co-wrote An Introduction to Statistical Learning, With Applications in R(ISLR), which has become a mainstay of undergraduate and graduate classrooms worldwide, as well as an important reference book for data scientists. One of the keys to its success was that each chapter contains a tutorial on implementing the analyses and methods presented in the R scientific computing environment. However, in recent years Python has become a popular language for data science, and there has been increasing demand for a Python-based alternative to ISLR. Hence, this book (ISLP) covers the same materials as ISLR but with labs implemented in Python. These labs will be useful both for Python novices, as well as experienced users.}
+      \field{day}{30}
+      \field{eprinttype}{googlebooks}
+      \field{isbn}{978-3-031-38747-0}
+      \field{langid}{english}
+      \field{month}{6}
+      \field{pagetotal}{617}
+      \field{shorttitle}{An {{Introduction}} to {{Statistical Learning}}}
+      \field{title}{An {{Introduction}} to {{Statistical Learning}}: With {{Applications}} in {{Python}}}
+      \field{year}{2023}
+      \field{dateera}{ce}
+      \verb{eprint}
+      \verb ygzJEAAAQBAJ
+      \endverb
+      \keyw{Computers / Mathematical & Statistical Software,Mathematics / Probability & Statistics / General,Mathematics / Probability & Statistics / Stochastic Processes}
+    \endentry
+    \entry{mundlakPoolingTimeSeries1978}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=d3ad9680b97dfd697a0d4f7d702bbf14}{%
+           family={Mundlak},
+           familyi={M\bibinitperiod},
+           given={Yair},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {[Wiley, Econometric Society]}%
+      }
+      \strng{namehash}{d3ad9680b97dfd697a0d4f7d702bbf14}
+      \strng{fullhash}{d3ad9680b97dfd697a0d4f7d702bbf14}
+      \strng{fullhashraw}{d3ad9680b97dfd697a0d4f7d702bbf14}
+      \strng{bibnamehash}{d3ad9680b97dfd697a0d4f7d702bbf14}
+      \strng{authorbibnamehash}{d3ad9680b97dfd697a0d4f7d702bbf14}
+      \strng{authornamehash}{d3ad9680b97dfd697a0d4f7d702bbf14}
+      \strng{authorfullhash}{d3ad9680b97dfd697a0d4f7d702bbf14}
+      \strng{authorfullhashraw}{d3ad9680b97dfd697a0d4f7d702bbf14}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{In empirical analysis of data consisting of repeated observations on economic units (time series on a cross section) it is often assumed that the coefficients of the quantitative variables (slopes) are the same, whereas the coefficients of the qualitative variables (intercepts or effects) vary over units or periods.This is the constant-slope variable-intercept framework. In such an analysis an explicit account should be taken of the statistical dependence that exists between the quantitative variables and the effects. It is shown that when this is done, the random effect approach and the fixed effect approach yield the same estimate for the slopes, the "within" estimate. Any matrix combination of the "within" and "between" estimates is generally biased. When the "within" estimate is subject to a relatively large error a minimum mean square error can be applied, as is generally done in regression analysis. Such an estimator is developed here from a somewhat different point of departure.}
+      \field{eprinttype}{jstor}
+      \field{issn}{0012-9682}
+      \field{journaltitle}{Econometrica}
+      \field{number}{1}
+      \field{title}{On the {{Pooling}} of {{Time Series}} and {{Cross Section Data}}}
+      \field{urlday}{31}
+      \field{urlmonth}{7}
+      \field{urlyear}{2026}
+      \field{volume}{46}
+      \field{year}{1978}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{69\bibrangedash 85}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.2307/1913646
+      \endverb
+      \verb{eprint}
+      \verb 1913646
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/1913646
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/1913646
+      \endverb
+    \endentry
+    \entry{wagerEstimationInferenceHeterogeneous2018}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=e22c2c3bb1bd12e43f46c07ea788b581}{%
+           family={Wager},
+           familyi={W\bibinitperiod},
+           given={Stefan},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=cab7b4f39472e6c01dc0fc30a32c6d89}{%
+           family={Athey},
+           familyi={A\bibinitperiod},
+           given={Susan},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Taylor \& Francis}%
+      }
+      \strng{namehash}{d4c64d08a4af7035a4061fd6e82a6d2d}
+      \strng{fullhash}{d4c64d08a4af7035a4061fd6e82a6d2d}
+      \strng{fullhashraw}{d4c64d08a4af7035a4061fd6e82a6d2d}
+      \strng{bibnamehash}{d4c64d08a4af7035a4061fd6e82a6d2d}
+      \strng{authorbibnamehash}{d4c64d08a4af7035a4061fd6e82a6d2d}
+      \strng{authornamehash}{d4c64d08a4af7035a4061fd6e82a6d2d}
+      \strng{authorfullhash}{d4c64d08a4af7035a4061fd6e82a6d2d}
+      \strng{authorfullhashraw}{d4c64d08a4af7035a4061fd6e82a6d2d}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Many scientific and engineering challenges—ranging from personalized medicine to customized marketing recommendations—require an understanding of treatment effect heterogeneity. In this article, we develop a nonparametric causal forest for estimating heterogeneous treatment effects that extends Breiman’s widely used random forest algorithm. In the potential outcomes framework with unconfoundedness, we show that causal forests are pointwise consistent for the true treatment effect and have an asymptotically Gaussian and centered sampling distribution. We also discuss a practical method for constructing asymptotic confidence intervals for the true treatment effect that are centered at the causal forest estimates. Our theoretical results rely on a generic Gaussian theory for a large family of random forest algorithms. To our knowledge, this is the first set of results that allows any type of random forest, including classification and regression forests, to be used for provably valid statistical inference. In experiments, we find causal forests to be substantially more powerful than classical methods based on nearest-neighbor matching, especially in the presence of irrelevant covariates.}
+      \field{day}{3}
+      \field{issn}{0162-1459}
+      \field{journaltitle}{Journal of the American Statistical Association}
+      \field{month}{7}
+      \field{number}{523}
+      \field{title}{Estimation and {{Inference}} of {{Heterogeneous Treatment Effects}} Using {{Random Forests}}}
+      \field{urlday}{28}
+      \field{urlmonth}{7}
+      \field{urlyear}{2026}
+      \field{volume}{113}
+      \field{year}{2018}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{1228\bibrangedash 1242}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.1080/01621459.2017.1319839
+      \endverb
+      \verb{file}
+      \verb C:\Users\ferdi\Zotero\storage\6DHB4NIT\Wager und Athey - 2018 - Estimation and Inference of Heterogeneous Treatment Effects using Random Forests.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1080/01621459.2017.1319839
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1080/01621459.2017.1319839
+      \endverb
+      \keyw{Adaptive nearest neighbors matching,Asymptotic normality,Potential outcomes,Unconfoundedness}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

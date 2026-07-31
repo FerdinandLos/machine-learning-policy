@@ -1,6 +1,6 @@
-PWD c:\Users\ferdi\Documents\Study Projects\Machine Learning\machine-learning-policy\Writing
+PWD d:\Study Projects\Machine Learning\machine-learning-policy\Writing
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT c:\Users\ferdi\Documents\Study Projects\Machine Learning\machine-learning-policy\Writing\Loser_Ferdinand_12400460.tex
+INPUT d:\Study Projects\Machine Learning\machine-learning-policy\Writing\Loser_Ferdinand_12400460.tex
 OUTPUT Loser_Ferdinand_12400460.log
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls
@@ -206,6 +206,11 @@ INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex\latex\biblatex\lbx\englis
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex\latex\biblatex\lbx\english.lbx
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex\latex\biblatex\lbx\english.lbx
 OUTPUT Loser_Ferdinand_12400460.bcf
+INPUT Loser_Ferdinand_12400460.bbl
+INPUT .\Loser_Ferdinand_12400460.bbl
+INPUT .\Loser_Ferdinand_12400460.bbl
+INPUT .\Loser_Ferdinand_12400460.bbl
+INPUT Loser_Ferdinand_12400460.bbl
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecrm2074.tfm
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecrm1440.tfm
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr12.tfm
@@ -269,12 +274,6 @@ INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecti100
 INPUT .\Tables\dml_master_results.tex
 INPUT .\Tables\dml_master_results.tex
 INPUT Tables\dml_master_results.tex
-INPUT .\Figures\forest_plot_att_gatt.pdf
-INPUT .\Figures\forest_plot_att_gatt.pdf
-INPUT .\Figures\forest_plot_att_gatt.pdf
-INPUT .\Figures\forest_plot_att_gatt.pdf
-INPUT .\Figures\forest_plot_att_gatt.pdf
-INPUT .\Figures\forest_plot_att_gatt.pdf
 INPUT .\Tables\unified_common_support.tex
 INPUT .\Tables\unified_common_support.tex
 INPUT Tables\unified_common_support.tex
@@ -284,6 +283,8 @@ INPUT Tables\propensity_score_summary.tex
 INPUT .\Tables\appendix_placebo_tests.tex
 INPUT .\Tables\appendix_placebo_tests.tex
 INPUT Tables\appendix_placebo_tests.tex
+INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\eccc1200.tfm
+INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ectt1200.tfm
 INPUT .\Figures\kmeans_evaluation.pdf
 INPUT .\Figures\kmeans_evaluation.pdf
 INPUT .\Figures\kmeans_evaluation.pdf
@@ -296,6 +297,12 @@ INPUT .\Figures\cluster_differences.pdf
 INPUT .\Figures\cluster_differences.pdf
 INPUT .\Figures\cluster_differences.pdf
 INPUT .\Figures\cluster_differences.pdf
+INPUT .\Figures\forest_plot_att_gatt.pdf
+INPUT .\Figures\forest_plot_att_gatt.pdf
+INPUT .\Figures\forest_plot_att_gatt.pdf
+INPUT .\Figures\forest_plot_att_gatt.pdf
+INPUT .\Figures\forest_plot_att_gatt.pdf
+INPUT .\Figures\forest_plot_att_gatt.pdf
 INPUT .\Figures\overlap_density.pdf
 INPUT .\Figures\overlap_density.pdf
 INPUT .\Figures\overlap_density.pdf
@@ -313,10 +320,16 @@ INPUT .\Loser_Ferdinand_12400460.out
 INPUT .\Loser_Ferdinand_12400460.out
 INPUT Loser_Ferdinand_12400460.run.xml
 OUTPUT Loser_Ferdinand_12400460.run.xml
+INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ectt1200.pk
+INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ectt1200.pk
+INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\eccc1200.pk
+INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\eccc1200.pk
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecti1000.pk
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecti1000.pk
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1440.pk
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1440.pk
+INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm0700.pk
+INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm0700.pk
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm0800.pk
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm0800.pk
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\tcrm1200.pk

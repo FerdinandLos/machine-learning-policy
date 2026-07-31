@@ -32,7 +32,7 @@
 
 % BibLaTeX setup for Zotero Better BibLaTeX
 \usepackage[style=authoryear, backend=biber, natbib=true, maxcitenames=2]{biblatex}
-\addbibresource{Monte Carlo Simulations.bib}
+\addbibresource{DML_Policy_Project.bib}
 
 % Change formatting to fit policy report style:
 \renewcommand{\abstractname}{Executive Summary}
@@ -102,15 +102,15 @@ To address research question 2 regarding spatial heterogeneity, the GATT isolate
 For the ATT and GATT to be identified correctly, three assumptions are required.
 
 \begin{assumption}\label{as:cond_independence}
-\textbf{Conditional Independence: } $(Y(d), Y(0)) \perp\!\!\!\perp D \mid X_i$. Conditional on the Mundlak device and baseline geography, treatment assignment is independent of potential outcomes. I.e., variables of $X_i$ encompass all relevant factors that determine whether a city implements policy $d$.
+\textbf{Conditional Independence/Ignorability: } $(Y(d), Y(0)) \perp\!\!\!\perp D \mid X_i$. Conditional on the Mundlak device and baseline geography, treatment assignment is independent of potential outcomes. I.e., variables of $X_i$ encompass all relevant factors that determine whether a city implements policy $d$ \citep[Ch. 5]{CausalMLBookAppliedCausal}.
 \end{assumption}
 
-\begin{assumption}\label{as:weak_overlap}
-\textbf{Weak Overlap: } $P(D=1 \mid X) < 1$. Policy implementation cannot be perfectly predicted by the pre-treatment covariates $X_i$. I.e., every treated city has a similar untreated counterpart.
+\begin{assumption}\label{as:overlap}
+\textbf{Weak Overlap: } $P(D=1 \mid X) < 1$. Policy implementation cannot be perfectly predicted by the pre-treatment covariates $X_i$. I.e., every treated city has a similar untreated counterpart \citep[Ch. 5]{CausalMLBookAppliedCausal}.
 \end{assumption}
 
 \begin{assumption}\label{as:sutva}
-\textbf{SUTVA: } The potential outcomes of city $i$ are unaffected by the treatment status of city $j$ (no spatial spillovers).
+\textbf{SUTVA: } The potential outcomes of city $i$ are unaffected by the treatment status of city $j$ (no spatial spillovers) \citep[Ch. 2]{CausalMLBookAppliedCausal}.
 \end{assumption}
 
 \section{Proposed Estimator}
@@ -125,101 +125,118 @@ To estimate the (G)ATT, I employ two different double machine learning approache
     \item The expected outcome: $m(W_{it}) = \mathbb{E}[Y_{it} \mid W_{it}]$ is estimated via a linear LASSO regression. Then the Outcome Residual: $\tilde{Y}_{it} = Y_{it} - \hat{m}(W_{it})$ is calculated as the leftover residual of the true outcome $Y_{it}$ minus the predicted outcome $\hat{m}(W_{it})$ for each city-time observation.
 \end{itemize}
 
-Both of these LASSO regressions are fit with the whole set $W_{it} = X_{it} + X_i$, both contemporary and time-invariant covariates, whereby the LASSO penalty shrinks down and eliminates covariates to minimize prediction error in a cross-validation setting.  This stage is the same for both AIPW and Causal Forest. 
+Both of these LASSO regressions are fit with the whole set $W_{it} = X_{it} + X_i$, both contemporary and time-invariant covariates, whereby the LASSO penalty shrinks down and eliminates covariates to minimize prediction error in a cross-validation setting.\footnote{$W_it$ also omits other variables that are expected to be impacted by or to impact either of the two policies such as e.g. PM2.5 emissions, vehicle engine shares, or records of public announcement of such policies.} This stage is the same for both AIPW and Causal Forest \citep[See][]{chernozhukovDoubleDebiasedMachine2018}. 
 
-\textbf{Stage 2 (CATE/ATT/GATT Estimation): } Here AIPW and Causal Forest differ in how they use the DR scores to estimate the treatment effects.
+\textbf{Stage 2 (ATT/GATT Estimation): } Here AIPW and Causal Forest differ in how they use the DR scores to estimate the treatment effects.
 
-\textit{AIPW} uses the treatment and outcome residuals ($\tilde{D}_{it}$ and $\tilde{Y}_{it}$) to estimate Doubly Robust scores (DR), a pseudo-outcome of how a specific city-year observation should have been based on what the first stage models can explain. The GATT then represents the average of all individual DR scores of treated cities within a cluster, and the ATT the average of all treated cities.
+\textit{AIPW} uses the treatment and outcome residuals ($\tilde{D}_{it}$ and $\tilde{Y}_{it}$) to estimate Doubly Robust scores (DR), a pseudo-outcome of how a specific city-year observation should have been based on what the first stage models can explain. The GATT then represents the average of all individual DR scores of treated cities within a cluster, and the ATT the average of all treated cities \citep[See][]{chernozhukovDoubleDebiasedMachine2018}.
 
-\textit{Caudal Forest} builds a large set of trees, 200, whereby each tree uses a random subsample of cities. Each tree is very shallow, consisting of only two terminal nodes (leaves), the clusters for dense metropolises and regional hubs. Then, within each leaf, an OLS regression is fitted on the orthogonalized residuals from Stage 1 ($\tilde{Y}_{it}$ and $\tilde{D}_{it}$). Finally, the estimations of all different leaves are averaged for the final GATT estimate (and then the two GATT estimates averaged for the ATT estimate). The shallowness of the tree is beneficial as it makes estimation within each leaf well estimable, as each leaf still contains a large number of treated and untreated cities, which is especially necessary for estimating the synergy effect, which was relatively rarely implemented in the dataset.
+\textit{Causal Forest} builds a large set of trees, 200, whereby each tree uses a random subsample of cities. Each tree is very shallow, consisting of only two terminal nodes (leaves), the clusters for dense metropolises and regional hubs. Then, within each leaf, an OLS regression is fitted on the orthogonalized residuals from Stage 1 ($\tilde{Y}_{it}$ and $\tilde{D}_{it}$). Finally, the estimations of all different leaves are averaged for the final GATT estimate (and then the two GATT estimates averaged for the ATT estimate). The shallowness of the tree is beneficial as it makes estimation within each leaf well estimable, as each leaf still contains a large number of treated and untreated cities, which is especially necessary for estimating the synergy effect, which was relatively rarely implemented in the dataset \citep[See][]{wagerEstimationInferenceHeterogeneous2018, atheyGeneralizedRandomForests2019}.
 
 
 \section{Theoretical Properties}
 \label{sec:theoretical_properties}
 
-Both methods rely on Neymon orthogonality as proof for their unbiasedness. Let us first recall the general theorem of Neymon orthogonality.
+Both methods rely on Neyman orthogonality as proof for their unbiasedness. Let us first recall the general theorem of Neyman orthogonality.
 
-\begin{theorem}\label{the:neymon_orthogonality}
-\textbf{Neymon Orthogonality: }A score function $\psi(Z; \theta, \eta)$ identifying a causal parameter $\theta$ with nuisance parameters $\eta$ is Neyman orthogonal if the derivative of the expected score with respect to the nuisance parameters, evaluated at their true values $\eta_0$, equals zero:
+\begin{theorem}\label{the:Neyman_orthogonality}
+\textbf{Neyman Orthogonality: }A score function $\psi(Z; \theta, \eta)$ identifying a causal parameter $\theta$ with nuisance parameters $\eta$ is Neyman orthogonal if the derivative of the expected score with respect to the nuisance parameters, evaluated at their true values $\eta_0$, equals zero:
 \begin{equation}
     \partial_\eta \mathbb{E}[\psi(Z; \theta_0, \eta_0)] = 0
 \end{equation}
 \end{theorem}
 
-Both AIPW and Causal Forest circumvent the inherent bias of Lasso estimation (which stems from the penalization) by their specification of the second stage, thereby eliminating transmission of bias from the first stage Lasso regularized estimation into the final estimates. Their confirmation of Neymon orthogonality is shown in the following two proofs.
+Both AIPW and Causal Forest circumvent the inherent bias of Lasso estimation (which stems from the penalization) by their specification of the second stage, thereby eliminating transmission of bias from the first stage Lasso regularized estimation into the final estimates. Their confirmation of Neyman orthogonality is shown in the following two proofs.
 
-\begin{proof}\label{proof:neymon_orthogonality_aipw}
-\textbf{AIPW (Doubly Robust Score): }Let the parameter $\theta$ be the expected potential outcome under treatment $\mathbb{E}[Y(1)]$. The nuisance parameters are $\eta = (\mu, p)$, where $\mu(W) = \mathbb{E}[Y \mid D=1, W]$ and $p(W) = \mathbb{E}[D \mid W]$.
-
-The score function is:
-
+\begin{theorem}\label{the:Neyman_orthogonality}
+\textbf{Neyman Orthogonality: } Let $Z = (Y, D, W)$ denote the full data vector. A score function $\psi(Z; \theta, \eta)$ identifying a causal parameter $\theta$ with nuisance parameters $\eta$ is Neyman orthogonal if the Gateaux derivative of the expected score with respect to the nuisance parameters, evaluated at their true values $\eta_0$, equals zero:
 \begin{equation}
-    \psi(Z; \theta, \eta) = \mu(W) + \frac{D}{p(W)}\Big(Y - \mu(W)\Big) - \theta
+    \partial_\eta \mathbb{E}[\psi(Z; \theta_0, \eta_0)] = 0
 \end{equation}
+\end{theorem}
+
+Both AIPW and the Causal Forest circumvent the inherent regularization bias of Lasso (which stems from L1 penalization) by specifying orthogonal second-stage moments. This prevents the transmission of first-stage prediction errors into the final causal estimates. Their confirmation of Neyman orthogonality is demonstrated in the following two proofs.
+
+\begin{theorem}\label{the:Neyman_orthogonality}
+\textbf{Neyman Orthogonality: } Let $Z = (Y, D, W)$ denote the full data vector. A score function $\psi(Z; \theta, \eta)$ identifying a causal parameter $\theta$ with nuisance parameters $\eta$ is Neyman orthogonal if the pathwise (Gateaux) derivative of the expected score with respect to the nuisance parameters, evaluated at their true values $\eta_0$, equals zero for all permissible perturbation directions $h$:
 
 
-Orthogonality with respect to the outcome model $\mu(W)$:
+$$\partial_r \mathbb{E}[\psi(Z; \theta_0, \eta_0 + r h)] \Big\vert{}_{r = 0} = 0$$
 
-\begin{equation}
-    \mathbb{E}\left[ \frac{\partial \psi}{\partial \mu} \right] = \mathbb{E}\left[ 1 - \frac{D}{p(W)} \right] = 1 - \mathbb{E}\left[ \frac{\mathbb{E}[D \mid W]}{p(W)} \right] = 1 - \mathbb{E}\left[ \frac{p(W)}{p(W)} \right] = 0
-\end{equation}
+
+\end{theorem}
+
+Both AIPW and the Causal Forest circumvent the inherent regularization bias of Lasso (which stems from L1 penalization) by specifying orthogonal second-stage moments. This prevents the transmission of first-stage functional prediction errors into the final causal estimates. Their confirmation of Neyman orthogonality is demonstrated in the following two proofs.
+
+\begin{proof}\label{proof:Neyman_orthogonality_aipw}
+\textbf{AIPW (Doubly Robust Score for the Treated): }Let the parameter of interest $\theta$ be the expected potential outcome under treatment $\mathbb{E}[Y(1)]$. The true nuisance functions are $\eta_0 = (\mu_{1,0}, p_0)$, where $\mu_{1,0}(W) = \mathbb{E}[Y \mid D=1, W]$ and $p_0(W) = \mathbb{E}[D \mid W]$.
+
+The score function is defined as:
+
+
+$$\psi(Z; \theta, \eta) = \mu_1(W) + \frac{D}{p(W)}\Big(Y - \mu_1(W)\Big) - \theta$$
+
+Orthogonality with respect to the outcome model $\mu_1(W)$:
+We consider a perturbed function $\mu_{1,r}(W) = \mu_{1,0}(W) + r h_\mu(W)$ and differentiate with respect to $r$ at $r=0$. Applying the Law of Iterated Expectations (LIE) conditioning on $W$:
+
+
+$$\frac{\partial}{\partial r} \mathbb{E}\left[ \mu_{1,0}(W) + r h_\mu(W) + \frac{D}{p_0(W)}\Big(Y - \mu_{1,0}(W) - r h_\mu(W)\Big) - \theta_0 \right] \Bigg\vert{}_{r=0}$$
+
+$$= \mathbb{E}\left[ h_\mu(W) - \frac{D}{p_0(W)}h_\mu(W) \right] = \mathbb{E}_W\left[ h_\mu(W) \left( 1 - \frac{\mathbb{E}[D \mid W]}{p_0(W)} \right) \right] = \mathbb{E}_W\left[ h_\mu(W) ( 1 - 1 ) \right] = 0$$
 
 Orthogonality with respect to the propensity model $p(W)$:
+We consider a perturbed function $p_r(W) = p_0(W) + r h_p(W)$ and differentiate with respect to $r$ at $r=0$. Again, applying the LIE:
 
-\begin{equation}
-    \mathbb{E}\left[ \frac{\partial \psi}{\partial p} \right] = \mathbb{E}\left[ -\frac{D}{p(W)^2}\Big(Y - \mu(W)\Big) \right]
-\end{equation}
 
-By the Law of Iterated Expectations:
+$$\frac{\partial}{\partial r} \mathbb{E}\left[ \mu_{1,0}(W) + \frac{D}{p_0(W) + r h_p(W)}\Big(Y - \mu_{1,0}(W)\Big) - \theta_0 \right] \Bigg\vert{}_{r=0}$$
 
-\begin{equation}
-    = \mathbb{E}\left[ -\frac{D}{p(W)^2} \underbrace{\mathbb{E}[Y - \mu(W) \mid D=1, W]}_{= 0 \text{ (by definition of } \mu)} \right] = 0
-\end{equation}
+$$= \mathbb{E}\left[ -\frac{D \cdot h_p(W)}{p_0(W)^2}\Big(Y - \mu_{1,0}(W)\Big) \right] = \mathbb{E}_W\left[ -\frac{h_p(W)}{p_0(W)^2} \underbrace{\mathbb{E}[D(Y - \mu_{1,0}(W)) \mid W]}_{=0} \right] = 0$$
+
 
 \end{proof}
 
-\begin{proof}\label{proof:neymon_causal_forest}
-    \textbf{Causal Forest (Robinson Transformation / R-Learner): } Let the parameter $\theta$ be the treatment effect. The nuisance parameters are $\eta = (m, p)$, where $m(W) = \mathbb{E}[Y \mid W]$ and $p(W) = \mathbb{E}[D \mid W]$.
+\begin{proof}\label{proof:Neyman_causal_forest}
+\textbf{Causal Forest (Robinson Transformation / R-Learner): } Let the parameter $\theta$ be the average treatment effect. The true nuisance functions are $\eta_0 = (m_0, p_0)$, where $m_0(W) = \mathbb{E}[Y \mid W]$ and $p_0(W) = \mathbb{E}[D \mid W]$.
 
-Using residuals $\tilde{Y} = Y - m(W)$ and $\tilde{D} = D - p(W)$, the score function for the partialled-out regression is:
+The score function for the partialled-out regression is:
 
-\begin{equation}
-    \psi(Z; \theta, \eta) = \Big( \tilde{Y} - \theta \tilde{D} \Big) \tilde{D} = \tilde{Y}\tilde{D} - \theta\tilde{D}^2
-\end{equation}
 
-Orthogonality with respect to the general outcome model $m(W)$:
+$$\psi(Z; \theta, \eta) = \Big(Y - m(W) - \theta(D - p(W))\Big)\Big(D - p(W)\Big)$$
 
-\begin{equation}
-    \mathbb{E}\left[ \frac{\partial \psi}{\partial m} \right] = \mathbb{E}[-\tilde{D}] = -\mathbb{E}[D - p(W)] = 0
-\end{equation}
+Orthogonality with respect to the marginal outcome model $m(W)$:
+Consider the perturbation $m_r(W) = m_0(W) + r h_m(W)$. Evaluating the derivative at $r=0$ and applying the LIE:
 
-(Since $\mathbb{E}[D \mid W] = p(W)$)
+
+$$\frac{\partial}{\partial r} \mathbb{E}\left[ \Big(Y - (m_0(W) + r h_m(W)) - \theta_0(D - p_0(W))\Big)\Big(D - p_0(W)\Big) \right] \Bigg\vert{}_{r=0}$$
+
+$$= \mathbb{E}\left[ -h_m(W)(D - p_0(W)) \right] = \mathbb{E}_W\left[ -h_m(W) \underbrace{\mathbb{E}[D - p_0(W) \mid W]}_{=0} \right] = 0$$
 
 Orthogonality with respect to the propensity model $p(W)$:
-Taking the derivative of $\tilde{Y}\tilde{D} - \theta\tilde{D}^2$ with respect to $p$:
+Consider the perturbation $p_r(W) = p_0(W) + r h_p(W)$. Applying the product rule for the derivative with respect to $r$ at $r=0$:
 
-\begin{equation}
-    \mathbb{E}\left[ \frac{\partial \psi}{\partial p} \right] = \mathbb{E}\left[ \tilde{Y}(-1) - 2\theta\tilde{D}(-1) \right] = \mathbb{E}[-\tilde{Y} + 2\theta\tilde{D}]
-\end{equation}
 
-Expanding the residuals:
+$$\frac{\partial}{\partial r} \mathbb{E}\left[ \Big(Y - m_0(W) - \theta_0(D - (p_0(W) + r h_p(W)))\Big)\Big(D - (p_0(W) + r h_p(W))\Big) \right] \Bigg\vert{}_{r=0}$$
 
-\begin{equation}
-    = -\underbrace{\mathbb{E}[Y - m(W)]}_{= 0} + 2\theta \underbrace{\mathbb{E}[D - p(W)]}_{= 0} = 0
-\end{equation}
+$$= \mathbb{E}\left[ \Big(\theta_0 h_p(W)\Big)\Big(D - p_0(W)\Big) + \Big(Y - m_0(W) - \theta_0(D - p_0(W))\Big)\Big(-h_p(W)\Big) \right]$$
+
+$$= \mathbb{E}\left[ h_p(W) \Big( 2\theta_0(D - p_0(W)) - (Y - m_0(W)) \Big) \right]$$
+
+$$= \mathbb{E}_W\left[ h_p(W) \Big( 2\theta_0 \underbrace{\mathbb{E}[D - p_0(W) \mid W]}_{=0} - \underbrace{\mathbb{E}[Y - m_0(W) \mid W]}_{=0} \Big) \right] = 0$$
+
+
 \end{proof}
 
 \section{Data Preparation}
 \label{sec:data_preparation}
 
-The raw panel dataset, consisting of 51 variables for x cities in x time periods, has to be adjusted for a valid estimation via double machine learning. First, minor adjustments are made by changing the categorical variable on the latitude zone into separate dummies as well as log-transforming variables that have highly skewed distributions and/or where it is economically meaningful to do so.
+The raw panel dataset, consisting of 51 variables for 183 cities in the time frame from 2008 to 2024, has to be adjusted for a valid estimation via double machine learning. First, minor adjustments are made by changing the categorical variable on the latitude zone into separate dummies as well as log-transforming variables that have highly skewed distributions and/or where it is economically meaningful to do so.
 
-For accurate estimation in a panel setting, time-invariant traits have to be controlled for. For this purpose, the dataset already includes some time-invariant covariates $X^{geographic}_i$ depicting geographic features. Additionally, I transform all time-, non-dummy features into time-invariant Mundlak devices $\bar X^{pre}_i$ by taking the within-city average over all periods before the implementation of one of the two policies. This limitation on pre-periods ensures that potential side-effects of the policies are not altering the averages. One variable that didn't change for any city in any pre-period is dropped: a dummy for signing a national climate pact.
+For accurate estimation in a panel setting, time-invariant traits have to be controlled for. For this purpose, the dataset already includes some time-invariant covariates $X^{geographic}_i$ depicting geographic features. Additionally, I transform all time-, non-dummy features into time-invariant Mundlak devices $\bar X^{pre}_i$ by taking the within-city average over all periods before the implementation of one of the two policies \citep[See][]{mundlakPoolingTimeSeries1978}. This limitation on pre-periods ensures that potential side-effects of the policies are not altering the averages. One variable that didn't change for any city in any pre-period is dropped: a dummy for signing a national climate pact. Additonally, I add year dummies in order to account for time fixed effects.
 
 \subsection*{K-means clustering}
 \label{sec:cluster}
 
-In the next step, I utilize the whole set of time-invariant covariates $X_i$ with the exception of latitude dummies in order to run k-means clustering to determine a good split of the city features into two types. The benefit of using clusters instead of raw covariates for the second stage of the estimations is \textit{1.} that it ensures that the split for the shallow tree of the causal forest is explainable and \textit{2.} to answer research question 2 not just based on single covariate differences but an overarching typology of city structure. The number of $K=2$ clusters is chosen based on the criterion of explainability as well as backed by silhouette analysis (see Figure~\ref{fig:k_means}). For the cluster determination, I standardize the $X_i$ variables to have mean 0 and a standard deviation of 1 in order to make their magnitude comparable across different metrics. The optimal clusters are found by Euclidean partitioning. First, $K=2$ centroids, i.e., specifications of all the different variables, are randomly chosen, and then the distance across all dimensions for each city to those centroids is calculated, and each city is assigned to the closer centroid. Then the centroid is adjusted to the mean for all variables that are assigned to it. Now the distances to this adjusted centroid are calculated for each city, and the process iterates forward like this until there is no further centroid adjustment.
+In the next step, I utilize the whole set of time-invariant covariates $X_i$ with the exception of latitude dummies in order to run k-means clustering to determine a good split of the city features into two types \citep[See][Ch. 12.4.1]{jamesIntroductionStatisticalLearning2023}. The benefit of using clusters instead of raw covariates for the second stage of the estimations is \textit{1.} that it ensures that the split for the shallow tree of the causal forest is explainable and \textit{2.} to answer research question 2 not just based on single covariate differences but an overarching typology of city structure. The number of $K=2$ clusters is chosen based on the criterion of explainability as well as backed by silhouette analysis (see Figure~\ref{fig:k_means}). For the cluster determination, I standardize the $X_i$ variables to have mean 0 and a standard deviation of 1 in order to make their magnitude comparable across different metrics. The optimal clusters are found by Euclidean partitioning. First, $K=2$ centroids, i.e., specifications of all the different variables, are randomly chosen, and then the distance across all dimensions for each city to those centroids is calculated, and each city is assigned to the closer centroid. Then the centroid is adjusted to the mean for all variables that are assigned to it. Now the distances to this adjusted centroid are calculated for each city, and the process iterates forward like this until there is no further centroid adjustment.
 
 Then finally, after inspecting the structural drivers amongst all the factors $X_i$ for each cluster, the typology of both groups becomes clear. \textit{Cluster 0} consists of area-wise large cities with smaller population, more petrol engine vehicles, and that has a large logistics share. \textit{Cluster 1} consists of dense, and population-wise large cities that have better public transit, more cars with Diesel and electric engines than diesel engines, and a higher share of green party votes in elections (also see Figure~\ref{fig:cluster differences} in the Appendix). Based on these criteria, I name \textit{Cluster 0} as "Sprawling Regional Hub" and \textit{Cluster 1} as "Dense Metropolis".
 
@@ -230,20 +247,34 @@ Table~\ref{tab:treatment_by_cluster} shows that these clusters both have a suffi
 \section{Results}
 \label{sec:results}
 
+For all the estimations, AIPW and Causal forest find relatively similar point estimates, indicating that, if the assumptions hold, both methods come to essentially the same estimates. However, there is a striking difference in how much uncertainty is assessed for these coefficients. AIPW is much more conservative, often keeping the null hypothesis that the coefficients are statistically not different from 0. Whereas, Causal Forest calculates much smaller standard errors and finds that most estimates are significant. I  will first answer the three research questions based on the main results in Table~\ref{tab:dml_master_results} and then discuss possible concerns surrounding the magnitude of the estimates and their significance in Section~\ref{sec:sensitivity_analysis}.
+
 \input{Tables/dml_master_results.tex}
 
-% Figure 1: The visual summary of the Global ATT for immediate impact.
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.9\textwidth]{Figures/forest_plot_att_gatt.pdf}
-    \caption{Policy Efficacy by Algorithm (95\% CI)}
-    \label{fig:forest_plot_att}
-\end{figure}
+\textbf{Research Question 1. } Congestion pricing as well as low-emission zones are estimated to have a negative effect on transport $CO_2$ emissions. Congestion Pricing is estimated to reduce emissions by 24 \% (AIPW) to 31 \% (Causal Forest). Low-Emission Zones are expected to lead to a reduction of 10 \% (AIPW) to 15 \% (Causal Forest). Yet, whether these results can be interpreted as significantly different from 0 (and not just caused by pure chance), depends entirely on which method is used. Causal Forest estimates small standard errorrs, determining that all estimates are significant to the 5 \% level. On the other hand, AIPW sees more uncertainty in its estimates, keeping the null hypothesis for CP and only finding signifance to the 10 \% level for LEZ.
+
+\textbf{Research Question 2. } Panel B in Table~\ref{tab:dml_master_results} shows separate estimations for the GATT for both clusters. Across both policies (and also their synergy), point estimates are generally larger for \textit{Cluster 1}, the Dense Metropolis type, than for \textit{Cluster 0}, Sprawling Regional Hubs. AIPW actually does not find any significant effects for sinngle policies in \textit{Cluster 1}, yet does determine the effect of congestion pricing to be significantly negative in \textit{Cluster 0}. Therefore, although point estimates may be higher in \textit{Cluster 1}, AIPW only asserts significant efficiency of the congestion pricing polciy for sprawling hubs where the effect is determined to be nearly 10 \% lower. Meanwhile Causal Forest is again much more confident about all estimates with the exception of LEZ in \textit{Cluster 0} which has a p-value of nearly 0.4.
+
+\textbf{Research Question 3. } The most startling result is definitely the coefficient for the synergy effects of implementing both CP and a LEZ simulataneously. Both AIPW and Causal Forest estimate that this combination of policies lead to a reduction of $CO_2$ in treated cities by more than 70 \%. This is a lot more than the simple addition of both policy's effects which is just 41 \% even for the larger coefficients estimated by Causal Forest. Therefore, the additional synergy effect can be determined to be around 30 \% by Causal Forest estimation and 40 \% by AIPW estimation. As established before, only \textit{Cluster 1} has a large enough sample of cities that implemented both policies to estimate this effect reliably. The effect size is approximately the same as for the ATT; which is reasonable as most cities with this treatment type are in \textit{Cluster 1}. All results on synergy effects are determined with significance to the 1 \% level, both for AIPW as well as for Causal Forest.  
 
 \section{Sensitivity Analysis}
 \label{sec:sensitivity_analysis}
 
+There are two main concerns about these results: \textit{1.} AIPW and Causal Forest disagree about the significance of the coefficients, and \textit{2.} the coefficients appear very high, especially for the synergy effects.
+
+\textit{1.} can be explained by weak overlap of propensity scores for treated and control units. Untreated units are generally assigned much lower propensity scores with many observations being found to have a probability close to 0 of implementing a policy. The median propensity score for CP is 0.31 for those observations where it was implemented compared to 0.026 for those where it was not (see Table~\ref{tab:propensity_scores} and Figure~\ref{fig:overlap_density}). Therefore, although the support region is pretty wide and both groups have relatively large retainment rates (See Table~\ref{tab:unified_common_support}). The lack of overlap causes the inverse-propensity weights in the AIPW estimation to explode, thereby increasing variance and leading to a strong estimated uncertainty around estimates. Causal Forest doesn't employ such weighting but simply runs OLS regressions in both leaves, and is therefore more confident about its estimates.
+
 \input{Tables/unified_common_support.tex}
+
+\textit{2.}, the issue of unrealistically high coefficients, is attributed to two entirely different reasons: For AIPW, weak overlap is again the driver. The inclusion of many control observations with propensity scores very close to 0 while treated units generally get a lot higher scores represents a violation of \ref{as:cond_independence}, Conditional Independence. Policy implementation is not probabilistic but highly deterministic in many cases. As observations are inverse-propensity weighted, those observations that are predicted with close to certainty to not implement a policy get a massive influence on the final estimate. As these low propensity scores are nearly exclusively concentrated in the untreated group, coefficients are overestimated by comparing treated cities mainly with untreated cities that have the lowest likelihood of implementing such climate policies. As they are predicted to have a low probability to implement these two environmental policies, it is likely that they likely to also not implement much other climate policy and have a very strong $CO_2$ output. What is estimated is therefore not just the ATT of CP or LEZ, but also a general difference between high-emitting and low-emitting cities.
+
+Causal Forest does not suffer from the weak overlap as it is not skewed by inverse-propensity weighting. The unrealistic coefficients are therefore mostly 
+
+It indicates that treated and control cities are so structurally different that comparison between them is rendered invalid. Whether lower transport $CO_2$ emissions are truly caused by the implementation of Congestion Pricing and/or Low-Emission Zones cannot reasonably be asserted as there is no similar counterpart to many cities that implemented these in the untreated group.
+
+- Issue of only 50 bootstrap iterations
+
+
 
 \input{Tables/propensity_score_summary.tex}
 
@@ -253,6 +284,17 @@ Table~\ref{tab:treatment_by_cluster} shows that these clusters both have a suffi
 \label{sec:conclusion}
 % Conclude your thesis findings here.
 % Print the bibliography
+
+- Some evidence that policies may have been effective but results to be interpreted with caution.
+
+- Interpretation of GATT difference: This result may seem reasonable; cities in \textit{Cluster 1} offer more substitutions that become attractive after CP or an LEZ is implemented. Commuters can switch to higher quality public transit, or are more willing to switch to electric vehicles as the share is already larger in the city. As the logistics industry also has a lesser role in these cities, there is less logistics  transit that would still have to continue (albeit possibly with routes outside the proclaimed zones). However, also here the significance of the results is debatable.
+
+- Point out methods benefits but that the results may be influenced by the issues
+
+
+
+- contrast with alternative of staggered DiD
+
 \printbibliography
 
 \clearpage
@@ -271,6 +313,14 @@ Table~\ref{tab:treatment_by_cluster} shows that these clusters both have a suffi
     \includegraphics[width=0.9\textwidth]{Figures/cluster_differences.pdf}
     \caption{Differences between the two clusters.}
     \label{fig:cluster differences}
+\end{figure}
+
+% Figure 1: The visual summary of the Global ATT for immediate impact.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Figures/forest_plot_att_gatt.pdf}
+    \caption{Policy Efficacy by Algorithm (95\% CI)}
+    \label{fig:forest_plot_att}
 \end{figure}
 
 \begin{figure}[htbp]

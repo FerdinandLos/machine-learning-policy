@@ -1,4 +1,4 @@
 --- LASSO (L1) OPTIMAL HYPERPARAMETERS (STRICT GROUP K-FOLD) ---
 
-Outcome Model (Lasso) Selected alpha (regularization penalty): 0.023785499471246745
+Outcome Model (Lasso) Selected alpha (regularization penalty): 0.010296174916235443
 Treatment Model (LogisticRegression L1) Selected C (inverse penalty): 0.046415888336127774

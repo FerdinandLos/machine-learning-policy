@@ -25,10 +25,17 @@ year_dummies = pd.get_dummies(df['year'], prefix='year', drop_first=True, dtype=
 df = pd.concat([df, year_dummies], axis=1)
 
 exclude_from_W = [
+    # Outcomes, Treatments, IDs
     'city_id', 'year', 'log_transport_co2', 'log_total_co2', 
     'cp_active', 'lez_active', 'cp_impl_year', 'lez_impl_year', 
     'cp_announce_year', 'lez_announce_year', 'country_id',
-    'cp_x_lez', 'policy_regime', 'industry_public', 'fleet_petrol_share'
+    'cp_x_lez', 'policy_regime', 
+    
+    # Post-Treatment Mediators & Feedback Loops (Rely on Mundlak means instead)
+    'pm25', 'fleet_diesel_share', 'fleet_electric_share', 'fleet_petrol_share',
+    'public_transit_score', 'road_km_pc', 'industry_public',
+    'logistics_activity', 'industry_logistics', 'tourism_intensity', # <-- NEW
+    'political_green', 'ngo_environment_index', 'electoral_competitiveness' # <-- NEW
 ]
 base_W_cols = [col for col in df.select_dtypes(include=[np.number]).columns if col not in exclude_from_W]
 
@@ -55,8 +62,7 @@ lasso_cv = LassoCV(cv=cv_splits, random_state=42, max_iter=10000, n_jobs=-1)
 
 # Force multinomial evaluation to get a single global penalty
 logit_cv = LogisticRegressionCV(
-    cv=cv_splits, penalty='l1', solver='saga', 
-    multi_class='multinomial', scoring='neg_log_loss', 
+    cv=cv_splits, penalty='l1', solver='saga', scoring='neg_log_loss', 
     random_state=42, max_iter=10000, n_jobs=-1
 )
 

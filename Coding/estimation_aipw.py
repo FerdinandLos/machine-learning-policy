@@ -33,10 +33,17 @@ year_dummies = pd.get_dummies(df['year'], prefix='year', drop_first=True, dtype=
 df = pd.concat([df, year_dummies], axis=1)
 
 exclude_from_W = [
+    # Outcomes, Treatments, IDs
     'city_id', 'year', 'log_transport_co2', 'log_total_co2', 
     'cp_active', 'lez_active', 'cp_impl_year', 'lez_impl_year', 
     'cp_announce_year', 'lez_announce_year', 'country_id',
-    'cp_x_lez', 'policy_regime', 'industry_public', 'fleet_petrol_share'
+    'cp_x_lez', 'policy_regime', 
+    
+    # Post-Treatment Mediators & Feedback Loops (Rely on Mundlak means instead)
+    'pm25', 'fleet_diesel_share', 'fleet_electric_share', 'fleet_petrol_share',
+    'public_transit_score', 'road_km_pc', 'industry_public',
+    'logistics_activity', 'industry_logistics', 'tourism_intensity', # <-- NEW
+    'political_green', 'ngo_environment_index', 'electoral_competitiveness' # <-- NEW
 ]
 base_W_cols = [col for col in df.select_dtypes(include=[np.number]).columns if col not in exclude_from_W]
 core_policies = ['cp_active', 'lez_active', 'cp_x_lez']
@@ -91,13 +98,31 @@ def extract_point_estimates(estimator, data_df, X_array, t_val):
     """Extracts raw causal estimates strictly for the Treated populations."""
     res = {}
     treated_mask = (data_df['policy_regime'].to_numpy() == t_val)
+    
+    # Safety Check 1: Did this bootstrap draw select ANY treated units globally?
+    if not treated_mask.any():
+        res['Global_ATT_coef'] = np.nan
+        res['GATT_Cluster_0_coef'] = np.nan
+        res['GATT_Cluster_1_coef'] = np.nan
+        return res
+
     res['Global_ATT_coef'] = np.atleast_1d(estimator.ate(X=X_array[treated_mask], T0=0, T1=t_val))[0]
 
     c0_mask = (data_df['cluster_id'].to_numpy() == 0)
     c1_mask = (data_df['cluster_id'].to_numpy() == 1)
 
-    res['GATT_Cluster_0_coef'] = np.atleast_1d(estimator.ate(X=X_array[treated_mask & c0_mask], T0=0, T1=t_val))[0]
-    res['GATT_Cluster_1_coef'] = np.atleast_1d(estimator.ate(X=X_array[treated_mask & c1_mask], T0=0, T1=t_val))[0]
+    # Safety Check 2: Are there treated units in Cluster 0?
+    if (treated_mask & c0_mask).any():
+        res['GATT_Cluster_0_coef'] = np.atleast_1d(estimator.ate(X=X_array[treated_mask & c0_mask], T0=0, T1=t_val))[0]
+    else:
+        res['GATT_Cluster_0_coef'] = np.nan
+
+    # Safety Check 3: Are there treated units in Cluster 1?
+    if (treated_mask & c1_mask).any():
+        res['GATT_Cluster_1_coef'] = np.atleast_1d(estimator.ate(X=X_array[treated_mask & c1_mask], T0=0, T1=t_val))[0]
+    else:
+        res['GATT_Cluster_1_coef'] = np.nan
+        
     return res
 
 def fit_and_extract(model_name, ml_dict, current_df, W_cols):
