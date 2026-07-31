@@ -1,0 +1,24 @@
+\begin{table}[htbp]
+\centering
+\caption{Propensity Score Distributions Across All Policy Regimes}
+\label{tab:propensity_scores_all}
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{2}{c}{Congestion Pricing} & \multicolumn{2}{c}{Low Emission Zone} & \multicolumn{2}{c}{Synergy (CP $\times$ LEZ)} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
+Statistic & Treated & Untreated & Treated & Untreated & Treated & Untreated \\
+\midrule
+Observations (N) & 380 & 2731 & 311 & 2800 & 281 & 2830 \\
+Mean & 0.408 & 0.074 & 0.375 & 0.071 & 0.762 & 0.021 \\
+Std. Dev. & 0.253 & 0.123 & 0.246 & 0.122 & 0.142 & 0.081 \\
+Minimum & 0.004 & 0.000 & 0.016 & 0.000 & 0.186 & 0.000 \\
+25th Pctl. & 0.186 & 0.004 & 0.163 & 0.004 & 0.680 & 0.000 \\
+Median & 0.367 & 0.022 & 0.335 & 0.021 & 0.778 & 0.001 \\
+75th Pctl. & 0.605 & 0.083 & 0.558 & 0.085 & 0.870 & 0.006 \\
+Maximum & 0.921 & 0.794 & 0.974 & 0.914 & 0.994 & 0.940 \\
+\bottomrule
+\end{tabular}
+
+\vspace{1ex}
+{\raggedright \footnotesize \textit{Notes:} Table displays the descriptive statistics of the estimated propensity scores prior to overlap trimming. ``Untreated'' refers strictly to baseline ($D=0$) units. See Table \ref{tab:unified_common_support} for policy-specific common support bounds and sample retention rates.\par}
+\end{table}

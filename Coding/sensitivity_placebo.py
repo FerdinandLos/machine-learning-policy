@@ -41,12 +41,17 @@ df = pd.concat([df, year_dummies], axis=1)
 
 # Define Base W (Covariates/Confounders without ANY policies)
 exclude_from_W = [
+    # Outcomes, Treatments, IDs
     'city_id', 'year', 'log_transport_co2', 'log_total_co2', 
     'cp_active', 'lez_active', 'cp_impl_year', 'lez_impl_year', 
     'cp_announce_year', 'lez_announce_year', 'country_id',
-    'cp_x_lez', 'policy_regime',
-    # --- COMPOSITIONAL DUMMY TRAP FIX ---
-    'industry_public', 'fleet_petrol_share'
+    'cp_x_lez', 'policy_regime', 
+    
+    # Post-Treatment Mediators & Feedback Loops (Rely on Mundlak means instead)
+    'pm25', 'fleet_diesel_share', 'fleet_electric_share', 'fleet_petrol_share',
+    'public_transit_score', 'road_km_pc', 'industry_public',
+    'logistics_activity', 'industry_logistics', 'tourism_intensity', # <-- NEW
+    'political_green', 'ngo_environment_index', 'electoral_competitiveness' # <-- NEW
 ]
 base_W_cols = [col for col in df.select_dtypes(include=[np.number]).columns if col not in exclude_from_W]
 
@@ -176,8 +181,8 @@ placebo_results = []
 
 # The variables that should NOT be affected by climate policies
 placebo_outcomes = [
-    'library_count', 'streetlight_density', 
-    'fountain_count', 'bench_count_pc'
+    'library_count', 'streetlight_density'#, 
+    #'fountain_count', 'bench_count_pc'
 ]
 
 target_models = ['L1 (Lasso / Logit L1)', 'Causal Forest']

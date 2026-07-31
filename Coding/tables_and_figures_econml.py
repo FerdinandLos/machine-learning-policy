@@ -289,65 +289,90 @@ print("="*70 + "\n")
 # ---------------------------------------------------------
 # Export Compact LaTeX Table: Propensity Score Distribution
 # ---------------------------------------------------------
-print("Exporting Compact Propensity Score Summary Table to LaTeX...")
+print("Exporting Comprehensive Propensity Score Summary Table to LaTeX...")
 
-# 1. Filter to only the essential rows and map clean names
-rows_to_keep = ['count', 'mean', 'std', 'min', '50%', 'max']
-ps_summary_compact = ps_summary.loc[rows_to_keep].copy()
+# 1. Define treatments matching exact column names in the CSV
+treatments = {
+    'CP': ('is_cp_only', 'propensity_score_cp_only'),
+    'LEZ': ('is_lez_only', 'propensity_score_lez_only'),
+    'Synergy': ('is_synergy', 'propensity_score_synergy')
+}
 
+# Add the 25% and 75% quartiles to the rows we want to extract
+rows_to_keep = ['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']
 index_mapping = {
     'count': 'Observations (N)',
     'mean': 'Mean',
     'std': 'Std. Dev.',
     'min': 'Minimum',
+    '25%': '25th Pctl.',
     '50%': 'Median',
+    '75%': '75th Pctl.',
     'max': 'Maximum'
 }
-ps_summary_compact = ps_summary_compact.rename(index=index_mapping)
 
-# 2. Calculate percentages for the footnote
-treated_pct = n_treated_in_range.mean() * 100
-control_pct = n_control_in_range.mean() * 100
+# 2. Iterate through policies and compile the summary statistics
+summary_dfs = []
+for short_name, (treat_col, ps_col) in treatments.items():
+    if treat_col in ps_df.columns and ps_col in ps_df.columns:
+        # Calculate stats for treated and untreated separately
+        treated_ps = ps_df.loc[ps_df[treat_col] == 1, ps_col].describe()
+        control_ps = ps_df.loc[ps_df[treat_col] == 0, ps_col].describe()
+        
+        # Combine into a temporary dataframe
+        mini_df = pd.DataFrame({
+            f"{short_name}_T": treated_ps,
+            f"{short_name}_U": control_ps
+        }).loc[rows_to_keep]
+        summary_dfs.append(mini_df)
+
+# Concatenate all policies horizontally into one master dataframe
+ps_summary_all = pd.concat(summary_dfs, axis=1)
+ps_summary_all = ps_summary_all.rename(index=index_mapping)
 
 # 3. Build manual LaTeX lines
 latex_lines = []
 latex_lines.append(r"\begin{table}[htbp]")
 latex_lines.append(r"\centering")
-latex_lines.append(r"\caption{Propensity Score Distribution and Common Support (Congestion Pricing)}")
-latex_lines.append(r"\label{tab:propensity_scores}")
-latex_lines.append(r"\begin{tabular}{lcc}")
+latex_lines.append(r"\caption{Propensity Score Distributions Across All Policy Regimes}")
+latex_lines.append(r"\label{tab:propensity_scores_all}")
+
+# Generate column format dynamically (1 left-aligned for stats + 6 centered for data)
+latex_lines.append(r"\begin{tabular}{lcccccc}")
 latex_lines.append(r"\toprule")
-latex_lines.append(r"Statistic & Treated (CP Only) & Untreated \\")
+
+# Top header with multicolumn spans grouping the Treated/Untreated by policy
+latex_lines.append(r"& \multicolumn{2}{c}{Congestion Pricing} & \multicolumn{2}{c}{Low Emission Zone} & \multicolumn{2}{c}{Synergy (CP $\times$ LEZ)} \\")
+latex_lines.append(r"\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}")
+latex_lines.append(r"Statistic & Treated & Untreated & Treated & Untreated & Treated & Untreated \\")
 latex_lines.append(r"\midrule")
 
 # Populate data rows
-for index, row in ps_summary_compact.iterrows():
-    if 'Observations' in index:
-        val1 = f"{int(row['Treated (CP Only)'])}"
-        val2 = f"{int(row['Untreated'])}"
-    else:
-        val1 = f"{row['Treated (CP Only)']:.3f}"
-        val2 = f"{row['Untreated']:.3f}"
-    
-    latex_lines.append(f"{index} & {val1} & {val2} \\\\")
+for index, row in ps_summary_all.iterrows():
+    row_str = f"{index}"
+    for col_name in ps_summary_all.columns:
+        val = row[col_name]
+        if 'Observations' in index:
+            row_str += f" & {int(val)}"
+        else:
+            row_str += f" & {val:.3f}"
+    row_str += r" \\"
+    latex_lines.append(row_str)
 
 latex_lines.append(r"\bottomrule")
 latex_lines.append(r"\end{tabular}")
 
-# 4. Add the overlap metrics as a formatted footnote
+# 4. Add the formatted footnote referencing the support table
 latex_lines.append(r"") 
 latex_lines.append(r"\vspace{1ex}")
-latex_lines.append(r"{\raggedright \footnotesize \textit{Notes:} The common support region is strictly defined as $[%.4f, %.4f]$. " % (overlap_min, overlap_max))
-latex_lines.append(r"Within this bounded interval, the analysis retains %d treated units (%.1f\%%) and %d untreated units (%.1f\%%).\par}" % (
-    n_treated_in_range.sum(), treated_pct, n_control_in_range.sum(), control_pct
-))
+latex_lines.append(r"{\raggedright \footnotesize \textit{Notes:} Table displays the descriptive statistics of the estimated propensity scores prior to overlap trimming. ``Untreated'' refers strictly to baseline ($D=0$) units. See Table \ref{tab:unified_common_support} for policy-specific common support bounds and sample retention rates.\par}")
 latex_lines.append(r"\end{table}")
 
 # 5. Save file to disk
-with open(tables_dir / 'propensity_score_summary.tex', 'w') as f:
+with open(tables_dir / 'propensity_score_summary_all.tex', 'w') as f:
     f.write("\n".join(latex_lines) + "\n")
 
-print("Success: compact propensity_score_summary.tex saved.")
+print("Success: propensity_score_summary_all.tex saved.")
 
 # ---------------------------------------------------------
 # Export LaTeX Table: Unified Common Support Across All Policies

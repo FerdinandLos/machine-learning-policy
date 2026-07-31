@@ -1,6 +1,6 @@
-PWD d:\Study Projects\Machine Learning\machine-learning-policy\Writing
+PWD c:\Users\ferdi\Documents\Study Projects\Machine Learning\machine-learning-policy\Writing
 INPUT C:\Users\ferdi\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT d:\Study Projects\Machine Learning\machine-learning-policy\Writing\Loser_Ferdinand_12400460.tex
+INPUT c:\Users\ferdi\Documents\Study Projects\Machine Learning\machine-learning-policy\Writing\Loser_Ferdinand_12400460.tex
 OUTPUT Loser_Ferdinand_12400460.log
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls
 INPUT C:\Users\ferdi\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls
@@ -277,9 +277,9 @@ INPUT Tables\dml_master_results.tex
 INPUT .\Tables\unified_common_support.tex
 INPUT .\Tables\unified_common_support.tex
 INPUT Tables\unified_common_support.tex
-INPUT .\Tables\propensity_score_summary.tex
-INPUT .\Tables\propensity_score_summary.tex
-INPUT Tables\propensity_score_summary.tex
+INPUT .\Tables\propensity_score_summary_all.tex
+INPUT .\Tables\propensity_score_summary_all.tex
+INPUT Tables\propensity_score_summary_all.tex
 INPUT .\Tables\appendix_placebo_tests.tex
 INPUT .\Tables\appendix_placebo_tests.tex
 INPUT Tables\appendix_placebo_tests.tex

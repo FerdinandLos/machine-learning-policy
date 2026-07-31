@@ -260,6 +260,8 @@ For all the estimations, AIPW and Causal forest find relatively similar point es
 \section{Sensitivity Analysis}
 \label{sec:sensitivity_analysis}
 
+To investigate whether the results are robust estimations of the true causal effect of policy implementation, it is important to check whether the comparison of treated and untreated cities is valid. For this, one can look at the distribution of propensity scores and how 
+
 There are two main concerns about these results: \textit{1.} AIPW and Causal Forest disagree about the significance of the coefficients, and \textit{2.} the coefficients appear very high, especially for the synergy effects.
 
 \textit{1.} can be explained by weak overlap of propensity scores for treated and control units. Untreated units are generally assigned much lower propensity scores with many observations being found to have a probability close to 0 of implementing a policy. The median propensity score for CP is 0.31 for those observations where it was implemented compared to 0.026 for those where it was not (see Table~\ref{tab:propensity_scores} and Figure~\ref{fig:overlap_density}). Therefore, although the support region is pretty wide and both groups have relatively large retainment rates (See Table~\ref{tab:unified_common_support}). The lack of overlap causes the inverse-propensity weights in the AIPW estimation to explode, thereby increasing variance and leading to a strong estimated uncertainty around estimates. Causal Forest doesn't employ such weighting but simply runs OLS regressions in both leaves, and is therefore more confident about its estimates.
@@ -276,7 +278,7 @@ It indicates that treated and control cities are so structurally different that 
 
 
 
-\input{Tables/propensity_score_summary.tex}
+\input{Tables/propensity_score_summary_all.tex}
 
 \input{Tables/appendix_placebo_tests.tex}
 
