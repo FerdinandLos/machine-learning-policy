@@ -80,14 +80,14 @@ def get_row_vals(pol, prefix):
 latex_lines = []
 latex_lines.append(r"\begin{table}[htbp]")
 latex_lines.append(r"\centering")
-latex_lines.append(r"\caption{Double Machine Learning Estimates of Urban Climate Policies (Categorical Regime)}")
+latex_lines.append(r"\caption{Estimates of Policy Effect on $Y=$ \textit{Transport $CO_2$ emissions}}")
 latex_lines.append(r"\label{tab:dml_master_results}")
 latex_lines.append(r"\begin{tabular}{lcc}")
 latex_lines.append(r"\toprule")
 latex_lines.append(r"Policy & (1) AIPW & (2) Causal Forest \\")
 latex_lines.append(r"\midrule")
 
-# Panel B
+# Panel A (Keeps Synergy)
 latex_lines.append(r"\addlinespace")
 latex_lines.append(r"\multicolumn{3}{l}{\textbf{Panel A: Average Treatment Effect on the Treated (ATT)}} \\")
 for pol, clean_name in policy_map.items():
@@ -99,11 +99,15 @@ latex_lines.append(r"\addlinespace")
 latex_lines.append(r"\multicolumn{3}{l}{\textbf{Panel B: Group ATT (Heterogeneity by City Type)}} \\")
 latex_lines.append(r"\multicolumn{3}{l}{\textit{Cluster 1: Dense Metropolis}} \\")
 for pol, clean_name in policy_map.items():
+    if pol == 'cp_x_lez':  # Skip Synergy for Cluster 1
+        continue
     v = get_row_vals(pol, 'GATT_Cluster_1')
     latex_lines.append(f"\\hspace{{4mm}} {clean_name} & {v[0]} & {v[1]} \\\\")
 
-latex_lines.append(r"\multicolumn{3}{l}{\textit{Cluster 0: Sprawling Cities}} \\")
+latex_lines.append(r"\multicolumn{3}{l}{\textit{Cluster 0: Sprawling Regional Hub}} \\")
 for pol, clean_name in policy_map.items():
+    if pol == 'cp_x_lez':  # Skip Synergy for Cluster 0
+        continue
     v = get_row_vals(pol, 'GATT_Cluster_0')
     latex_lines.append(f"\\hspace{{4mm}} {clean_name} & {v[0]} & {v[1]} \\\\")
 

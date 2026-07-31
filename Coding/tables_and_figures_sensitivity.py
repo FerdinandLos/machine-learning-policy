@@ -156,39 +156,73 @@ with open(tables_dir / 'appendix_placebo_tests.tex', 'w') as f:
 print("Success: appendix_placebo_tests.tex saved with vertical panel stacking.")
 
 # ---------------------------------------------------------
-# 3. Figure: Sensitivity to Overlap Trimming
+# 3. Figure: Sensitivity to Overlap Trimming (with 95% CIs)
 # ---------------------------------------------------------
-print("Generating Overlap Trimming Sensitivity Plot...")
+print("Generating Overlap Trimming Sensitivity Plot with Confidence Intervals...")
 
-# Safety Filter: Ensure we only plot Lasso, as Causal Forests do not use IPW trimming
+from scipy.stats import norm
+import numpy as np
+
+# 1. Load the main estimation results to get the 0.01 threshold baseline
+main_results_path = results_dir / 'dml_robustness_results_aipw.csv'
+main_df = pd.read_csv(main_results_path)
+
+# Filter strictly for the Lasso/AIPW model
+main_l1 = main_df[main_df['Model'] == 'L1 (Lasso / Logit L1)'].copy()
+
+# Add the explicit trimming threshold used in the main script
+main_l1['Trim_Threshold'] = 0.01
+
+# 2. Safety Filter for the sensitivity dataframe
 if 'Model' in overlap_df.columns:
     overlap_df = overlap_df[overlap_df['Model'] == 'L1 (Lasso / Logit L1)']
 
+# 3. Merge the main 0.01 estimates into the sensitivity dataframe
+combined_df = pd.concat([overlap_df, main_l1], ignore_index=True)
+combined_df['Trim_Threshold'] = pd.to_numeric(combined_df['Trim_Threshold'])
+
+# --- NEW: Reverse-Engineer Standard Errors from p-values ---
+# Clip the p-value to avoid division by zero in the rare case where p is exactly 1.0
+clipped_pval = np.clip(combined_df['Global_ATT_pval'], 1e-10, 0.99999)
+
+# Calculate the Z-statistic and derive the Standard Error
+combined_df['z_stat'] = np.abs(norm.ppf(clipped_pval / 2))
+combined_df['se'] = np.abs(combined_df['Global_ATT_coef']) / combined_df['z_stat']
+
+# Calculate the 95% Confidence Interval margin (+/- 1.96 * SE)
+combined_df['ci_margin'] = 1.96 * combined_df['se']
+
+# 4. Global Plot Styling
 sns.set_theme(style="whitegrid", palette="muted")
 plt.rcParams.update({'font.size': 12, 'font.family': 'serif'})
 
-fig, ax = plt.subplots(figsize=(9, 6))
+fig, ax = plt.subplots(figsize=(10, 6))
 
 colors = {'cp_active': '#d95f02', 'lez_active': '#7570b3', 'cp_x_lez': '#1b9e77'}
 markers = {'cp_active': 'o', 'lez_active': 's', 'cp_x_lez': '^'}
 
 for policy_key, policy_label in policy_map.items():
-    subset = overlap_df[overlap_df['Policy'] == policy_key].sort_values('Trim_Threshold')
+    # Sort mathematically first to ensure 0.01 lands right between 0.005 and 0.05
+    subset = combined_df[combined_df['Policy'] == policy_key].sort_values('Trim_Threshold')
     
     # We plot the Threshold as a string/categorical so the x-axis spacing is even
     x_vals = subset['Trim_Threshold'].astype(str)
     
-    ax.plot(x_vals, subset['Global_ATT_coef'], marker=markers[policy_key], 
-            linewidth=2, markersize=8, color=colors[policy_key], label=policy_label)
+    # Replace standard plot with errorbar to include 95% CI bands
+    ax.errorbar(x_vals, subset['Global_ATT_coef'], yerr=subset['ci_margin'], 
+                fmt=markers[policy_key] + '-', # Line with marker
+                linewidth=2, markersize=8, 
+                capsize=5, capthick=1.5, elinewidth=1.5, # Cap styling for the error bars
+                color=colors[policy_key], label=policy_label, alpha=0.9)
 
 ax.axhline(0, color='black', linestyle='--', linewidth=1.5)
 
 ax.set_xlabel("Propensity Score Trimming Threshold (min_propensity)", labelpad=10)
-ax.set_ylabel("Global ATT Estimate (Log Transport CO2)", labelpad=10)
+ax.set_ylabel("Global ATT Estimate (Log Transport $CO_2$)", labelpad=10)
 ax.legend(title="Policy Regime", loc="best")
 
 plt.tight_layout()
 fig.savefig(figures_dir / 'appendix_overlap_sensitivity.pdf', format='pdf', bbox_inches='tight')
 plt.close()
 
-print(f"Success: Sensitivity figures generated and saved to {figures_dir}")
+print(f"Success: Sensitivity figures with 95% CIs generated and saved to {figures_dir}")

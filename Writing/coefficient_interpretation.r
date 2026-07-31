@@ -1,6 +1,6 @@
-beta_1aipw <- -0.27
+beta_1aipw <- -0.33
 exact_pct_change_1aipw <- (exp(beta_1aipw) - 1) * 100
-beta_1cf <- -0.37
+beta_1cf <- -0.38
 exact_pct_change_1cf <- (exp(beta_1cf) - 1) * 100
 print("CP_aipw=")
 print(exact_pct_change_1aipw)
@@ -9,7 +9,7 @@ print(exact_pct_change_1cf)
 
 beta_2aipw <- -0.11
 exact_pct_change_2aipw <- (exp(beta_2aipw) - 1) * 100
-beta_2cf <- -0.16
+beta_2cf <- -0.2
 exact_pct_change_2cf <- (exp(beta_2cf) - 1) * 100
 print("LEZ_aipw=")
 print(exact_pct_change_2aipw)
@@ -25,7 +25,29 @@ print(exact_pct_change_comb_aipw)
 print("Comb_cp=")
 print(exact_pct_change_comb_cf)
 
-beta_3 <- -1.25
-exact_pct_change_3 <- (exp(beta_3) - 1) * 100
-print("Synergy=")
-print(exact_pct_change_3)
+beta_3aipw <- -1.32
+exact_pct_change_3aipw <- (exp(beta_3aipw) - 1) * 100
+beta_3cf <- -1.75
+exact_pct_change_3cf <- (exp(beta_3cf) - 1) * 100
+print("Synergy_aipw=")
+print(exact_pct_change_3aipw)
+print("Synergy_cf=")
+print(exact_pct_change_3cf)
+
+beta_g1aipw <- -0.38
+exact_pct_change_g1aipw <- (exp(beta_g1aipw) - 1) * 100
+beta_g1cf <- -0.68
+exact_pct_change_g1cf <- (exp(beta_g1cf) - 1) * 100
+print("g1_aipw=")
+print(exact_pct_change_g1aipw)
+print("g1_cf=")
+print(exact_pct_change_g1cf)
+
+beta_g0aipw <- -0.34
+exact_pct_change_g0aipw <- (exp(beta_g0aipw) - 1) * 100
+beta_g0cf <- -0.4
+exact_pct_change_g0cf <- (exp(beta_g0cf) - 1) * 100
+print("g0_aipw=")
+print(exact_pct_change_g0aipw)
+print("g0_cf=")
+print(exact_pct_change_g0cf)
