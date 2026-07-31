@@ -8,12 +8,11 @@ scripts = [
     'data_cleaning.py', 
     'find_optimal_hyperparameters.py', 
     'estimation_aipw.py',
-    'propensity_score_check.py'
-    'propensity_score_check.py', 
-    'sensitivity_placebo.py', 
-    'sensitivity_overlap.py', 
+    #'propensity_score_check.py', 
+    #'sensitivity_placebo.py', 
+    #'sensitivity_overlap.py', 
     'tables_and_figures_econml.py', 
-    'tables_and_figures_sensitivity.py'
+    #'tables_and_figures_sensitivity.py'
 ]
 
 for script in scripts:

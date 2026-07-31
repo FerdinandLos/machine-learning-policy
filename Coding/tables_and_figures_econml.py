@@ -365,7 +365,7 @@ latex_lines.append(r"\end{tabular}")
 # 4. Add the formatted footnote referencing the support table
 latex_lines.append(r"") 
 latex_lines.append(r"\vspace{1ex}")
-latex_lines.append(r"{\raggedright \footnotesize \textit{Notes:} Table displays the descriptive statistics of the estimated propensity scores prior to overlap trimming. ``Untreated'' refers strictly to baseline ($D=0$) units. See Table \ref{tab:unified_common_support} for policy-specific common support bounds and sample retention rates.\par}")
+latex_lines.append(r"{\raggedright \footnotesize \textit{Notes:} Table displays the descriptive statistics of the estimated propensity scores prior to overlap trimming. ``Untreated'' refers strictly to baseline ($D=0$) units.\par}")
 latex_lines.append(r"\end{table}")
 
 # 5. Save file to disk

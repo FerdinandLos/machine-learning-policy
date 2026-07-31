@@ -16,6 +16,27 @@
 \usepackage{subcaption}
 \usepackage[colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 
+% Make it fit 10 pages
+\usepackage{fullpage} % Slightly reduces standard 1-inch margins
+\linespread{0.98} % Reduces line spacing by a virtually unnoticeable 2%
+\setlength{\parskip}{0pt plus 1pt} % Minimizes spacing between paragraphs
+\setlength{\parsep}{0pt} % Reduces internal paragraph spacing
+\usepackage{enumitem}
+\let\oldbibliography\bibliography
+\renewcommand{\bibliography}[1]{
+  \setlength{\itemsep}{0pt} % Removes spacing between references
+  \setlength{\parsep}{0pt}
+  \oldbibliography{#1}
+}
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{12pt plus 2pt minus 2pt}{6pt plus 2pt}
+\titlespacing*{\subsection}{0pt}{10pt plus 2pt minus 2pt}{4pt plus 2pt}
+\setlength{\textfloatsep}{10pt plus 2pt minus 4pt} % Space between top/bottom floats and text
+\setlength{\floatsep}{8pt plus 2pt minus 2pt} % Space between two floats
+\setlength{\intextsep}{8pt plus 2pt minus 2pt} % Space for in-text floats
+
+
+
 % Package to format assumptions
 \usepackage{amsthm}
 \usepackage{thmtools}
@@ -31,8 +52,21 @@
 \declaretheorem[name=Definition]{definition}
 
 % BibLaTeX setup for Zotero Better BibLaTeX
-\usepackage[style=authoryear, backend=biber, natbib=true, maxcitenames=2]{biblatex}
+\usepackage[
+  style=authoryear, 
+  backend=biber, 
+  natbib=true, 
+  maxcitenames=2,
+  isbn=false,   % Hides ISSN and ISBN fields
+  doi=false,    % Hides DOI fields
+  url=false,    % Hides URL fields
+  urldate=comp, % Hides "visited on" date fields
+  eprint=false  % Hides Google Books, JSTOR, arXiv, and other eprint IDs
+]{biblatex}
 \addbibresource{DML_Policy_Project.bib}
+
+% Option A: Global fix for biblatex font size (Put this in the preamble)
+\renewcommand*{\bibfont}{\footnotesize} 
 
 % Change formatting to fit policy report style:
 \renewcommand{\abstractname}{Executive Summary}
@@ -139,7 +173,7 @@ Both of these LASSO regressions are fit with the whole set $W_{it} = X_{it} + X_
 
 Both methods rely on Neyman orthogonality as proof for their unbiasedness. Let us first recall the general theorem of Neyman orthogonality.
 
-\begin{theorem}\label{the:Neyman_orthogonality}
+\begin{theorem}\label{the:Neyman_orthogonality_general}
 \textbf{Neyman Orthogonality: }A score function $\psi(Z; \theta, \eta)$ identifying a causal parameter $\theta$ with nuisance parameters $\eta$ is Neyman orthogonal if the derivative of the expected score with respect to the nuisance parameters, evaluated at their true values $\eta_0$, equals zero:
 \begin{equation}
     \partial_\eta \mathbb{E}[\psi(Z; \theta_0, \eta_0)] = 0
@@ -148,7 +182,7 @@ Both methods rely on Neyman orthogonality as proof for their unbiasedness. Let u
 
 Both AIPW and Causal Forest circumvent the inherent bias of Lasso estimation (which stems from the penalization) by their specification of the second stage, thereby eliminating transmission of bias from the first stage Lasso regularized estimation into the final estimates. Their confirmation of Neyman orthogonality is shown in the following two proofs.
 
-\begin{theorem}\label{the:Neyman_orthogonality}
+\begin{theorem}\label{the:Neyman_orthogonality_gateaux}
 \textbf{Neyman Orthogonality: } Let $Z = (Y, D, W)$ denote the full data vector. A score function $\psi(Z; \theta, \eta)$ identifying a causal parameter $\theta$ with nuisance parameters $\eta$ is Neyman orthogonal if the Gateaux derivative of the expected score with respect to the nuisance parameters, evaluated at their true values $\eta_0$, equals zero:
 \begin{equation}
     \partial_\eta \mathbb{E}[\psi(Z; \theta_0, \eta_0)] = 0
@@ -157,7 +191,7 @@ Both AIPW and Causal Forest circumvent the inherent bias of Lasso estimation (wh
 
 Both AIPW and the Causal Forest circumvent the inherent regularization bias of Lasso (which stems from L1 penalization) by specifying orthogonal second-stage moments. This prevents the transmission of first-stage prediction errors into the final causal estimates. Their confirmation of Neyman orthogonality is demonstrated in the following two proofs.
 
-\begin{theorem}\label{the:Neyman_orthogonality}
+\begin{theorem}\label{the:Neyman_orthogonality_pathwise}
 \textbf{Neyman Orthogonality: } Let $Z = (Y, D, W)$ denote the full data vector. A score function $\psi(Z; \theta, \eta)$ identifying a causal parameter $\theta$ with nuisance parameters $\eta$ is Neyman orthogonal if the pathwise (Gateaux) derivative of the expected score with respect to the nuisance parameters, evaluated at their true values $\eta_0$, equals zero for all permissible perturbation directions $h$:
 
 
@@ -260,23 +294,11 @@ For all the estimations, AIPW and Causal forest find relatively similar point es
 \section{Sensitivity Analysis}
 \label{sec:sensitivity_analysis}
 
-To investigate whether the results are robust estimations of the true causal effect of policy implementation, it is important to check whether the comparison of treated and untreated cities is valid. For this, one can look at the distribution of propensity scores and how 
+To investigate whether the results are robust estimations of the true causal effect of policy implementation, it is important to check whether the comparison of treated and untreated cities is valid. For this, one can look at the distribution of propensity scores to determine whether the implementation of the policy is highly determenistic or whether many untreated observations are also predicted to have a large probability of implementing a policy. Table~\ref{tab:unified_common_support} shows the common support region and retainment rates, i.e. the range of propensity scores that are existent in both treatment and control group and how many observations had to be excluded because they are outside of this range. Congestion Pricing has the best common support as more than 90\% of observations with CP implementation and more than 75\% untreated observations fall within the region showing that the policy is not too strongly predicted as well as keeping a large enough sample for estimation. Nevertheless, even for this policy regime, the distribution of propensity scores diverges strongly between the two groups (See Table~\ref{tab:propensity_scores_all} and Figure~\ref{fig:overlap_density} in the Appendix). Low-Emission Zones also still have decent coverage with nearly all treated observations and more than half of the untreated sample being kept for estimation. The overlap for both is not optimal but decent enough for the estimation. However, for the synergy of both CP and LEZ common support is strictly violated. As a rare occurrence with in total only 28 cities, the propensity score distribution reveals that there is strong selection into this policy, making it strongly determined by previous city-specific factors. While the propensity score for treated observations is already 19\% in the minimum and even 68\% in just the 25th percentile, untreated units are strongly concentrated at propensity scores of 0. Therefore, only 3.6\% of untreated observations can even be retained in the estimation. This constitutes a violation of Assumption~\ref{as:overlap} (Weak Overlap), thereby rendering the results unreliable. Inference of possible synergetic effects is therefore invalid. On the other hand, the overlap for Congestion Pricing and Low-Emission Zones is solid enough as the coefficients also remain stable when increasing the trimming in AIPW, i.e. the exclusion of observations with propensity scores to close to 1 or 0 in order to protect the weighting. Across trimming rates of 0.01 (baseline result value), 0.05, and 0.1, the coefficients remain largely the same; albeit a small reduction in the coefficient for LEZ renders it just outside the bounds of the 5\% significance level (See Figure~\ref{fig:appendix_overlap_sensitivity}).
 
-There are two main concerns about these results: \textit{1.} AIPW and Causal Forest disagree about the significance of the coefficients, and \textit{2.} the coefficients appear very high, especially for the synergy effects.
-
-\textit{1.} can be explained by weak overlap of propensity scores for treated and control units. Untreated units are generally assigned much lower propensity scores with many observations being found to have a probability close to 0 of implementing a policy. The median propensity score for CP is 0.31 for those observations where it was implemented compared to 0.026 for those where it was not (see Table~\ref{tab:propensity_scores} and Figure~\ref{fig:overlap_density}). Therefore, although the support region is pretty wide and both groups have relatively large retainment rates (See Table~\ref{tab:unified_common_support}). The lack of overlap causes the inverse-propensity weights in the AIPW estimation to explode, thereby increasing variance and leading to a strong estimated uncertainty around estimates. Causal Forest doesn't employ such weighting but simply runs OLS regressions in both leaves, and is therefore more confident about its estimates.
+As an additional sensitivity test, I conduct placebo estimations for the variables "Number of Libraries" and "Streetlight Density", two factors that should be unrelated to any of the two policies. Table~\ref{tab:placebo_tests} (in the Appendix) confirms that all coefficients are estimated to be statistically insignificant, giving a good indication that AIPW and Causal Forest do not inhabit hidden flaws.
 
 \input{Tables/unified_common_support.tex}
-
-\textit{2.}, the issue of unrealistically high coefficients, is attributed to two entirely different reasons: For AIPW, weak overlap is again the driver. The inclusion of many control observations with propensity scores very close to 0 while treated units generally get a lot higher scores represents a violation of \ref{as:cond_independence}, Conditional Independence. Policy implementation is not probabilistic but highly deterministic in many cases. As observations are inverse-propensity weighted, those observations that are predicted with close to certainty to not implement a policy get a massive influence on the final estimate. As these low propensity scores are nearly exclusively concentrated in the untreated group, coefficients are overestimated by comparing treated cities mainly with untreated cities that have the lowest likelihood of implementing such climate policies. As they are predicted to have a low probability to implement these two environmental policies, it is likely that they likely to also not implement much other climate policy and have a very strong $CO_2$ output. What is estimated is therefore not just the ATT of CP or LEZ, but also a general difference between high-emitting and low-emitting cities.
-
-Causal Forest does not suffer from the weak overlap as it is not skewed by inverse-propensity weighting. The unrealistic coefficients are therefore mostly 
-
-It indicates that treated and control cities are so structurally different that comparison between them is rendered invalid. Whether lower transport $CO_2$ emissions are truly caused by the implementation of Congestion Pricing and/or Low-Emission Zones cannot reasonably be asserted as there is no similar counterpart to many cities that implemented these in the untreated group.
-
-- Issue of only 50 bootstrap iterations
-
-
 
 \input{Tables/propensity_score_summary_all.tex}
 
@@ -293,7 +315,7 @@ It indicates that treated and control cities are so structurally different that 
 
 - Point out methods benefits but that the results may be influenced by the issues
 
-
+The approach chosen in this study, DML with AIPW and Causal Forest estimation, relies on the assumption that conditioning on the large set $W_it$ of contemporaneous controls, Mundlak devices as well as time fixed effects the decision to implement a policy or not is effectively random. The sensitivity analysis showed that this is partly given, yet the treated and untreated observations still retain structural differences. An alternative to circumvent this assumption would be to conduct a Staggered Difference-in-Differences (DiD) event study following \citet{callawayDifferenceinDifferencesMultipleTime2021a}. Yet this approach then requires the parallel trends assumption, i.e. the outcome variable, transport $CO_2$ emissions, exhibits the same time trend for both treated and untreated cities in the absence of treatment. If you, the Board of Mayors, wish to get an additional robustness check on the efficacy of Congestion Pricing and Low-Emission Zones, commissioning a second study using the \citet{callawayDifferenceinDifferencesMultipleTime2021a} Doubly-Robust DiD approach may be a worthwhile endeavour.
 
 - contrast with alternative of staggered DiD
 
@@ -328,7 +350,7 @@ It indicates that treated and control cities are so structurally different that 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{Figures/overlap_density.pdf}
-    \caption{Common Support for Congestion Pricing (AIPW)}
+    \caption{Common Support for Congestion Pricing}
     \label{fig:overlap_density}
 \end{figure}
 

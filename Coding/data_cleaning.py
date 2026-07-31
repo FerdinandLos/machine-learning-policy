@@ -268,7 +268,8 @@ city_features = df.drop_duplicates('city_id').set_index('city_id')
 cluster_cols = [col for col in city_features.columns 
                 if (col.endswith('_pre_mean') or col.endswith('_initial')) 
                 and 'co2' not in col 
-                and 'lat_zone' not in col]
+                and 'lat_zone' not in col
+                and 'year' not in col]
 
 city_features_cluster = city_features[cluster_cols].copy()
 
