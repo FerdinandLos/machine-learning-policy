@@ -146,6 +146,68 @@
       \endverb
       \keyw{Difference-in-Differences,Doubly robust,Dynamic treatment effects,Event study,Semi-parametric,Treatment effect heterogeneity,Variation in treatment timing}
     \endentry
+    \entry{cameronBootstrapBasedImprovementsInference2008}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=dab37900e0b3d1bbd6b945d99fef4b06}{%
+           family={Cameron},
+           familyi={C\bibinitperiod},
+           given={A.\bibnamedelimi Colin},
+           giveni={A\bibinitperiod\bibinitdelim C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d037e69d793c2bd3f19e61d52dd15337}{%
+           family={Gelbach},
+           familyi={G\bibinitperiod},
+           given={Jonah\bibnamedelima B.},
+           giveni={J\bibinitperiod\bibinitdelim B\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=666ff5de6a44e31611322ad1b6ddf9d3}{%
+           family={Miller},
+           familyi={M\bibinitperiod},
+           given={Douglas\bibnamedelima L.},
+           giveni={D\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {MIT Press}%
+      }
+      \strng{namehash}{de66073caceeddc66c6b6d44411fcfe3}
+      \strng{fullhash}{8ab93612723c51a9a5e7e7030929186a}
+      \strng{fullhashraw}{8ab93612723c51a9a5e7e7030929186a}
+      \strng{bibnamehash}{8ab93612723c51a9a5e7e7030929186a}
+      \strng{authorbibnamehash}{8ab93612723c51a9a5e7e7030929186a}
+      \strng{authornamehash}{de66073caceeddc66c6b6d44411fcfe3}
+      \strng{authorfullhash}{8ab93612723c51a9a5e7e7030929186a}
+      \strng{authorfullhashraw}{8ab93612723c51a9a5e7e7030929186a}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Researchers have increasingly realized the need to account for within-group dependence in estimating standard errors of regression parameter estimates. The usual solution is to calculate cluster-robust standard errors that permit heteroskedasticity and within-cluster error correlation, but presume that the number of clusters is large. Standard asymptotic tests can over-reject, however, with few (five to thirty) clusters. We investigate inference using cluster bootstrap-t procedures that provide asymptotic refinement. These procedures are evaluated using Monte Carlos, including the example of Bertrand, Duflo, and Mullainathan (2004). Rejection rates of 10\% using standard methods can be reduced to the nominal size of 5\% using our methods. Copyright by the President and Fellows of Harvard College and the Massachusetts Institute of Technology.}
+      \field{journaltitle}{The Review of Economics and Statistics}
+      \field{langid}{english}
+      \field{number}{3}
+      \field{title}{Bootstrap-{{Based Improvements}} for {{Inference}} with {{Clustered Errors}}}
+      \field{urlday}{31}
+      \field{urlmonth}{7}
+      \field{urlyear}{2026}
+      \field{volume}{90}
+      \field{year}{2008}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{414\bibrangedash 427}
+      \range{pages}{14}
+      \verb{file}
+      \verb C:\Users\ferdi\Zotero\storage\KZVGMXT3\v90y2008i3p414-427.html
+      \endverb
+      \verb{urlraw}
+      \verb https://ideas.repec.org//a/tpr/restat/v90y2008i3p414-427.html
+      \endverb
+      \verb{url}
+      \verb https://ideas.repec.org//a/tpr/restat/v90y2008i3p414-427.html
+      \endverb
+    \endentry
     \entry{CausalMLBookAppliedCausal}{book}{}{}
       \name{author}{5}{}{%
         {{un=1,uniquepart=given,hash=cd8889c8533fa715ed655a757cef5619}{%

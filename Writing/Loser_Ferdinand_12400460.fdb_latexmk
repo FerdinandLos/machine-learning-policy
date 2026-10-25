@@ -1,11 +1,18 @@
 # Fdb version 4
+<<<<<<< HEAD
 ["biber Loser_Ferdinand_12400460"] 1785530167.72824 "Loser_Ferdinand_12400460.bcf" "Loser_Ferdinand_12400460.bbl" "Loser_Ferdinand_12400460" 1785530171.1474 0
   "DML_Policy_Project.bib" 1785509881 16762 42d05ef5cb53db0c254cf4475f844677 ""
   "Loser_Ferdinand_12400460.bcf" 1785530170 109684 e1f1e11a06339befdb674977c5ed220b "pdflatex"
+=======
+["biber Loser_Ferdinand_12400460"] 1785531571.90483 "Loser_Ferdinand_12400460.bcf" "Loser_Ferdinand_12400460.bbl" "Loser_Ferdinand_12400460" 1785534250.10034 0
+  "DML_Policy_Project.bib" 1785531535 18212 c6f5204780738f37df8ff9656ad60b86 ""
+  "Loser_Ferdinand_12400460.bcf" 1785534247 109786 2c74e66a66a77c12e4645891a36121c4 "pdflatex"
+>>>>>>> eb1a3f107f2729e8259cd8b83d417b12357ab426
   (generated)
   "Loser_Ferdinand_12400460.bbl"
   "Loser_Ferdinand_12400460.blg"
   (rewritten before read)
+<<<<<<< HEAD
 ["pdflatex"] 1785530169.70179 "d:/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" "Loser_Ferdinand_12400460.pdf" "Loser_Ferdinand_12400460" 1785530171.14802 0
   "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1785530166 81107 70b8516c68c2e617189c5e44bfd16b96 ""
   "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbi1200.pk" 1785419249 42728 211ef3b96efcd5541a1032050e2ee460 ""
@@ -27,6 +34,30 @@
   "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1000.pk" 1781799264 11548 9514074733a1e7508a9fceb5daee031f ""
   "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1200.pk" 1785414627 14064 7ec9439a98cf2f75c792c0fb03c59bf1 ""
   "C:/Users/ferdi/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1781799241 13367096 164fa5cf0078bc3b0dc4b2ad32ae671b ""
+=======
+["pdflatex"] 1785534244.89147 "c:/Users/ferdi/Documents/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" "Loser_Ferdinand_12400460.pdf" "Loser_Ferdinand_12400460" 1785534250.10138 0
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1785521282 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbi1200.pk" 1785425058 42728 c3f53c33337d149328afff16266556cd ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1095.pk" 1785425072 28976 cac126039d703147187b7c443a91bec7 ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1200.pk" 1785425063 31952 da3558acccc209cee4f709e44e15bbfd ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1440.pk" 1785425054 40136 f348bf0ced675acd901a56d30f47cb22 ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1728.pk" 1785425064 49100 361cb9e8d1f32384090e0e032d9c2685 ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm0700.pk" 1785518914 17000 7fa56e039caf9806b917b34cf4090995 ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm0800.pk" 1785425056 19080 e81ad3387006a3a4fd8c64ef7e34f5d9 ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm1000.pk" 1785425068 23808 bd7eb396628acfcbfd6ed3f6b7c21646 ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm1095.pk" 1785425071 26228 07400eb3bffe80f26ee0eb5c313b6c8e ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm1200.pk" 1785425066 28440 d35a88e5fee9edcfbc8972c000545a15 ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm1440.pk" 1785425077 34320 30e0d51753074dd584a1410c77f36f29 ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm2074.pk" 1785425079 53736 8dd5d04ab3a56e4cf1e0dc95583fecaf ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecti1000.pk" 1785425053 31892 9833aba6476575746baee212022d90a3 ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecti1095.pk" 1785534249 35204 4b0499062d22ea21d1ffd3aa5f1b75b8 ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecti1200.pk" 1785425059 39120 530157b72e841c934b394aaaae70e39a ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecti1440.pk" 1785425074 47464 62718ab88ba591875fd76507bde6f6b6 ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm0700.pk" 1785425069 8268 f0615a5c6e7a1334b39b6a8465aa940a ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1000.pk" 1785425076 11548 2ea149d7f855326be72e8f0f013c5bd0 ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1200.pk" 1785425061 14064 a7d9a4bfafc53a148588bea31b9911e5 ""
+  "C:/Users/ferdi/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1785424962 13333528 d4905c7734486a0be413da33e6af482f ""
+>>>>>>> eb1a3f107f2729e8259cd8b83d417b12357ab426
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecbi1200.tfm" 993061910 2892 f5de7a62f7c1551b663588ecf7265280 ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecbx1095.tfm" 993061956 3228 aacd2ac2d814480e4422ad7e830fd2d4 ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecbx1200.tfm" 993061958 3200 b8d69bc738e5ef3e08cefeef3109ff56 ""
@@ -42,6 +73,7 @@
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecrm1728.tfm" 993062128 3168 11457c8185ce67fb79662ba8b03d6db1 ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecrm2074.tfm" 993062130 3184 b2541675eba9fa86d240ec0ecc913558 ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecti1000.tfm" 993062320 2840 5606e1a681c23005308de9d61c09a8ff ""
+  "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecti1095.tfm" 993062322 2852 cf233cde705f180d95560390f0f826e7 ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecti1200.tfm" 993062324 2832 28bbd97ca29f46e76c87a158a9915203 ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecti1440.tfm" 993062326 2844 86dfffe42f737dd4caf3eec0b7ebcd96 ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/tcrm0700.tfm" 993062506 1452 97bdc98984cb373fbcd868e2fa55f5f2 ""
@@ -56,9 +88,11 @@
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/public/amsfonts/symbols/msbm5.tfm" 1233951854 940 75ac932a52f80982a9f8ea75d03a34cf ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/public/amsfonts/symbols/msbm7.tfm" 1233951854 940 228d6584342e91276bf566bcf9716b83 ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmex10.tfm" 1136765053 992 662f679a0b3d2d53c1b94050fdaa3f50 ""
+  "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmmi10.tfm" 1136765053 1528 abec98dbc43e172678c11b3b9031252a ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmmi12.tfm" 1136765053 1524 4414a8315f39513458b80dfc63bff03a ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmmi6.tfm" 1136765053 1512 f21f83efb36853c0b70002322c1ab3ad ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmmi8.tfm" 1136765053 1520 eccf95517727cb11801f4f1aee3a21b4 ""
+  "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmr10.tfm" 1136765053 1296 45809c5a464d5f32c8f98ba97c1bb47f ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmr12.tfm" 1136765053 1288 655e228510b4c2a1abe905c368440826 ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmr6.tfm" 1136765053 1300 b62933e007d01cfd073f79b963c01526 ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmr8.tfm" 1136765053 1292 21c1c5bfeaebccffdb478fd231a0997d ""
@@ -167,6 +201,7 @@
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/tex/latex/thmtools/thmtools.sty" 1683737554 1913 873bc7fbf18d7dd934dc3a6cc156472e ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/tex/latex/titlesec/titlesec.sty" 1736608268 48766 87a17a4ef312a39cd43896e34a679a56 ""
   "C:/Users/ferdi/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
+<<<<<<< HEAD
   "Ferdinand_Unterschrift.PNG" 1785530149 82481 e8c82b4e690639fa084909d19ea8a9ba ""
   "Figures/appendix_overlap_sensitivity.pdf" 1785530149 23101 c0159d48c8178025f5a2d6e3d0a937cd ""
   "Figures/cluster_differences.pdf" 1785530149 39464 65f541c3a71e93637a15a4c35ff084f3 ""
@@ -184,6 +219,25 @@
   "Tables/treatment_by_cluster.tex" 1785530149 737 db9093bb79634a0f5fe9ae1f219afd38 ""
   "Tables/unified_common_support.tex" 1785520619 864 319e8af219106babb3797a2582a4375d ""
   "d:/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" 1785530149 32398 e26f4f2cd4f736fdb1e21177de72739e ""
+=======
+  "Ferdinand_Unterschrift.PNG" 1781381724 82481 e8c82b4e690639fa084909d19ea8a9ba ""
+  "Figures/appendix_overlap_sensitivity.pdf" 1785530622 23101 0ed8fd47ba097b180610a7fceeeeec50 ""
+  "Figures/cluster_differences.pdf" 1785527261 39464 65f541c3a71e93637a15a4c35ff084f3 ""
+  "Figures/forest_plot_att_gatt.pdf" 1785526917 24831 058de9d85e44859b9c18471a238aca4d ""
+  "Figures/kmeans_evaluation.pdf" 1785527260 23909 0bf972003d4e026c4d71893f8a6c33d0 ""
+  "Figures/overlap_density.pdf" 1785526918 35833 90ca53a2cb70f6bd2c9d0708bbb1e2c7 ""
+  "Loser_Ferdinand_12400460.aux" 1785534247 8742 2135d1a95ee7054ab16533b8f18380b4 "pdflatex"
+  "Loser_Ferdinand_12400460.bbl" 1785531575 32055 7847c72e8638d964390c30cbe1ca2a9d "biber Loser_Ferdinand_12400460"
+  "Loser_Ferdinand_12400460.out" 1785534247 1176 4e34dca2657110eeff4028838d38c567 "pdflatex"
+  "Loser_Ferdinand_12400460.run.xml" 1785534247 2493 f75322013235f34e9bce8f56c124eabb "pdflatex"
+  "Loser_Ferdinand_12400460.tex" 1785534243 36055 4e4cd47a82471f125bf850ff11355d56 ""
+  "Tables/appendix_placebo_tests.tex" 1785530621 1382 b40c643268fe334231a2e5668f346dda ""
+  "Tables/dml_master_results.tex" 1785526916 1464 9814a598853455758681c40a1d197bbb ""
+  "Tables/propensity_score_summary_all.tex" 1785526918 1205 662d1475a4f3648ef260f01c892db7ba ""
+  "Tables/treatment_by_cluster.tex" 1785527261 737 db9093bb79634a0f5fe9ae1f219afd38 ""
+  "Tables/unified_common_support.tex" 1785526918 864 319e8af219106babb3797a2582a4375d ""
+  "c:/Users/ferdi/Documents/Study Projects/Machine Learning/machine-learning-policy/Writing/Loser_Ferdinand_12400460.tex" 1785534243 36055 4e4cd47a82471f125bf850ff11355d56 ""
+>>>>>>> eb1a3f107f2729e8259cd8b83d417b12357ab426
   (generated)
   "Loser_Ferdinand_12400460.aux"
   "Loser_Ferdinand_12400460.bcf"
